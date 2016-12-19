@@ -1,0 +1,7 @@
+main: com.Patane.Battlegrounds.Battlegrounds
+version: 0.2
+name: Battlegrounds
+commands:
+  bg:
+    description: Main firstTest command
+    usage: /bg
