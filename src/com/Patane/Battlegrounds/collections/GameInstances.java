@@ -22,13 +22,14 @@ public class GameInstances {
 			selectedgame.gameOver();
 		}
 	}
-	public static boolean gameHasName(String name){
-		for(GameHandler selectedgame : GameInstances){
-			if(name.equals(selectedgame.getName())) return true;
-		}
-		return false;
-	}
-	
+	// Old code. just checks if there is a game with the given name
+//	public static boolean gameHasName(String name){
+//		for(GameHandler selectedgame : GameInstances){
+//			if(name.equals(selectedgame.getName())) return true;
+//		}
+//		return false;
+//	}
+	// collects all game names and returns a string ArrayList
 	public static ArrayList<String> listGameNames(){
 		ArrayList<String> gameNames = new ArrayList<String>();
 		for(GameHandler selectedgame : GameInstances){
@@ -36,6 +37,7 @@ public class GameInstances {
 		}
 		return gameNames;
 	}
+	// looks for and returns game with given name, returns null if none
 	public static GameHandler getGame(String gameName){
 		for(GameHandler selectedgame : GameInstances){
 			if(gameName.equals(selectedgame.getName())){
@@ -43,5 +45,8 @@ public class GameInstances {
 			}
 		}
 		return null;
+	}
+	public static Collection<GameHandler> get(){
+		return GameInstances;
 	}
 }

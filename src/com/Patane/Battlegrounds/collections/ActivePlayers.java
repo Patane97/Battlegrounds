@@ -1,35 +1,32 @@
 package com.Patane.Battlegrounds.collections;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.game.GameHandler;
 
 public class ActivePlayers {
-	private static Hashtable<Player, GameHandler> players = new Hashtable<Player, GameHandler>();
-	
-	public static void add(Player player, GameHandler game){
-		players.put(player, game);
+	public static ArrayList<String> get(){
+		ArrayList<String> players = new ArrayList<String>();
+		for(GameHandler selectedGame : GameInstances.get()){
+			players.addAll(selectedGame.getPlayerNames());
+		}
+		return players;
 	}
-	public static void remove(Player player){
-		players.remove(player);
+	public static HashMap<String, GameHandler> getHash(){
+		HashMap<String, GameHandler> players = new HashMap<String, GameHandler>();
+		for(GameHandler selectedGame : GameInstances.get()){
+			for(String selectedPlayer : selectedGame.getPlayerNames())
+				players.put(selectedPlayer, selectedGame);
+		}
+		return players;
 	}
 	public static GameHandler getGame(Player player){
-		return players.get(player);
+		return getHash().get(player.getDisplayName());
 	}
-	public static ArrayList<Player> getPlayers(GameHandler game){
-		ArrayList<Player> tempPlayers = new ArrayList<Player>();
-		for(Player selectedplayer : players.keySet()){
-			if(players.get(selectedplayer).equals(game)){
-				tempPlayers.add(selectedplayer);
-			}
-		}
-		return tempPlayers;
-	}
-	// returns players and their respective GameHandler games
-	public static Hashtable<Player, GameHandler> getHashtable(){
-		return players;
+	public static GameHandler getGame(String player){
+		return getHash().get(player);
 	}
 }

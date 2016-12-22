@@ -1,12 +1,11 @@
 package com.Patane.Battlegrounds;
 
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Patane.Battlegrounds.collections.GameInstances;
 import com.Patane.Battlegrounds.commands.CommandHandler;
 
-public class Battlegrounds extends JavaPlugin implements Listener {
+public class Battlegrounds extends JavaPlugin {
 	public void onEnable() {
 		// registering the listeners class
 		getServer().getPluginManager().registerEvents(new Listeners(), this);

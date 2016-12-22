@@ -16,7 +16,7 @@ public class CommandHandler implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		String command = (args.length > 0 ? args[0] : "");
-
+		// checking if sender is from console
 		Player target = ((sender instanceof Player) ? (Player) sender : null);
 		if (target == null){
 			Messenger.send(sender, "Command cannot be executed from console!");
@@ -32,7 +32,7 @@ public class CommandHandler implements CommandExecutor{
 				break;
 			}
 			// checks if game name is already taken
-			if (GameInstances.gameHasName(gameName)){
+			if (GameInstances.getGame(gameName) != null){
 				Messenger.send(sender, "Please choose a different game name.");
 				break;
 			}
@@ -41,16 +41,18 @@ public class CommandHandler implements CommandExecutor{
 				Messenger.send(sender, "Please leave your current game before starting a new one. Type /bg leave to leave your current game");
 				break;
 			}
-			// Otherwise, creates a new GameHandler! Adds the player and new GameHandler to 'ActivePlayers' hash table
-			ActivePlayers.add(target, new GameHandler(target, gameName));
+			// Otherwise, creates a new GameHandler!
+			new GameHandler(target, gameName);
 			break;
 			
 		case "leave":
 			GameHandler game = ActivePlayers.getGame(target);
-			if(game != null){
-				game.playerLeaveGameCheck(target);
-				}
-			else Messenger.send(sender, "You must be in a game to leave one!");
+			try{
+				game.playerLeave(target, true);
+			
+			} catch (Exception e){
+				Messenger.send(sender, "You must be in a game to leave one!");
+			}
 			break;
 		case "join":
 			gameName = (args.length > 1 ? args[1] : null);

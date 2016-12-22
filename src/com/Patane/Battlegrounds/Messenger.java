@@ -40,7 +40,7 @@ public class Messenger {
 	}
 	// sends only to people in specific game
 	public static void gameCast(GameHandler game, String string) {
-		for(Player selectedplayer : ActivePlayers.getPlayers(game)){
+		for(Player selectedplayer : game.getPlayers()){
 			if(ActivePlayers.getGame(selectedplayer).equals(game)){
 				send(selectedplayer, string);
 			}
