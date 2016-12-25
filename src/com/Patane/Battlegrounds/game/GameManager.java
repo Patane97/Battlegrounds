@@ -3,10 +3,11 @@ package com.Patane.Battlegrounds.game;
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.BGInstance;
+import com.Patane.Battlegrounds.arena.ArenaHandler;
 
 public interface GameManager extends BGInstance{
 	
-	public GameHandler getGameHandler();
+	public ArenaHandler getArena();
 	
 	public RoundHandler getRoundHandler();
 		

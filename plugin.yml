@@ -1,5 +1,5 @@
 main: com.Patane.Battlegrounds.Battlegrounds
-version: 0.2
+version: ALPHA
 name: Battlegrounds
 commands:
   bg:

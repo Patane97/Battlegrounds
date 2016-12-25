@@ -3,6 +3,7 @@ package com.Patane.Battlegrounds.collections;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.Patane.Battlegrounds.arena.ArenaHandler;
 import com.Patane.Battlegrounds.game.GameHandler;
 
 public class GameInstances {
@@ -18,30 +19,34 @@ public class GameInstances {
 	}
 	// method to simply end all games running
 	public static void endGameAll(){
-		for(GameHandler selectedgame : GameInstances){
-			selectedgame.gameOver();
+		// to fix ConcurrentModificationException
+		Collection<GameHandler> UnmodifiedGameInstances = new ArrayList<GameHandler>();
+		UnmodifiedGameInstances.addAll(GameInstances);
+		for(GameHandler selectedGame : UnmodifiedGameInstances){
+			selectedGame.gameOver();
 		}
 	}
-	// Old code. just checks if there is a game with the given name
-//	public static boolean gameHasName(String name){
-//		for(GameHandler selectedgame : GameInstances){
-//			if(name.equals(selectedgame.getName())) return true;
-//		}
-//		return false;
-//	}
 	// collects all game names and returns a string ArrayList
 	public static ArrayList<String> listGameNames(){
 		ArrayList<String> gameNames = new ArrayList<String>();
-		for(GameHandler selectedgame : GameInstances){
-			gameNames.add(selectedgame.getName());
+		for(GameHandler selectedGame : GameInstances){
+			gameNames.add(selectedGame.getName());
 		}
 		return gameNames;
 	}
 	// looks for and returns game with given name, returns null if none
 	public static GameHandler getGame(String gameName){
-		for(GameHandler selectedgame : GameInstances){
-			if(gameName.equals(selectedgame.getName())){
-				return selectedgame;
+		for(GameHandler selectedGame : GameInstances){
+			if(gameName.equals(selectedGame.getName())){
+				return selectedGame;
+			}
+		}
+		return null;
+	}
+	public static GameHandler getGame(ArenaHandler arena){
+		for(GameHandler selectedGame : GameInstances){
+			if(arena.equals(selectedGame.getArena())){
+				return selectedGame;
 			}
 		}
 		return null;

@@ -4,40 +4,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.arena.ArenaHandler;
 import com.Patane.Battlegrounds.collections.*;
 
 public class GameHandler implements GameManager{
-	String hostName;
-	String gameName;
+//	String hostName;
+//	String gameName;
 	World world;
+	
+	ArenaHandler arena;
 	RoundHandler roundHandler;
-	//ArrayList<String> alivePlayers = new ArrayList<Player>();
 	// map of players <String name, Boolean alive>
 	HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	
-	public GameHandler (Player player, String name) {
-		this.hostName 		= player.getDisplayName();
-		this.gameName 		= name;
-		this.roundHandler 	= new RoundHandler(hostName, this); // move into match class when its made
-		this.world 			= player.getWorld();
+	public GameHandler (ArenaHandler arena) {
+		this.arena 			= arena;
+		this.world			= arena.getWorld();
+		this.roundHandler 	= new RoundHandler(this);
 		
-		players.put(hostName, true);
 		GameInstances.add(this);
+		
+		arena.isInGame(true);
+		
 		roundHandler.startRound();
 	}
-	
+	public ArenaHandler getArena(){
+		return arena;
+	}
 	public String getName(){
-		return gameName;
+		return arena.getName();
 	}
 	public World getWorld(){
 		return world;
-	}
-	public GameHandler getGameHandler(){
-		return this;
 	}
 	public RoundHandler getRoundHandler(){
 		return roundHandler;
@@ -60,6 +63,8 @@ public class GameHandler implements GameManager{
 	public void addPlayer(Player player){
 		Messenger.gameCast(this, player.getDisplayName() + " has joined your game!");
 		players.put(player.getDisplayName(), true);
+		player.teleport(arena.getPlayerSpawn());
+		player.setGameMode(GameMode.SURVIVAL);
 		Messenger.send(player, "You have joined the game!");
 	}
 	// kicks player from the game with or without a message
@@ -72,6 +77,7 @@ public class GameHandler implements GameManager{
 	public boolean playerKilled(Player player){
 		if(players.containsKey(player.getDisplayName())){
 			players.put(player.getDisplayName(), false);
+			player.teleport(arena.getSpectatorSpawn());
 			Messenger.gameCast(this, "&6" + player.getPlayerListName() + " has been eliminated!");
 			return true;
 		}
@@ -109,8 +115,10 @@ public class GameHandler implements GameManager{
 			kickPlayer(Bukkit.getPlayerExact(selectedPlayer), true);
 		}
 		roundHandler.clearMobs();
-		Messenger.broadcast("A game has just finished! Type /bg start [game name] to start a new BattleGround!");
+		Messenger.broadcast("A game has just finished! Type /bg join [arena name] to start a new BattleGround!");
 		RoundInstances.remove(roundHandler);
 		GameInstances.remove(this);
+		
+		arena.isInGame(false);
 	}
 }

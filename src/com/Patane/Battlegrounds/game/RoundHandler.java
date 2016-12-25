@@ -2,7 +2,6 @@ package com.Patane.Battlegrounds.game;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 
@@ -12,22 +11,20 @@ import com.Patane.Battlegrounds.util.Spawner;
 
 public class RoundHandler {
 	int roundNo;
-	String hostName;
 	GameHandler gameInstance;
-	Location spawnLocation;
+	Location creatureSpawn;
 	ArrayList<Creature> activeCreatures = new ArrayList<Creature>();
 	
-	RoundHandler(String hostName, GameHandler game){
-		this.hostName 		= hostName;
+	RoundHandler(GameHandler game){
 		this.gameInstance 	= game;
 		this.roundNo 		= 1;
-		this.spawnLocation	= Bukkit.getPlayerExact(hostName).getLocation();
+		this.creatureSpawn	= game.getArena().getCreatureSpawn();
 		RoundInstances.add(this);
 	}
 	public void startRound(){
 		Messenger.gameCast(gameInstance, "Round " + roundNo);
 		// runs spawning calculations and adds all spawned mobs to activeMobs ArrayList
-		if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, spawnLocation))){
+		if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, creatureSpawn))){
 			Messenger.severe("A round started with 0 mobs spawned. This is a problem :(");
 		}
 	}

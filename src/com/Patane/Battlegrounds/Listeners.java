@@ -25,6 +25,7 @@ public class Listeners implements Listener{
 	 * Checks when a creature is killed
 	 * Finds the creatures GameHandler, then RoundHandler and checks if their round has ended
 	 */
+	// TODO: MOVE THESE LISTENERS INTO EACH ARENA OBJECT INSTANCE!!!!
 	@EventHandler
 	public void onCreatureDeath(EntityDeathEvent event){
 		// checks if entity dying is a creature
