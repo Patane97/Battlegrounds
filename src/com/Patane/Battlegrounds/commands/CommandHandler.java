@@ -13,6 +13,7 @@ import com.Patane.Battlegrounds.arena.ArenaHandler;
 import com.Patane.Battlegrounds.arena.builder.*;
 import com.Patane.Battlegrounds.collections.*;
 import com.Patane.Battlegrounds.game.GameHandler;
+import com.Patane.Battlegrounds.game.GameListeners;
 
 public class CommandHandler implements CommandExecutor{
 	
@@ -58,8 +59,17 @@ public class CommandHandler implements CommandExecutor{
 				break;
 			}
 			// Otherwise, creates a new GameHandler!
-			game = new GameHandler(Arenas.get(arenaName));
+			GameListeners gameListeners = new GameListeners(plugin);
+			
+			game = new GameHandler(plugin, Arenas.get(arenaName), gameListeners);
 			game.addPlayer(target);
+			//Thread gameT = new Thread(game);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, game);
+			// registering the arena builder listener
+			plugin.getServer().getPluginManager().registerEvents(gameListeners, plugin);
+			
+			//gameT.start();
+//			game = new GameHandler(Arenas.get(arenaName));
 			break;
 			
 		case "leave":
@@ -90,14 +100,14 @@ public class CommandHandler implements CommandExecutor{
 					break;
 				}
 			}
+			// THIS BROKE WHEN CHANGED TO A SCHEDULESYNCDELAYEDTASK. FIX IT!!! (GETS STUCK AT WHILE LOOPS INSIDE ARENABUILDER CLASS)
 			ArenaBuilderListeners arenaBuilderListener = new ArenaBuilderListeners(plugin);
 			
 			ArenaBuilder newArena = new ArenaBuilder(plugin, target, args[1], arenaBuilderListener, true);
-			Thread newArenaT = new Thread(newArena);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newArena);
 			// registering the arena builder listener
 			plugin.getServer().getPluginManager().registerEvents(arenaBuilderListener, plugin);
 			
-			newArenaT.start();
 			break;
 		case "remove":
 			arenaName = (args.length > 1 ? args[1] : null);

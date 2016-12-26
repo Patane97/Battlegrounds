@@ -9,11 +9,13 @@ public interface GameManager extends BGInstance{
 	
 	public ArenaHandler getArena();
 	
+	public String getName();
+	
 	public RoundHandler getRoundHandler();
 		
 	public void addPlayer(Player player);
 	
-	public void kickPlayer(Player player, Boolean silent);
+	public boolean kickPlayer(String player, Boolean silent);
 	
 	public boolean playerKilled(Player player);
 

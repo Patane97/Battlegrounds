@@ -18,7 +18,7 @@ public class Spawner {
 	 * @param location
 	 * @return an ArrayList of Creature's that were spawned
 	 */
-	public static ArrayList<Creature> roundSpawn(int roundNo, GameHandler game, Location location){
+	public synchronized static ArrayList<Creature> roundSpawn(int roundNo, GameHandler game, Location location){
 		// adjusting this changes the growth of mobs per round (lower=slower, higher=faster)
 		int maxWeight = roundNo*5;
 		// creating ArrayList of spawned mobs to eventually send back to RoundHandler

@@ -7,30 +7,42 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.ArenaHandler;
 import com.Patane.Battlegrounds.collections.*;
 
-public class GameHandler implements GameManager{
+public class GameHandler implements GameManager, Runnable{
 //	String hostName;
 //	String gameName;
 	World world;
-	
+	Plugin plugin;
 	ArenaHandler arena;
 	RoundHandler roundHandler;
+	
+	GameListeners gameListener;
+	
 	// map of players <String name, Boolean alive>
 	HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	
-	public GameHandler (ArenaHandler arena) {
+	public GameHandler (Plugin plugin, ArenaHandler arena, GameListeners listener) {
+		this.plugin			= plugin;
 		this.arena 			= arena;
 		this.world			= arena.getWorld();
-		this.roundHandler 	= new RoundHandler(this);
+		this.roundHandler 	= new RoundHandler(plugin, this);
+		this.gameListener	= listener;
+		
+		listener.setGame(this);
 		
 		GameInstances.add(this);
 		
 		arena.isInGame(true);
 		
+	}
+	
+	
+	public void run() {
 		roundHandler.startRound();
 	}
 	public ArenaHandler getArena(){
@@ -68,10 +80,13 @@ public class GameHandler implements GameManager{
 		Messenger.send(player, "You have joined the game!");
 	}
 	// kicks player from the game with or without a message
-	public void kickPlayer(Player player, Boolean silent){
-		players.remove(player.getDisplayName());
-		if(!silent)
-			Messenger.send(player, "You have been kicked from the game.");
+	public boolean kickPlayer(String player, Boolean silent){
+		if(players.remove(player)){
+			if(!silent)
+				Messenger.send(Bukkit.getPlayerExact(player), "You have been kicked from the game.");
+			return true;
+		}
+		return false;
 	}
 	// checks if a player has been killed in a game
 	public boolean playerKilled(Player player){
@@ -94,6 +109,11 @@ public class GameHandler implements GameManager{
 		}
 		return false;
 	}
+	public boolean hasPlayer(Player player) {
+		if(players.containsKey(player.getDisplayName()))
+			return true;
+		return false;
+	}
 	// checks if the game should be over. Runs gameOver() if it is over
 	public boolean checkGameEnd(){
 		// if players does not contain a player that is alive=true
@@ -112,7 +132,7 @@ public class GameHandler implements GameManager{
 		Messenger.gameCast(this, "All players have been eliminated!");
 		// actions to be performed on each active player in the active game
 		for(String selectedPlayer : players.keySet()){
-			kickPlayer(Bukkit.getPlayerExact(selectedPlayer), true);
+			kickPlayer(selectedPlayer, true);
 		}
 		roundHandler.clearMobs();
 		Messenger.broadcast("A game has just finished! Type /bg join [arena name] to start a new BattleGround!");

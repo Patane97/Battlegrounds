@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
+import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.collections.*;
@@ -11,22 +12,33 @@ import com.Patane.Battlegrounds.util.Spawner;
 
 public class RoundHandler {
 	int roundNo;
+	// delay of creatures spawning in seconds
+	long spawnDelay;
+	
+	Plugin plugin;
 	GameHandler gameInstance;
 	Location creatureSpawn;
 	ArrayList<Creature> activeCreatures = new ArrayList<Creature>();
 	
-	RoundHandler(GameHandler game){
+	RoundHandler(Plugin plugin, GameHandler game){
 		this.gameInstance 	= game;
 		this.roundNo 		= 1;
+		this.spawnDelay		= 5;
 		this.creatureSpawn	= game.getArena().getCreatureSpawn();
+		this.plugin			= plugin;
 		RoundInstances.add(this);
 	}
 	public void startRound(){
-		Messenger.gameCast(gameInstance, "Round " + roundNo);
-		// runs spawning calculations and adds all spawned mobs to activeMobs ArrayList
-		if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, creatureSpawn))){
-			Messenger.severe("A round started with 0 mobs spawned. This is a problem :(");
-		}
+		// spawns creatures after delay
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			public void run() {
+				if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, creatureSpawn)))
+					Messenger.severe("A round started with 0 mobs spawned. This is a problem :(");
+				Messenger.gameCast(gameInstance, "Round " + roundNo);
+			}
+		}, spawnDelay*20); // seconds * 20 ticks
+		
+		
 	}
 	// removes a mob when they have been killed then checks if the round has ended from it
 	public boolean creatureKilled(Creature creature){
