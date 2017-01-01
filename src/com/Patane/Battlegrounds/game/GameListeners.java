@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -21,7 +22,7 @@ public class GameListeners implements Listener{
 	}
 	
 	public void setGame(GameHandler game){
-		this.gameHandler	= game;
+		this.gameHandler = game;
 	}
 
 	@EventHandler
@@ -54,8 +55,15 @@ public class GameListeners implements Listener{
 		}
 	}
 	@EventHandler
+	public void onFoodLevelChange (FoodLevelChangeEvent event){
+		if(event.getEntity() instanceof Player){
+			Player player = (Player) event.getEntity();
+			if(gameHandler.hasPlayer(player))
+				event.setCancelled(true);
+		}
+	}
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
-		gameHandler.kickPlayer(event.getPlayer().getDisplayName(), false);
-		// MAKE SURE WHEN THEY JOIN BACK IN THEY WILL BE BACK IN THEIR ORIGINAL LOCATION AND ITEMS ETC.
+		gameHandler.playerLeave(event.getPlayer().getDisplayName(), true, false);
 	}
 }

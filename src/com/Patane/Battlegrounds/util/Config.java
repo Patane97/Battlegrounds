@@ -3,7 +3,7 @@ package com.Patane.Battlegrounds.util;
 import java.io.File;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 
@@ -18,10 +18,10 @@ import com.Patane.Battlegrounds.Messenger;
 
 public class Config extends YamlConfiguration{
  
-    private JavaPlugin plugin;
+    private Plugin plugin;
     private String fileName;
  
-    public Config(JavaPlugin plugin, String fileName){
+    public Config(Plugin plugin, String fileName){
         this.plugin = plugin;
         this.fileName = fileName + (fileName.endsWith(".yml") ? "" : ".yml");
  

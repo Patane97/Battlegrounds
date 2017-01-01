@@ -17,33 +17,33 @@ public class RoundHandler {
 	
 	Plugin plugin;
 	GameHandler gameInstance;
-	Location creatureSpawn;
+	ArrayList<Location> creatureSpawns;
 	ArrayList<Creature> activeCreatures = new ArrayList<Creature>();
+	int spawnTaskID;
 	
 	RoundHandler(Plugin plugin, GameHandler game){
 		this.gameInstance 	= game;
 		this.roundNo 		= 1;
 		this.spawnDelay		= 5;
-		this.creatureSpawn	= game.getArena().getCreatureSpawn();
+		this.creatureSpawns	= game.getArena().getCreatureSpawns();
 		this.plugin			= plugin;
 		RoundInstances.add(this);
 	}
 	public void startRound(){
 		// spawns creatures after delay
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		spawnTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
-				if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, creatureSpawn)))
+				if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, gameInstance, creatureSpawns)))
 					Messenger.severe("A round started with 0 mobs spawned. This is a problem :(");
-				Messenger.gameCast(gameInstance, "Round " + roundNo);
+				Messenger.gameCast(gameInstance, "&aRound " + roundNo + "!");
 			}
 		}, spawnDelay*20); // seconds * 20 ticks
-		
 		
 	}
 	// removes a mob when they have been killed then checks if the round has ended from it
 	public boolean creatureKilled(Creature creature){
 		if(activeCreatures.remove(creature)){
-			Messenger.gameCast(gameInstance, "Mob killed!");
+			//Messenger.gameCast(gameInstance, "Mob killed!");
 			return true;
 		}
 		return false;
@@ -53,6 +53,9 @@ public class RoundHandler {
 			roundNo++;
 			startRound();
 		}
+	}
+	public int getSpawnTaskID(){
+		return spawnTaskID;
 	}
 	public int getRoundNo(){
 		return roundNo;

@@ -34,15 +34,6 @@ public class GameInstances {
 		}
 		return gameNames;
 	}
-	// looks for and returns game with given name, returns null if none
-	public static GameHandler getGame(String gameName){
-		for(GameHandler selectedGame : GameInstances){
-			if(gameName.equals(selectedGame.getName())){
-				return selectedGame;
-			}
-		}
-		return null;
-	}
 	public static GameHandler getGame(ArenaHandler arena){
 		for(GameHandler selectedGame : GameInstances){
 			if(arena.equals(selectedGame.getArena())){

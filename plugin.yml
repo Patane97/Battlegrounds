@@ -1,7 +1,8 @@
 main: com.Patane.Battlegrounds.Battlegrounds
-version: ALPHA
+version: ALPHA-1.1
 name: Battlegrounds
 commands:
   bg:
     description: Main firstTest command
     usage: /bg
+softdepend: [WorldEdit]

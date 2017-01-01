@@ -3,8 +3,10 @@ package com.Patane.Battlegrounds;
 import org.bukkit.ChatColor;
 
 public enum Chat {
-	PLUGIN_PREFIX("&2[&aBattlegrounds&2]&r "),
-	STRIPPED_PLUGIN_PREFIX("[Battlegrounds] ");
+	PLUGIN_PREFIX("&2[&aBattleGrounds&2]&r "),
+	PLUGIN_PREFIX_SMALL("&2[&aBG&2]&r "),
+	STRIPPED_PLUGIN_PREFIX("[Battlegrounds] "),
+	STRIPPED_PLUGIN_PREFIX_SMALL("[BG] ");
 	
 	private String value;
 	

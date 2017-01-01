@@ -15,16 +15,14 @@ public class Spawner {
 	 * 
 	 * @param maxWeight
 	 * @param world
-	 * @param location
+	 * @param creatureSpawns
 	 * @return an ArrayList of Creature's that were spawned
 	 */
-	public synchronized static ArrayList<Creature> roundSpawn(int roundNo, GameHandler game, Location location){
+	public synchronized static ArrayList<Creature> roundSpawn(int roundNo, GameHandler game, ArrayList<Location> creatureSpawns){
 		// adjusting this changes the growth of mobs per round (lower=slower, higher=faster)
 		int maxWeight = roundNo*5;
 		// creating ArrayList of spawned mobs to eventually send back to RoundHandler
 		ArrayList<Creature> spawnedMobs = new ArrayList<Creature>();
-		// max radius for mobs to randomly spawn
-		int spawnRadius = 3;
 		
 		CreatureWeights mobWeights = new CreatureWeights();
 		ArrayList<EntityType> allowedTypes = mobWeights.getAllowedTypes(maxWeight);
@@ -32,14 +30,14 @@ public class Spawner {
 		// keeps looping/spawning new mobs from "allowedTypes" and subtracting their weight to maxWeight until maxWeight is < 0
 		while(maxWeight > 0){
 			// random locations set
-			location.setX(location.getX() + Randoms.integer(spawnRadius, -(spawnRadius)));
-			location.setZ(location.getZ() + Randoms.integer(spawnRadius, -(spawnRadius)));
+			int spawnLocNumber = Randoms.integer(0, creatureSpawns.size()-1);
+			Location randomSpawn = creatureSpawns.get(spawnLocNumber);
 			EntityType entityType = Randoms.entityType(allowedTypes);
 			if(entityType == null) return null;
 			// spawns creature
-			Creature newCreature = (Creature) game.getWorld().spawnEntity(location, entityType);
+			Creature newCreature = (Creature) game.getWorld().spawnEntity(randomSpawn, entityType);
 			newCreature.setCustomNameVisible(true);
-			newCreature.setTarget(Locations.findClosestPlayer(newCreature, game.getPlayers()));
+			newCreature.setTarget(Locating.findClosestPlayer(newCreature, game.getPlayers()));
 			
 			maxWeight -= mobWeights.getWeight(entityType);
 			spawnedMobs.add(newCreature);

@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.ArenaHandler;
 import com.Patane.Battlegrounds.collections.*;
+import com.Patane.Battlegrounds.playerData.PlayerData;
+import com.Patane.Battlegrounds.util.Randoms;
 
 public class GameHandler implements GameManager, Runnable{
 //	String hostName;
@@ -34,10 +36,8 @@ public class GameHandler implements GameManager, Runnable{
 		this.gameListener	= listener;
 		
 		listener.setGame(this);
-		
 		GameInstances.add(this);
-		
-		arena.isInGame(true);
+		arena.setInGame(true);
 		
 	}
 	
@@ -73,38 +73,19 @@ public class GameHandler implements GameManager, Runnable{
 	}
 	// adds player to THIS game
 	public void addPlayer(Player player){
-		Messenger.gameCast(this, player.getDisplayName() + " has joined your game!");
 		players.put(player.getDisplayName(), true);
-		player.teleport(arena.getPlayerSpawn());
-		player.setGameMode(GameMode.SURVIVAL);
-		Messenger.send(player, "You have joined the game!");
+		player.teleport(arena.getPlayerSpawn(Randoms.integer(0, arena.getPlayerSpawns().size()-1)));
+		// make a method to refresh their items depending on what class they have selected.
 	}
-	// kicks player from the game with or without a message
-	public boolean kickPlayer(String player, Boolean silent){
-		if(players.remove(player)){
-			if(!silent)
-				Messenger.send(Bukkit.getPlayerExact(player), "You have been kicked from the game.");
-			return true;
-		}
-		return false;
+	public boolean playerLeave(String player, Boolean check, Boolean silent){
+		return playerLeave(Bukkit.getPlayerExact(player), check, silent);
 	}
 	// checks if a player has been killed in a game
 	public boolean playerKilled(Player player){
 		if(players.containsKey(player.getDisplayName())){
 			players.put(player.getDisplayName(), false);
-			player.teleport(arena.getSpectatorSpawn());
+			player.teleport(arena.getSpectatorSpawn(Randoms.integer(0, arena.getSpectatorSpawns().size()-1)));
 			Messenger.gameCast(this, "&6" + player.getPlayerListName() + " has been eliminated!");
-			return true;
-		}
-		return false;
-	}
-	public boolean playerLeave(Player player, Boolean check){
-		// backup checking if player is in game
-		if(players.remove(player.getDisplayName()) != null){
-			Messenger.send(player, "You have left the game.");
-			Messenger.gameCast(this, player.getPlayerListName() + " has left the current game!");
-			if(check)
-				checkGameEnd();
 			return true;
 		}
 		return false;
@@ -132,13 +113,15 @@ public class GameHandler implements GameManager, Runnable{
 		Messenger.gameCast(this, "All players have been eliminated!");
 		// actions to be performed on each active player in the active game
 		for(String selectedPlayer : players.keySet()){
-			kickPlayer(selectedPlayer, true);
+			playerLeave(selectedPlayer, false, true);
 		}
 		roundHandler.clearMobs();
 		Messenger.broadcast("A game has just finished! Type /bg join [arena name] to start a new BattleGround!");
 		RoundInstances.remove(roundHandler);
 		GameInstances.remove(this);
+		Bukkit.getServer().getScheduler().cancelTask(roundHandler.getSpawnTaskID());
+		HandlerList.unregisterAll(gameListener);
 		
-		arena.isInGame(false);
+		arena.setInGame(false);
 	}
 }

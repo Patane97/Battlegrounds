@@ -13,7 +13,7 @@ public class Randoms {
 	 * @param min
 	 * @return a random integer between max and min
 	 */
-	public static int integer(int max, int min){
+	public static int integer(int min, int max){
 		Random r = new Random();
 		return r.nextInt(max - min + 1) + min;
 	}
@@ -28,7 +28,7 @@ public class Randoms {
 		if(allowedTypes.isEmpty()) return null;
 		int max = allowedTypes.size()-1;
 		int min = 0;
-		int randomNumber = Randoms.integer(max, min);
+		int randomNumber = Randoms.integer(min, max);
 		
 		EntityType randomEntityType = allowedTypes.get(randomNumber);
 		return randomEntityType;
