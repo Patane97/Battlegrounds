@@ -5,11 +5,9 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Chat;
-import com.Patane.Battlegrounds.collections.ActivePlayers;
-import com.Patane.Battlegrounds.game.GameHandler;
+import com.Patane.Battlegrounds.arena.Arena;
 
 public class Messenger {
 	private static final Logger logger = Logger.getLogger("Minecraft");
@@ -48,11 +46,9 @@ public class Messenger {
 		logger.severe(Chat.STRIPPED_PLUGIN_PREFIX + msg);
 	}
 	// sends only to people in specific game
-	public static void gameCast(GameHandler game, String string) {
-		for(Player selectedplayer : game.getPlayers()){
-			if(ActivePlayers.getGame(selectedplayer).equals(game)){
-				send(selectedplayer, string);
-			}
+	public static void arenaCast(Arena arena, String string) {
+		for(String selectedPlayer : arena.getPlayers()){
+			send(Bukkit.getPlayerExact(selectedPlayer), string);
 		}
 		
 	}

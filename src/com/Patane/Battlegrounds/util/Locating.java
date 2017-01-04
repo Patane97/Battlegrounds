@@ -1,19 +1,22 @@
 package com.Patane.Battlegrounds.util;
 
-import java.util.List;
+import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class Locating {
 
-	public static Player findClosestPlayer(Entity entity, List<Player> playerList){
+	public static Player findClosestPlayer(Entity entity, ArrayList<String> playerList){
 		float closestDistance = Float.MAX_VALUE;
 		Player player = null;
-		for(Player selectedPlayer : playerList){
-			if(selectedPlayer.getLocation().distance(entity.getLocation()) <= closestDistance){
-				player = selectedPlayer;
+		Player temp;
+		for(String selectedPlayer : playerList){
+			temp = Bukkit.getPlayerExact(selectedPlayer);
+			if(temp.getLocation().distance(entity.getLocation()) <= closestDistance){
+				player = temp;
 			}
 		}
 		return player;

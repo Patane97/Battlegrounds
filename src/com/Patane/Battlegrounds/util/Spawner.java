@@ -6,7 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 
-import com.Patane.Battlegrounds.game.GameHandler;
+import com.Patane.Battlegrounds.arena.modes.game.Game;
+
 
 public class Spawner {
 	/**
@@ -18,7 +19,7 @@ public class Spawner {
 	 * @param creatureSpawns
 	 * @return an ArrayList of Creature's that were spawned
 	 */
-	public synchronized static ArrayList<Creature> roundSpawn(int roundNo, GameHandler game, ArrayList<Location> creatureSpawns){
+	public synchronized static ArrayList<Creature> roundSpawn(int roundNo, Game game, ArrayList<Location> creatureSpawns){
 		// adjusting this changes the growth of mobs per round (lower=slower, higher=faster)
 		int maxWeight = roundNo*5;
 		// creating ArrayList of spawned mobs to eventually send back to RoundHandler
@@ -35,9 +36,9 @@ public class Spawner {
 			EntityType entityType = Randoms.entityType(allowedTypes);
 			if(entityType == null) return null;
 			// spawns creature
-			Creature newCreature = (Creature) game.getWorld().spawnEntity(randomSpawn, entityType);
+			Creature newCreature = (Creature) game.getArena().getWorld().spawnEntity(randomSpawn, entityType);
 			newCreature.setCustomNameVisible(true);
-			newCreature.setTarget(Locating.findClosestPlayer(newCreature, game.getPlayers()));
+			newCreature.setTarget(Locating.findClosestPlayer(newCreature, game.getArena().getPlayers()));
 			
 			maxWeight -= mobWeights.getWeight(entityType);
 			spawnedMobs.add(newCreature);

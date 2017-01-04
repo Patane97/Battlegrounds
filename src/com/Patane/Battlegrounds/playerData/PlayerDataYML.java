@@ -23,8 +23,19 @@ public class PlayerDataYML {
 	public static void load(Plugin Battlegrounds){
 		plugin = Battlegrounds;
 		playerDataConfig = new Config(plugin, "playerData.yml");
+		
 		if(!playerDataConfig.isConfigurationSection("player")){
 			playerDataConfig.createSection("player");
+		} else{
+			// checks and restores the data of all online players in the yml file
+			header = playerDataConfig.getConfigurationSection("player");
+			Player player;
+			for(String playerName : header.getKeys(false)){
+				player = Bukkit.getPlayerExact(playerName);
+				if(Bukkit.getOnlinePlayers().contains(player)){
+					loadAllData(player);
+				}
+			}
 		}
 		playerDataConfig.save();
 	}

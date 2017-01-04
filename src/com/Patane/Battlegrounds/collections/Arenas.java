@@ -1,40 +1,66 @@
 package com.Patane.Battlegrounds.collections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-//import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.arena.ArenaHandler;
-import com.Patane.Battlegrounds.arena.builder.ArenaYML;
+import org.bukkit.entity.Player;
+
+import com.Patane.Battlegrounds.arena.Arena;
 
 public class Arenas {
-	private static ArrayList<ArenaHandler> arenas = new ArrayList<ArenaHandler>();
+	private static HashMap<String, Arena> arenas = new HashMap<String, Arena>();
 	
-	public static void addAll(ArrayList<ArenaHandler> arenaList){
-		arenas.addAll(arenaList);
+	public static void addAll(ArrayList<Arena> arenaList){
+		for(Arena selectedArena : arenaList){
+			arenas.put(selectedArena.getName(), selectedArena);
+		}
 	}
-	public static void add(ArenaHandler arena){
-		arenas.add(arena);
+	public static void add(Arena arena){
+		arenas.put(arena.getName(), arena);
 	}
-	public static boolean remove(ArenaHandler arena){
-		ArenaYML.remove(arena);
-		return arenas.remove(arena);
+	public static boolean remove(Arena arena){
+		if(arenas.remove(arena.getName()) != null)
+			return true;
+		return false;
 	}
-	public static ArenaHandler get(String name){
-		for(ArenaHandler selectedArena : arenas){
-			if(selectedArena.getName().equals(name))
+	public static Arena grab(String name){
+		return arenas.get(name);
+	}
+	public static Arena grab(Player player){
+		for(Arena selectedArena : arenas.values()){
+			if(selectedArena.hasPlayer(player))
 				return selectedArena;
 		}
 		return null;
 	}
-	public static ArrayList<ArenaHandler> get(){
-		return arenas;
+	public static void allSessionsOver(){
+		for(Arena selectedArena : arenas.values())
+			selectedArena.getMode().sessionOver();
 	}
-	public static boolean alreadyArena(String arenaName){
-		for(ArenaHandler selectedArena : arenas){
-			if(arenaName.equals(selectedArena.getName())){
-				return true;
-			}
+	public static boolean contains(String arenaName){
+		return arenas.containsKey(arenaName);
+	}
+	public static ArrayList<Arena> get(){
+		ArrayList<Arena> tempArenas = new ArrayList<Arena>();
+		for(Arena arena : arenas.values()){
+			tempArenas.add(arena);
 		}
-		return false;
+		return tempArenas;
+	}
+	public static ArrayList<String> getNames(){
+		ArrayList<String> tempArenas = new ArrayList<String>();
+		for(String arenaName : arenas.keySet()){
+			tempArenas.add(arenaName);
+		}
+		return tempArenas;
+	}
+	public static void cleanAll() {
+		for(Arena selectedArena : arenas.values()){
+			selectedArena.clean();
+		}
+	}
+	public static void removePlayer(Player player) {
+		Arena arena = grab(player);
+		arena.removePlayer(player.getDisplayName(), true);
 	}
 }
