@@ -3,6 +3,6 @@ version: ALPHA-1.1
 name: Battlegrounds
 commands:
   bg:
-    description: Main firstTest command
+    description: Primary Battlegrounds command.
     usage: /bg
 softdepend: [WorldEdit]

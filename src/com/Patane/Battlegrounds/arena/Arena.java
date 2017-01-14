@@ -1,17 +1,21 @@
 package com.Patane.Battlegrounds.arena;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.modes.ArenaMode;
 import com.Patane.Battlegrounds.arena.modes.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
@@ -30,6 +34,10 @@ public class Arena {
 	protected ArrayList<Location> lobbySpawns;
 	protected ArrayList<Location> spectatorSpawns;
 	
+	protected ArrayList<BGClass> classes;
+	
+	// <PlayerName, ClassName>
+	public HashMap<String, String> playerClasses = new HashMap<String, String>();
 	
 	ArenaMode mode;
 	// map of players <String name, Boolean value>
@@ -38,6 +46,7 @@ public class Arena {
 	// Game: value = alive/dead
 	public HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	
+	
 	public Arena(){
 		
 	}
@@ -45,24 +54,15 @@ public class Arena {
 	 * Mostly used for creating new arenas in-game (before spawns have been saved)
 	 */
 	public Arena(Plugin plugin, String name, World world, AbstractRegion region){
-		if(Arenas.contains(name)){
-			throw new NullPointerException("Tried to create an arena that already exists! (" + name + ")");
-		}
-		this.plugin	= plugin;
-		this.name	= name;
-		this.world	= world;
-		this.region	= region;
-		this.gameSpawns = new ArrayList<Location>();
-		this.lobbySpawns = new ArrayList<Location>();
-		this.creatureSpawns = new ArrayList<Location>();
-		this.spectatorSpawns = new ArrayList<Location>();
-		this.mode = new Standby(plugin, this);
-		Arenas.add(this);
+		this(plugin, name, world, region, null, null, null, null, null);
 	}
 	/**
 	 * Mostly used with loading arenas from arenas.yml
 	 */
-	public Arena(Plugin plugin, String name, World world, AbstractRegion region, ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, ArrayList<Location> creatureSpawns, ArrayList<Location> spectatorSpawns){
+	public Arena(Plugin plugin, String name, World world, AbstractRegion region, 
+			ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, 
+			ArrayList<Location> creatureSpawns, ArrayList<Location> spectatorSpawns,
+			ArrayList<BGClass> classes){
 		if(Arenas.contains(name)){
 			throw new NullPointerException("Tried to create an arena that already exists! (" + name + ")");
 		}
@@ -70,11 +70,12 @@ public class Arena {
 		this.name 				= name;
 		this.world 				= world;
 		this.region 			= region;
-		this.gameSpawns 		= (gameSpawns == null ? new ArrayList<Location>() : gameSpawns);
-		this.lobbySpawns 		= (lobbySpawns == null ? new ArrayList<Location>() : lobbySpawns);
-		this.creatureSpawns		= (creatureSpawns == null ? new ArrayList<Location>() : creatureSpawns);
-		this.spectatorSpawns 	= (spectatorSpawns == null ? new ArrayList<Location>() : spectatorSpawns);
-		this.mode = new Standby(plugin, this);
+		this.gameSpawns 		= (gameSpawns 		== null ? new ArrayList<Location>() : gameSpawns);
+		this.lobbySpawns 		= (lobbySpawns 		== null ? new ArrayList<Location>() : lobbySpawns);
+		this.creatureSpawns		= (creatureSpawns 	== null ? new ArrayList<Location>() : creatureSpawns);
+		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>() : spectatorSpawns);
+		this.classes 			= (classes 			== null ? new ArrayList<BGClass>() : classes);
+		this.mode 				= new Standby(plugin, this);
 		Arenas.add(this);
 	}
 	
@@ -87,15 +88,18 @@ public class Arena {
 	public AbstractRegion getRegion(){
 		return region;
 	}
+	public ArrayList<BGClass> getClasses() {
+		return classes;
+	}
+	public ArenaMode getMode() {
+		return mode;
+	}
 	public ArenaMode setMode(ArenaMode mode) {
 		try{
 			this.mode.getListener().unregister();
 		} catch (NullPointerException e){}
 		this.mode = mode;
 		return this.mode;
-	}
-	public ArenaMode getMode() {
-		return mode;
 	}
 	/**
 	 * @return List of players active in this arena
@@ -137,6 +141,7 @@ public class Arena {
 	 */
 	public boolean removePlayer(String player, boolean check){
 		if(players.remove(player) != null){
+			playerClasses.remove(player);
 			PlayerData.restoreData(Bukkit.getPlayerExact(player));
 			if(check && mode.checkSessionOver())
 				mode.sessionOver();
@@ -206,6 +211,7 @@ public class Arena {
 		
 		return emptySpawns;
 	}
+	
 	/**
 	 * @return true if the given location is within the arena
 	 */
@@ -250,5 +256,59 @@ public class Arena {
 			if(effect)
 				particleLocation.getWorld().spawnParticle(Particle.CLOUD, particleLocation, 10, 0, 0, 0, 0.05);
 		}
+	}
+	public BGClass newClass(ItemStack classIcon, String className) {
+		BGClass newClass = new BGClass(plugin, className, classIcon);
+		classes.add(newClass);
+		return newClass;
+	}
+	public BGClass newClass(ItemStack classIcon, String className, ItemStack[] items) {
+		BGClass newClass = new BGClass(plugin, className, classIcon, items);
+		classes.add(newClass);
+		return newClass;
+	}
+	public BGClass getClass(String className) {
+		for(BGClass selectedClass : classes){
+			if(ChatColor.stripColor(selectedClass.getName()).equalsIgnoreCase(className))
+				return selectedClass;
+		}
+		return null;
+	}
+	public void equipClass(Player player, BGClass bgClass) {
+		ItemStack[] inv 		= bgClass.getInventory().getContents();
+		int invLength = inv.length;
+		ItemStack helmet 		= inv[0];
+		ItemStack chestplate 	= inv[1];
+		ItemStack leggings 		= inv[2];
+		ItemStack boots 		= inv[3];
+		ItemStack offHand 		= inv[4];
+		ItemStack[] storage 	= Arrays.copyOfRange(inv, 9, invLength-9);
+		ItemStack[] hotbar 		= Arrays.copyOfRange(inv, invLength-9, invLength);
+
+		player.getInventory().setHelmet(helmet);
+		player.getInventory().setChestplate(chestplate);
+		player.getInventory().setLeggings(leggings);
+		player.getInventory().setBoots(boots);
+		
+		player.getInventory().setItemInOffHand(offHand);
+		player.getInventory().setStorageContents(storage);
+		for(int i = 0 ; i < storage.length ; i++){
+			player.getInventory().setItem(i+9, storage[i]);
+		}
+		for(int i = 0 ; i < hotbar.length ; i++){
+			player.getInventory().setItem(i, hotbar[i]);
+		}
+		
+		playerClasses.put(player.getDisplayName(), bgClass.getName());
+		
+	}
+	public boolean hasClass(Player player) {
+		if(playerClasses.get(player.getDisplayName()) != null)
+			return true;
+		return false;
+	}
+	public void removeClass(BGClass bgClass) {
+		classes.remove(bgClass);
+		ArenaYML.removeClass(name, bgClass.getName());
 	}
 }

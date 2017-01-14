@@ -1,13 +1,17 @@
 package com.Patane.Battlegrounds.util;
 
+import java.util.HashMap;
 import java.util.StringJoiner;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
 
+import com.Patane.Battlegrounds.Messenger;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.BlockVector2D;
+
 
 public class YML {
 
@@ -63,7 +67,7 @@ public class YML {
 			return null;
 		}
 	}
-	public static String BlockVector2DFormat(BlockVector2D vector){
+	public static String blockVector2DFormat(BlockVector2D vector){
 		String temp = vector.getBlockX() + "," + vector.getBlockZ();
 		return temp;
 	}
@@ -78,7 +82,7 @@ public class YML {
 			return null;
 		}
 	}
-	public static String BlockVectorFormat(BlockVector vector){
+	public static String blockVectorFormat(BlockVector vector){
 		String temp = vector.getBlockX() + "," + vector.getBlockY() + "," + vector.getBlockZ();
 		return temp;
 	}
@@ -93,5 +97,22 @@ public class YML {
 		} catch (Exception e){
 			return null;
 		}
+	}
+	public static HashMap<Integer, ItemStack> playerInventoryContentsFormat(ItemStack[] items){
+		HashMap<Integer, ItemStack> tempItems = new HashMap<Integer, ItemStack>();
+		Messenger.info("SIZE: "+ items.length);
+		for(int i = 0 ; i < items.length ; i++){
+			tempItems.put(i, items[i]);
+		}
+		return tempItems;
+	}
+	public static ItemStack[] getPlayerInventoryContents(HashMap<Integer, ItemStack> itemsHash){
+		ItemStack[] items = new ItemStack[36];
+		for(int i = 0 ; i < items.length ; i++){
+			items[i] = null;
+			if(itemsHash.containsKey(i))
+				items[i] = itemsHash.get(i);
+		}
+		return items;
 	}
 }

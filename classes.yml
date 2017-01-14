@@ -1,9 +1,0 @@
-class:
-    Tank:
-       armor:
-            helmet:
-            chestplate:
-            leggings:
-            boots:
-        slots:
-            

@@ -147,7 +147,4 @@ public class SpawnEditor implements EditorType{
 		}
 		Messenger.send(creator, "&aArena '&7" + arenaName + "&a' succesfully saved!");
 	}
-	public static void saveSpawns(){
-		
-	}
 }

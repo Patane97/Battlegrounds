@@ -26,6 +26,10 @@ public class Lobby extends Standby{
 		arena.setMode(new Game(plugin, arena));
 	}
 	public void playerReady(Player player) {
+		if(!arena.hasClass(player)){
+			Messenger.send(player, "&cYou must select a class before being ready!");
+			return;
+		}
 		arena.putPlayer(player, true);
 		Messenger.arenaCast(arena, player.getDisplayName() + " &ais ready!");
 		if(checkStartGame())

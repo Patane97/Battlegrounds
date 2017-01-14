@@ -87,9 +87,8 @@ public class Editor extends Standby{
 		Arena newArena = new Arena(plugin, arenaName, world, selectedRegion);
 		this.arena = newArena;
 		arena.setMode(this);
-		ArenaYML.saveRegion(arenaName, world, selectedRegion);
-		
-		newEditorType(new SpawnEditor(plugin, arena, creator, this));
+		if(ArenaYML.saveRegion(arenaName, world, selectedRegion))
+			newEditorType(new SpawnEditor(plugin, arena, creator, this));
 	}
 	public EditorType getEditorType(){
 		return editorType;

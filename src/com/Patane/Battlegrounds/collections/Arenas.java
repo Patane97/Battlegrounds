@@ -61,6 +61,7 @@ public class Arenas {
 	}
 	public static void removePlayer(Player player) {
 		Arena arena = grab(player);
-		arena.removePlayer(player.getDisplayName(), true);
+		if(arena != null)
+			arena.removePlayer(player.getDisplayName(), true);
 	}
 }

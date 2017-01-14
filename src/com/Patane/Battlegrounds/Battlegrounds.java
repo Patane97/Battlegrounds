@@ -28,6 +28,7 @@ public class Battlegrounds extends JavaPlugin {
 	}
 	public void loadFiles(){
 		ArenaYML.load(this);
+		//BGClassYML.load(this);
 		PlayerDataYML.load(this);
 	}
 	public void cleanArenas(){

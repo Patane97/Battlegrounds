@@ -54,6 +54,7 @@ public class CommandHandler implements CommandExecutor{
 		register(listCommand.class);
 		register(removeCommand.class);
 		register(saveCommand.class);
+		register(classCommand.class);
 	}
 	public void register(Class< ? extends BGCommand> command){
 		CommandInfo cmdInfo = command.getAnnotation(CommandInfo.class);
