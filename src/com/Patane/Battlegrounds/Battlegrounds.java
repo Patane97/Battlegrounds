@@ -3,6 +3,7 @@ package com.Patane.Battlegrounds;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Patane.Battlegrounds.arena.ArenaYML;
+import com.Patane.Battlegrounds.arena.classes.BGClassYML;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.CommandHandler;
 import com.Patane.Battlegrounds.listeners.GlobalListeners;
@@ -25,10 +26,11 @@ public class Battlegrounds extends JavaPlugin {
 	}
 	public void onDisable() {
 		Arenas.allSessionsOver();
+		ArenaYML.saveAllArenas();
 	}
 	public void loadFiles(){
+		BGClassYML.load(this);
 		ArenaYML.load(this);
-		//BGClassYML.load(this);
 		PlayerDataYML.load(this);
 	}
 	public void cleanArenas(){

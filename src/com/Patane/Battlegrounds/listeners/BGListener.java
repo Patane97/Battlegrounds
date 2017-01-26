@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 public class BGListener implements Listener{
-	Plugin plugin;
+	protected Plugin plugin;
 	
 	public BGListener(){
 		register();

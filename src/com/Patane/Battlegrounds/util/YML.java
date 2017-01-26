@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
-import com.Patane.Battlegrounds.Messenger;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.BlockVector2D;
 
@@ -100,7 +99,6 @@ public class YML {
 	}
 	public static HashMap<Integer, ItemStack> playerInventoryContentsFormat(ItemStack[] items){
 		HashMap<Integer, ItemStack> tempItems = new HashMap<Integer, ItemStack>();
-		Messenger.info("SIZE: "+ items.length);
 		for(int i = 0 ; i < items.length ; i++){
 			tempItems.put(i, items[i]);
 		}
@@ -108,11 +106,8 @@ public class YML {
 	}
 	public static ItemStack[] getPlayerInventoryContents(HashMap<Integer, ItemStack> itemsHash){
 		ItemStack[] items = new ItemStack[36];
-		for(int i = 0 ; i < items.length ; i++){
-			items[i] = null;
-			if(itemsHash.containsKey(i))
-				items[i] = itemsHash.get(i);
-		}
+		for(int i = 0 ; i < items.length ; i++)
+			items[i] = (itemsHash.containsKey(i) ? itemsHash.get(i) : null);
 		return items;
 	}
 }

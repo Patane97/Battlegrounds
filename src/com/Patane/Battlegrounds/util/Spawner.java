@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 
-import com.Patane.Battlegrounds.arena.modes.game.Game;
+import com.Patane.Battlegrounds.arena.game.Game;
 
 
 public class Spawner {

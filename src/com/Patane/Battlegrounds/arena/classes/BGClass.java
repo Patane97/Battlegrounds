@@ -4,20 +4,22 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.util.util;
+
+import net.md_5.bungee.api.ChatColor;
+
 public class BGClass {
 	String name;
 	ItemStack icon;
 	Inventory inventory;
 	
 	public BGClass(Plugin plugin, String name, ItemStack icon){
-		this.name = name;
-		this.icon = icon;
+		this.name = ChatColor.stripColor(name);
+		this.icon = util.hideAttributes(icon);
 		inventory = plugin.getServer().createInventory(null, 45, name);
 	}
 	public BGClass(Plugin plugin, String name, ItemStack icon, ItemStack[] items){
-		this.name = name;
-		this.icon = icon;
-		inventory = plugin.getServer().createInventory(null, 45, name);
+		this(plugin, name, icon);
 		inventory.setContents(items);
 	}
 	public String getName(){

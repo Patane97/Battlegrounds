@@ -1,21 +1,17 @@
 package com.Patane.Battlegrounds.arena;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.YML;
@@ -29,49 +25,75 @@ import com.sk89q.worldedit.regions.Polygonal2DRegion;
 public class ArenaYML {
 	static Config arenasConfig;
 	static Plugin plugin;
-	
+	static ConfigurationSection arenaSection;
 	public static void load(Plugin battlegrounds) {
 		plugin			= battlegrounds;
 		arenasConfig 	= new Config(plugin, "arenas.yml");
 		if(!arenasConfig.isConfigurationSection("arenas"))
 			arenasConfig.createSection("arenas");
 		Arenas.addAll(loadAllArenas());
-
 	}
 	
 	public static ArrayList<Arena> loadAllArenas(){
 
 		ArrayList<Arena> arenas = new ArrayList<Arena>();
-		ConfigurationSection arenaHeader = arenasConfig.getConfigurationSection("arenas");
-		for(String arenaName : arenaHeader.getKeys(false)){
+		arenaSection = arenasConfig.getConfigurationSection("arenas");
+		for(String arenaName : arenaSection.getKeys(false)){
 			Arena arena = loadArena(arenaName);
-			if(arena == null){
-				Messenger.warning("Arena '" + arenaName + "' not recognised in arenas.yml!");
-			}
+			if(arena == null)
+				continue;
+			// for some reason this works WITHOUT this 'add' code. find out why.
+			arenas.add(arena);
 		}
 		return arenas;
 	}
+
+	public static void saveAllArenas() {
+		for(Arena selectedArena : Arenas.get())
+			save(selectedArena);
+	}
 	public static void save(Arena arena) {
 		String arenaName = arena.getName();
+		clear(arenaName);
+		saveWorld(arenaName, arena.getWorld());
+		try{saveRegion(arenaName, arena.getGround(), "Ground");} catch(Exception e){}
+		try{saveRegion(arenaName, arena.getLobby(), "Lobby");} catch(Exception e){}
 		saveAllSpawns(arenaName);
-		saveRegion(arenaName, arena.getWorld(), arena.getRegion());
+		saveClasses(arenaName);
 	}
-	public static Arena loadArena (String arenaName){
+	public static void clear(String arenaName) {
+		if(arenasConfig.isConfigurationSection("arenas." + arenaName))
+			arenasConfig.set("arenas." + arenaName, null);
+	}
 
+	public static Arena loadArena (String arenaName){
+		try{
 		ConfigurationSection arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName);
 		// getting the world
-		World world = Bukkit.getWorld(arenaSection.getString("world"));
+		World world;
+		try{ 
+			world= Bukkit.getWorld(arenaSection.getString("world"));
+		} catch (IllegalArgumentException e){
+			Messenger.warning("Arena " + arenaName + " is missing world in arenas.yml");
+			return null;
+		}
 		// getting the region
-		AbstractRegion region = grabRegion(world, arenaName);
+		AbstractRegion ground = grabRegion(world, arenaName, "Ground");
+		AbstractRegion lobby = grabRegion(world, arenaName, "Lobby");
 		ArrayList<Location> gameSpawns = grabSpawns(arenaName, "Game");
 		ArrayList<Location> lobbySpawns = grabSpawns(arenaName, "Lobby");
 		ArrayList<Location> creatureSpawns = grabSpawns(arenaName, "Creature");
 		ArrayList<Location> spectatorSpawns = grabSpawns(arenaName, "Spectator");
-		ArrayList<BGClass> classes = loadClasses(arenaName);
+		ArrayList<String> classes = loadClasses(arenaName);
 		
-		Arena loadedArena = new Arena(plugin, arenaName, world, region, gameSpawns, lobbySpawns, creatureSpawns, spectatorSpawns, classes);
+		Arena loadedArena = new Arena(plugin, arenaName, world, ground, lobby, gameSpawns, lobbySpawns, creatureSpawns, spectatorSpawns, classes);
 		Messenger.info("Arena '" + arenaName +"' successfully loaded!");
 		return loadedArena;
+		} catch (Exception e){
+			Messenger.warning("Arena " + arenaName +" failed to load.");
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static Config get(){
@@ -84,13 +106,19 @@ public class ArenaYML {
 		arenasConfig.getConfigurationSection("arenas").set(arena.getName(), null);
 		arenasConfig.save();
 	}
-
-	public static boolean saveRegion(String arenaName, World world, AbstractRegion selectedRegion) {
+	public static boolean saveWorld(String arenaName, World world){
+		arenaSection = arenasConfig.createSection("arenas." + arenaName);
+		arenaSection.set("world", world.getName());
+		return true;
+	}
+	public static boolean saveRegion(String arenaName, AbstractRegion selectedRegion, String type) {
 		try{
-			ConfigurationSection arenaSection = arenasConfig.createSection("arenas." + arenaName);
+			if(type == null || !Chat.hasAlpha(type))
+				return false;
+			arenaSection = arenasConfig.createSection("arenas." + arenaName + "." + type);
 			arenaSection.set("Poly", null);
 			arenaSection.set("Cuboid", null);
-			arenaSection.set("world", world.getName());
+//			arenaSection.set("world", world.getName());
 			if(selectedRegion instanceof Polygonal2DRegion){
 				Polygonal2DRegion region = (Polygonal2DRegion) selectedRegion;
 				arenaSection.set("Poly.minY", region.getMinimumY());
@@ -116,16 +144,19 @@ public class ArenaYML {
 		}
 	}
 	@SuppressWarnings("deprecation")
-	public static AbstractRegion grabRegion(World world, String arenaName){
+	public static AbstractRegion grabRegion(World world, String arenaName, String type){
 
 			AbstractRegion region = null;
-			ConfigurationSection arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName);
+			String path = "arenas." + arenaName + "." + type;
+			arenaSection = (arenasConfig.isConfigurationSection(path) 
+					? arenasConfig.getConfigurationSection(path)
+					: arenasConfig.createSection(path));
 			///////////////////////////////////////////// Polygonal /////////////////////////////////////////////
 			if(arenaSection.contains("Poly")){
-				arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName + ".Poly");
+				arenaSection = arenasConfig.getConfigurationSection(path + ".Poly");
 				int minY = arenaSection.getInt("minY");
 				int maxY = arenaSection.getInt("maxY");
-				arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName + ".Poly.Vectors");
+				arenaSection = arenasConfig.getConfigurationSection(path + ".Poly.Vectors");
 				List<BlockVector2D> blockVectors = new ArrayList<BlockVector2D>();
 				for(String blockVectorNumber : arenaSection.getKeys(false)){
 					String blockVectorString = arenaSection.getString(blockVectorNumber);
@@ -135,13 +166,13 @@ public class ArenaYML {
 				region = new Polygonal2DRegion(BukkitUtil.getLocalWorld(world), blockVectors, minY, maxY);
 			///////////////////////////////////////////// CUBOID /////////////////////////////////////////////
 			} else if (arenaSection.contains("Cuboid")){
-				arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName + ".Cuboid");
+				arenaSection = arenasConfig.getConfigurationSection(path + ".Cuboid");
 				BlockVector min = YML.getBlockVector(arenaSection.getString("min"));
 				BlockVector max = YML.getBlockVector(arenaSection.getString("max"));
 				region = new CuboidRegion (BukkitUtil.getLocalWorld(world), min, max);
 			}
 			if(region == null)
-				Messenger.warning("Failed to grab region for arena '" + arenaName + "' in arenas.yml!");
+				Messenger.warning("Failed to grab " + type + " region for arena " + arenaName + " in arenas.yml!");
 			return region;
 
 			//Messenger.severe("Failed to build AbstractRegion from YML in arena '" + arenaName + "'.");
@@ -153,7 +184,7 @@ public class ArenaYML {
 			// deleting the section
 			arenasConfig.set(path, null);
 			// creating the section
-			ConfigurationSection arenaSection = arenasConfig.createSection(path);
+			arenaSection = arenasConfig.createSection(path);
 			int number = 1;
 			for(Location spawnLocation : spawns){
 				arenaSection.set(Integer.toString(number), YML.spawnLocationFormat(spawnLocation, true));
@@ -177,7 +208,7 @@ public class ArenaYML {
 		try{
 			ArrayList<Location> spawns = new ArrayList<Location>();
 			String path = "arenas." + arenaName;
-			ConfigurationSection arenaSection = arenasConfig.getConfigurationSection(path);
+			arenaSection = arenasConfig.getConfigurationSection(path);
 			World world = Bukkit.getWorld(arenaSection.getString("world"));
 			path = "arenas." + arenaName + ".Spawns";
 			arenaSection = arenasConfig.getConfigurationSection(path);
@@ -210,80 +241,17 @@ public class ArenaYML {
 		for(Arena arena : Arenas.get())
 			save(arena);
 	}
-
+	public static ArrayList<String> loadClasses(String arenaName){
+		arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> temp = (ArrayList<String>) arenaSection.getList("Classes", new ArrayList<String>());
+		return temp;
+	}
 	public static void saveClasses(String arenaName){
+		arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName);
 		Arena arena = Arenas.grab(arenaName);
-		if(arena == null)
-			return;
-		
-		ConfigurationSection arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName);
-		arenaSection.set("classes", null);
-		arenaSection = arenasConfig.createSection("arenas." + arenaName + ".classes");
-		for(BGClass selectedClass : arena.getClasses()){
-			ItemStack[] inv 		= selectedClass.getInventory().getContents();
-			ItemStack[] armor 		= new ItemStack[4];
-			armor 					= Arrays.copyOfRange(inv, 0, 4);
-			ItemStack offHand 		= inv[4];
-//			ItemStack[] armor 		= {inv[0], inv[1], inv[2], inv[3]};
-			ItemStack[] contents 	= new ItemStack[36];
-			contents 				= Arrays.copyOfRange(inv, 9, inv.length);
-			
-			arenaSection.set(selectedClass.getName() + ".Icon", selectedClass.getIcon());
-			arenaSection.set(selectedClass.getName() + ".Armor", armor);
-			arenaSection.set(selectedClass.getName() + ".OffHand", offHand);
-			Messenger.info("INV SIZE: "+inv.length);
-			Messenger.info("ARMOR SIZE: "+armor.length);
-			Messenger.info("CONTENTS SIZE: "+contents.length);
-			for(Entry<Integer, ItemStack> entry : YML.playerInventoryContentsFormat(contents).entrySet())
-				arenaSection.set(selectedClass.getName() + ".Contents." + entry.getKey(), entry.getValue());
-		}
+		arenaSection.set("Classes", arena.getClasses());
 		arenasConfig.save();
-	}
-	public static ArrayList<BGClass> loadClasses(String arenaName){
-		ArrayList<BGClass> classes = new ArrayList<BGClass>();
-		ConfigurationSection arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName + ".classes");
-		if(arenaSection == null)
-			return null;
-		String path;
-		for(String selectedClass : arenaSection.getKeys(false)){
-			path = "arenas." + arenaName + ".classes." + selectedClass;
-			arenaSection = arenasConfig.getConfigurationSection(path);
-			ItemStack icon = arenaSection.getItemStack("Icon");
-
-			@SuppressWarnings("unchecked")
-			List<ItemStack> itemList = (List<ItemStack>) arenaSection.get("Armor");
-			ItemStack[] armor = (ItemStack[]) itemList.toArray(new ItemStack[0]);
-			
-			ItemStack offHand = arenaSection.getItemStack("OffHand");
-			
-			ItemStack[] effects = new ItemStack[4];
-			
-			arenaSection = arenasConfig.getConfigurationSection(path + ".Contents");
-			arenaSection = (arenaSection == null ? arenasConfig.createSection(path + ".Contents") : arenaSection);
-			HashMap<Integer, ItemStack> printedItems = new HashMap<Integer, ItemStack>();
-			for(String slotNo : arenaSection.getKeys(false))
-				printedItems.put(Integer.parseInt(slotNo), arenaSection.getItemStack(slotNo));
-			ItemStack[] contents 	= YML.getPlayerInventoryContents(printedItems);
-			
-			ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-			items.addAll(Arrays.asList(armor));
-			items.add(offHand);
-			items.addAll(Arrays.asList(effects));
-			items.addAll(Arrays.asList(contents));
-			
-			ItemStack[] classInventory = items.toArray(new ItemStack[0]);
-			
-			BGClass newClass = new BGClass(plugin, selectedClass, icon, classInventory);
-			classes.add(newClass);
-			Messenger.info("Loaded Class: " + newClass.getName());
-		}
-		return classes;
-	}
-	public static void removeClass(String arenaName, String className){
-		ConfigurationSection arenaSection = arenasConfig.getConfigurationSection("arenas." + arenaName + ".classes");
-		if(arenaSection == null || arenaSection.get(className) == null)
-			return;
-		arenaSection.set(className, null);
 	}
 	
 }

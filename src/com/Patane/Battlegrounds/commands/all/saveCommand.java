@@ -5,7 +5,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.modes.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;

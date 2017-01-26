@@ -20,6 +20,11 @@ public class Inventories {
 	public static void save(String playerName){
 		save(Bukkit.getPlayerExact(playerName));
 	}
+	public static boolean isSaved(Player player){
+		if(savedInventories.containsKey(player.getName()))
+			return true;
+		return false;
+	}
 	public static boolean restore (Player player){
 		Inventory playerInventory = player.getInventory();
 		String playerName = player.getDisplayName();
@@ -36,7 +41,7 @@ public class Inventories {
 			playerInventory.setContents(savedInventories.remove(playerName));
 			PlayerDataYML.deletePlayer(playerName, "inventory");
 		} catch (Exception e){
-			Messenger.warning("Failed to set " + playerName + "'s inventory.");
+			Messenger.warning("Failed to restore " + playerName + "'s inventory.");
 			e.printStackTrace();
 			return false;
 		}

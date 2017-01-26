@@ -3,22 +3,25 @@ package com.Patane.Battlegrounds.arena;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.modes.ArenaMode;
-import com.Patane.Battlegrounds.arena.modes.Standby;
+import com.Patane.Battlegrounds.arena.standby.ArenaMode;
+import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
+import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
@@ -28,13 +31,15 @@ public class Arena {
 	
 	protected String name;
 	protected World world;	
-	protected AbstractRegion region;
+	protected AbstractRegion ground;
+	protected AbstractRegion lobby;
+	
 	protected ArrayList<Location> gameSpawns;
 	protected ArrayList<Location> creatureSpawns;
 	protected ArrayList<Location> lobbySpawns;
 	protected ArrayList<Location> spectatorSpawns;
 	
-	protected ArrayList<BGClass> classes;
+	protected ArrayList<String> classes;
 	
 	// <PlayerName, ClassName>
 	public HashMap<String, String> playerClasses = new HashMap<String, String>();
@@ -47,34 +52,34 @@ public class Arena {
 	public HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	
 	
-	public Arena(){
-		
-	}
+	public Arena(){}
 	/**
 	 * Mostly used for creating new arenas in-game (before spawns have been saved)
 	 */
 	public Arena(Plugin plugin, String name, World world, AbstractRegion region){
-		this(plugin, name, world, region, null, null, null, null, null);
+		this(plugin, name, world, region, null, null, null, null, null, null);
 	}
 	/**
 	 * Mostly used with loading arenas from arenas.yml
 	 */
-	public Arena(Plugin plugin, String name, World world, AbstractRegion region, 
-			ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, 
+	public Arena(Plugin plugin, String name, World world, AbstractRegion ground, 
+			AbstractRegion lobby, ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, 
 			ArrayList<Location> creatureSpawns, ArrayList<Location> spectatorSpawns,
-			ArrayList<BGClass> classes){
+			ArrayList<String> classes){
 		if(Arenas.contains(name)){
 			throw new NullPointerException("Tried to create an arena that already exists! (" + name + ")");
 		}
 		this.plugin 			= plugin;
 		this.name 				= name;
 		this.world 				= world;
-		this.region 			= region;
+		this.ground 			= ground;
+		this.lobby 				= lobby;
 		this.gameSpawns 		= (gameSpawns 		== null ? new ArrayList<Location>() : gameSpawns);
 		this.lobbySpawns 		= (lobbySpawns 		== null ? new ArrayList<Location>() : lobbySpawns);
 		this.creatureSpawns		= (creatureSpawns 	== null ? new ArrayList<Location>() : creatureSpawns);
 		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>() : spectatorSpawns);
-		this.classes 			= (classes 			== null ? new ArrayList<BGClass>() : classes);
+		this.classes 			= (classes 			== null ? new ArrayList<String>() : classes);
+		syncClasses();
 		this.mode 				= new Standby(plugin, this);
 		Arenas.add(this);
 	}
@@ -85,11 +90,17 @@ public class Arena {
 	public World getWorld(){
 		return world;
 	}
-	public AbstractRegion getRegion(){
-		return region;
+	public AbstractRegion getGround(){
+		return ground;
 	}
-	public ArrayList<BGClass> getClasses() {
-		return classes;
+	public AbstractRegion getLobby(){
+		return lobby;
+	}
+	public void setGround(AbstractRegion region){
+		this.ground = region;
+	}
+	public void setLobby(AbstractRegion region){
+		this.lobby = region;
 	}
 	public ArenaMode getMode() {
 		return mode;
@@ -185,6 +196,31 @@ public class Arena {
 		return allSpawns;
 	}
 	/**
+	 * True if the arena is not missing any regions or spawns.
+	 * 
+	 */
+	public boolean isActive(){
+		if(!hasGround())
+			return false;
+		if(!hasLobby())
+			return false;
+		if(hasEmptySpawns())
+			return false;
+		if(classes.isEmpty())
+			return false;
+		return true;
+	}
+	public boolean hasGround(){
+		if(ground != null)
+			return true;
+		return false;
+	}
+	public boolean hasLobby(){
+		if(lobby != null)
+			return true;
+		return false;
+	}
+	/**
 	 * 
 	 * @return true if there are any empty spawn lists
 	 */
@@ -211,13 +247,27 @@ public class Arena {
 		
 		return emptySpawns;
 	}
-	
 	/**
-	 * @return true if the given location is within the arena
+	 * 
+	 * @return 0: Outside both battleground and lobby | 1: Inside battleground | 2: Inside lobby
 	 */
-	public boolean isWithin(Location location){
-		Vector vector = new Vector(location.getX()-0.5, location.getY()-0.5, location.getZ()-0.5);
-		return region.contains(vector);
+	public int isWithin(Block block){
+		Location location = block.getLocation();
+		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+		if(ground != null && ground.contains(vector))
+			return 1;
+		if(lobby != null && lobby.contains(vector))
+			return 2;
+		return 0;
+	}
+	public int isWithin(Entity entity){
+		Location location = entity.getLocation();
+		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+		if(ground != null && ground.contains(vector))
+			return 1;
+		if(lobby != null && lobby.contains(vector))
+			return 2;
+		return 0;
 	}
 	/**
 	 * 
@@ -257,23 +307,6 @@ public class Arena {
 				particleLocation.getWorld().spawnParticle(Particle.CLOUD, particleLocation, 10, 0, 0, 0, 0.05);
 		}
 	}
-	public BGClass newClass(ItemStack classIcon, String className) {
-		BGClass newClass = new BGClass(plugin, className, classIcon);
-		classes.add(newClass);
-		return newClass;
-	}
-	public BGClass newClass(ItemStack classIcon, String className, ItemStack[] items) {
-		BGClass newClass = new BGClass(plugin, className, classIcon, items);
-		classes.add(newClass);
-		return newClass;
-	}
-	public BGClass getClass(String className) {
-		for(BGClass selectedClass : classes){
-			if(ChatColor.stripColor(selectedClass.getName()).equalsIgnoreCase(className))
-				return selectedClass;
-		}
-		return null;
-	}
 	public void equipClass(Player player, BGClass bgClass) {
 		ItemStack[] inv 		= bgClass.getInventory().getContents();
 		int invLength = inv.length;
@@ -298,17 +331,42 @@ public class Arena {
 		for(int i = 0 ; i < hotbar.length ; i++){
 			player.getInventory().setItem(i, hotbar[i]);
 		}
-		
-		playerClasses.put(player.getDisplayName(), bgClass.getName());
+		if(playerClasses.put(player.getDisplayName(), bgClass.getName()) != bgClass.getName())
+			Messenger.send(player, "&aYou have chosen the &7" + playerClasses.get(player.getDisplayName()) + "&a class.");
 		
 	}
-	public boolean hasClass(Player player) {
+	public ArrayList<String> getClasses() {
+		return classes;
+	}
+	public void addClass(BGClass newClass) {
+		classes.add(newClass.getName());
+		if(!Classes.contains(newClass.getName()))
+			Classes.add(newClass, true);
+	}
+	public boolean hasClass(String className) {
+		for(String selectedClass : classes){
+			if(selectedClass.equalsIgnoreCase(className))
+				return true;
+		}
+		return false;
+	}
+	public boolean playerHasClass(Player player) {
 		if(playerClasses.get(player.getDisplayName()) != null)
 			return true;
 		return false;
 	}
-	public void removeClass(BGClass bgClass) {
-		classes.remove(bgClass);
-		ArenaYML.removeClass(name, bgClass.getName());
+	public void removeClass(String className) {
+		if(classes.remove(className))
+			ArenaYML.saveClasses(name);
+	}
+	private void syncClasses() {
+		List<String> temp = new ArrayList<String>();
+		temp.addAll(classes);
+		for(String className : temp){
+			if(!Classes.contains(className)){
+				Messenger.warning("Class " + className + " does not match CLASSES list");
+				classes.remove(className);
+			}
+		} //ArenaYML.saveClasses(name);
 	}
 }

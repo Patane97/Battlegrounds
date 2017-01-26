@@ -21,7 +21,8 @@ public class GUI {
 	
 	boolean resettingInv;
 	
-	public GUI(Plugin plugin, String name, Player player){		
+	public GUI(Plugin plugin, String name, Player player){	
+		name = GUIenum.translate(name);
 		this.plugin 		= plugin;
 		this.player 		= player;
 		this.gui 			= plugin.getServer().createInventory(null, 54, name);
@@ -58,6 +59,7 @@ public class GUI {
 	protected void switchPage(Page page) {
 		currentPage.clean();
 		currentPage = page;
+		currentPage.update();
 		gui = currentPage.inventory();
 		update();
 	}

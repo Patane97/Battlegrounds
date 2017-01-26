@@ -5,10 +5,12 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.modes.editor.Editor;
-import com.Patane.Battlegrounds.arena.modes.editor.classes.ClassEditor;
-import com.Patane.Battlegrounds.arena.modes.editor.types.BuildEditor;
-import com.Patane.Battlegrounds.arena.modes.editor.types.SpawnEditor;
+import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.build.BuildEditor;
+import com.Patane.Battlegrounds.arena.editor.classes.ClassEditor;
+import com.Patane.Battlegrounds.arena.editor.region.GroundEditor;
+import com.Patane.Battlegrounds.arena.editor.region.LobbyEditor;
+import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
@@ -51,6 +53,10 @@ public class editCommand implements BGCommand{
 			editor.newEditorType(new BuildEditor(plugin, arena, sender, editor));
 		} else if (editType.toLowerCase().contains("class")){
 			editor.newEditorType(new ClassEditor(plugin, arena, sender, editor));
+		} else if (editType.toLowerCase().contains("ground")){
+			editor.newEditorType(new GroundEditor(plugin, arena, sender, editor));
+		} else if (editType.toLowerCase().contains("lobby")){
+			editor.newEditorType(new LobbyEditor(plugin, arena, sender, editor));
 		} else{
 			Messenger.send(sender, "&cPlease type a valid editor type (eg. /bg edit [arena] build)");
 			return false;

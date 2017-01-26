@@ -1,23 +1,46 @@
 package com.Patane.Battlegrounds.GUI;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.modes.editor.classes.ClassesGUI;
-
-import net.md_5.bungee.api.ChatColor;
+import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.collections.Classes;
+import com.Patane.Battlegrounds.util.util;
 
 public class ClassMainPage extends MainPage{
 	
 	ClassesGUI classesGui;
+	ItemStack allClassesIcon;
+	int allClassesSlot;
 	
 	public ClassMainPage(ClassesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		classesGui = gui;
+		links.put(menuBar[allClassesSlot], new AllClassesPage(classesGui, "&6&lOther classes", 45, this));
 	}
+	protected void createBackIcon() {
+		backIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+		ItemMeta backMeta= backIcon.getItemMeta();
+		backMeta.setDisplayName(GUIenum.SAVE_EXIT.toString());
+		backIcon.setItemMeta(backMeta);
+	}
+	@Override
+	public void buildMenuBar(){
+		super.buildMenuBar();
+		allClassesIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
+		ItemMeta allClassesMeta= allClassesIcon.getItemMeta();
+		allClassesMeta.setDisplayName(GUIenum.translate("&6&lOther Classes"));
+		allClassesIcon.setItemMeta(allClassesMeta);
+		this.allClassesSlot = 8;
+		menuBar[allClassesSlot] = allClassesIcon;
+	}
+	// ADDING A CLASS TO THE ARENA + ALL CLASSES LIST
 	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
@@ -26,26 +49,39 @@ public class ClassMainPage extends MainPage{
 				return true;
 			}
 			String itemName = item.getItemMeta().getDisplayName();
-			BGClass newClass = classesGui.getArena().newClass(item,  itemName);
+			if(classesGui.getArena().hasClass(itemName)){
+				Messenger.send(classesGui.getPlayer(), "&cThis class already exists within this arena.");
+				return true;
+			} else if(Classes.contains(itemName)){
+				Messenger.send(classesGui.getPlayer(), "&cThis class already exists. Add it from the &6All Classes &cmenu.");
+				return true;
+			}
+			BGClass newClass = Classes.add(new BGClass(classesGui.getPlugin(), itemName, item), true);
+			classesGui.getArena().addClass(newClass);
 			ClassPage classPage = new ClassPage(classesGui, classesGui.getMainPage(), newClass);
-			return !addLink(newClass.getIcon(), classPage);
+			if(addLink(newClass.getIcon(), classPage)){
+				Messenger.send(classesGui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(itemName) + "&a to &7" + classesGui.getArena().getName() + "&a.");
+				return false;
+			}
 		}
 		return false;
 	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
+			if(slot == allClassesSlot){
+				classesGui.switchPage(links.get(item));
+				return true;
+				}
+			if(slot == 0){
+				classesGui.getPlayer().closeInventory();
+				classesGui.exit();
+				return true;
+				}
 			if(super.pickupItem(topInv, click, item, slot))
 				return true;
-			String name = (item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
-			for(ItemStack selectedIcon : links.keySet()){
-				if(selectedIcon.hasItemMeta()
-						&& selectedIcon.getType() == item.getType()
-						&& selectedIcon.getItemMeta().getDisplayName().equals(name)){
-					classesGui.switchPage(links.get(selectedIcon));
-					break;
-				}
-			}
+			if(isLink(item))
+				classesGui.switchPage(links.get(item));
 			return true;
 		}
 		return false;
@@ -57,15 +93,45 @@ public class ClassMainPage extends MainPage{
 	@Override
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
 		if(topInv){
-			//inventory.setItem(slot, null);
+			inventory.setItem(slot, null);
 			if(links.containsKey(item) && links.get(item) instanceof ClassPage){
-				BGClass removingClass = ((ClassPage) links.get(item)).getBGClass();
-				classesGui.getArena().removeClass(removingClass);
-				Messenger.send(classesGui.getPlayer(), "&aClass '&7" + removingClass.getName() + "'&a successfully removed!");
-				return false;
+				BGClass removingClass = ((ClassPage) links.get(item)).getLinkedClass();
+				classesGui.getArena().removeClass(removingClass.getName());
+				links.remove(item);
+				update();
+				allClassesAddAnimation(item);
+				Messenger.send(classesGui.getPlayer(), "&cMoved &7" + ChatColor.stripColor(removingClass.getName()) + "&c to &7Other classes&c.");
+				return true;
 			}
 		}
 		return placeItem(true, click, item, slot);
+	}
+	public void allClassesAddAnimation(ItemStack item){
+		// changes allClassesSlot to moved item
+		inventory.setItem(allClassesSlot, item);
+		// changes back to original Icon after 0.5 seconds
+		classesGui.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(classesGui.getPlugin(), new Runnable() {
+			public void run() {
+				inventory.setItem(allClassesSlot, allClassesIcon);
+			}
+		}, 10);
+	}
+	@Override
+	public boolean addLink(ItemStack icon, Page linkPage){
+		return super.addLink(util.hideAttributes(icon), linkPage);
+	}
+	@Override
+	public void update() {
+		for(int i = 9 ; i < inventory.getContents().length-1 ; i++){
+			if(inventory.getItem(i) != null && inventory.getItem(i).getType() != Material.AIR)
+				continue;
+			else if(inventory.getItem(i+1) != null && inventory.getItem(i+1).getType() != Material.AIR){
+				inventory.setItem(i, inventory.getItem(i+1));
+				inventory.setItem(i+1, null);
+				continue;
+			}
+			break;
+		}
 	}
 	@Override
 	public void clean() {

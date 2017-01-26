@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.ArenaYML;
-import com.Patane.Battlegrounds.arena.modes.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
@@ -26,6 +26,10 @@ public class removeCommand implements BGCommand{
 			return false;
 		}
 		Arena arena = Arenas.grab(args[1]);
+		if(arena == null){
+			Messenger.send(sender, "&cArena &7" + args[1] + "&c does not exist.");
+			return false;
+		}
 		if(arena.getMode() instanceof Editor){
 			Messenger.send(sender, "&cArena '" + arena.getName() + "' is in edit mode and cannot be removed");
 			return false;
@@ -34,11 +38,7 @@ public class removeCommand implements BGCommand{
 			Messenger.arenaCast(arena, "&cYou have been kicked because this arena is being removed.");
 			arena.getMode().sessionOver();
 			ArenaYML.remove(arena);
-			Messenger.send(sender, "&aArena '" + arena.getName() + "' removed!");
-		}
-		else{
-			Messenger.send(sender, "&cThere is no arena with that name");
-			return false;
+			Messenger.send(sender, "&aRemoved Arena &7" + arena.getName() + "&a.");
 		}
 		return true;
 	}

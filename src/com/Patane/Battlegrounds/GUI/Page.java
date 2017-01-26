@@ -1,5 +1,6 @@
 package com.Patane.Battlegrounds.GUI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -9,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 
 public class Page {
@@ -21,7 +21,7 @@ public class Page {
 	ItemStack barIcon;
 	
 	HashMap<ItemStack, Page> links;
-	
+	ItemStack[] menuBar;
 	int menuSize;
 	
 	GUI gui;
@@ -30,6 +30,7 @@ public class Page {
 		this(gui, name, invSize, null);
 	}
 	public Page (GUI gui, String name, int invSize, Page back){
+		name = GUIenum.translate(name);
 		this.title 		= name;
 		this.gui 		= gui;
 		this.menuSize	= 9;
@@ -38,6 +39,8 @@ public class Page {
 		this.links = new HashMap<ItemStack, Page>();
 		createBackIcon();
 		createBarIcon();
+		menuBar = new ItemStack[9];
+		buildMenuBar();
 		printMenuBar();
 	}
 	public Inventory inventory(){
@@ -55,48 +58,33 @@ public class Page {
 	public void setGUI(GUI gui){
 		this.gui = gui;
 	}
-//	public boolean topItemPlaced(ItemStack item, int slot) {
-//		return false;
-//	}
-//	public boolean topItemClicked(ItemStack item, int slot) {
-//		String name = (item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
-//		if(isMenu(slot)){
-//			if(item.getType() == backIcon.getType() && ChatColor.stripColor(name).equalsIgnoreCase("back"))
-//				gui.switchPage(back);
-//			return true;
-//		}
-//		return false;
-//	}
-//	public boolean botItemPlaced(ItemStack item, int slot) {
-//		return false;
-//	}
-//	public boolean botItemClicked(ItemStack item, int slot) {
-//		return false;
-//	}
-//	public boolean botItemMoved(ItemStack item, int slot) {
-//		return false;
-//	}
-	public void printMenuBar() {
-		int slot = 0;
-		for(slot = 0 ; slot < menuSize ; slot++)
-			switch(slot){
-			case 0:
-				inventory.setItem(slot, backIcon);
-				break;
-			default:
-				inventory.setItem(slot, barIcon);
-			}
+	public ArrayList<Page> getLinks() {
+		ArrayList<Page> tempLinks = new ArrayList<Page>();
+		tempLinks.addAll(links.values());
+		return tempLinks;
 	}
-	private void createBackIcon() {
-		backIcon = new ItemStack(Material.LADDER);
+	public void buildMenuBar() {
+		menuBar[0] = backIcon;
+		for(int i = 1 ; i < menuBar.length ; i++)
+			menuBar[i] = barIcon;
+	}
+	public void printMenuBar() {
+		int i = 0;
+		for(ItemStack menuItem : menuBar){
+			inventory.setItem(i, menuItem);
+			i++;
+		}
+	}
+	protected void createBackIcon() {
+		backIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 0);
 		ItemMeta backMeta= backIcon.getItemMeta();
-		backMeta.setDisplayName(Chat.GUI_BACK.toString());
+		backMeta.setDisplayName(GUIenum.BACK.toString());
 		backIcon.setItemMeta(backMeta);
 	}
-	private void createBarIcon() {
+	protected void createBarIcon() {
 		barIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
 		ItemMeta barMeta= backIcon.getItemMeta();
-		barMeta.setDisplayName(Chat.GUI_BAR.toString());
+		barMeta.setDisplayName(GUIenum.BAR.toString());
 		barIcon.setItemMeta(barMeta);
 	}
 	public boolean addLink(int slot, ItemStack icon, Page linkPage){
@@ -136,9 +124,11 @@ public class Page {
 		return false;
 	}
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot) {
-		String name = (item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
+		String name = (item.hasItemMeta() 
+				? ChatColor.stripColor(item.getItemMeta().getDisplayName()) 
+				: "");
 		if(isMenu(slot)){
-			if(item.getType() == backIcon.getType() && ChatColor.stripColor(name).equalsIgnoreCase("back"))
+			if(item.getType() == backIcon.getType() && name.equalsIgnoreCase("back"))
 				gui.switchPage(back);
 			return true;
 		}
@@ -148,6 +138,13 @@ public class Page {
 		return false;
 	}
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
+		return false;
+	}
+	public void update() {
+	}
+	public boolean isLink(ItemStack item){
+		if(links.keySet().contains(item))
+			return true;
 		return false;
 	}
 }

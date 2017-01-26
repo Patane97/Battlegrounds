@@ -6,8 +6,9 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.modes.lobby.Lobby;
+import com.Patane.Battlegrounds.arena.lobby.Lobby;
 import com.Patane.Battlegrounds.collections.Arenas;
+import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
 @CommandInfo(
@@ -30,9 +31,13 @@ public class classCommand implements BGCommand{
 			Messenger.send(sender, "&cPlease specify which class you would like to change to");
 			return false;
 		}
-		BGClass bgClass = arena.getClass(className);
+		BGClass bgClass = Classes.grab(className);
 		if(bgClass == null){
-			Messenger.send(sender, "&cThere is no class of that name");
+			Messenger.send(sender, "&cThere is no existing class with that name");
+			return false;
+		}
+		if(!arena.hasClass(className)){
+			Messenger.send(sender, "&cThere is no class of that name for this arena");
 			return false;
 		}
 		arena.equipClass(sender, bgClass);
