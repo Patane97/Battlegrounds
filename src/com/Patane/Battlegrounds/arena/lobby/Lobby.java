@@ -11,11 +11,10 @@ import com.Patane.Battlegrounds.arena.standby.Standby;
 public class Lobby extends Standby{
 	
 	public Lobby(Plugin plugin, Arena arena){
-		super(plugin, arena);
+		super(plugin, arena, null);
 		
-		this.listener = new LobbyListeners(plugin, this.getArena(), this);
-		
-		this.defaultLocations = arena.getLobbySpawns();
+		this.listener			= new LobbyListeners(plugin, arena, this);
+		this.defaultLocations 	= arena.getLobbySpawns();
 	}
 	public boolean checkStartGame(){
 		if(!arena.anyPlayers(false))

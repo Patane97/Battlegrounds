@@ -13,10 +13,10 @@ public class Game extends Standby{
 	RoundHandler roundHandler;
 	
 	public Game (Plugin plugin, Arena arena) {
-		super(plugin, arena);
-		
+		super(plugin, arena, null);
+
+		this.listener		= new GameListeners(plugin, arena, this);
 		this.roundHandler 	= new RoundHandler(plugin, this);
-		this.listener		= new GameListeners(plugin, this.arena, this);
 		
 		this.defaultLocations = arena.getGameSpawns();
 		

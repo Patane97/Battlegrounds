@@ -6,12 +6,9 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
-import com.Patane.Battlegrounds.arena.editor.build.BuildEditor;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassEditor;
-import com.Patane.Battlegrounds.arena.editor.region.GroundEditor;
-import com.Patane.Battlegrounds.arena.editor.region.LobbyEditor;
-import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
+import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.collections.Arenas;
+import com.Patane.Battlegrounds.collections.EditorTypes;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
 
@@ -31,13 +28,13 @@ public class editCommand implements BGCommand{
 			Messenger.send(sender, "&cPlease specify an arena!");
 			return false;
 		}
-		if(editType == null){
-			Messenger.send(sender, "&cPlease specify an editing type (build or spawns)");
-			return false;
-		}
 		Arena arena = Arenas.grab(arenaName);
 		if (arena == null){
-			Messenger.send(sender, "&cThis arena does not exist.");
+			Messenger.send(sender, "&cArena &7" + arenaName + "&c does not exist");
+			return false;
+		}
+		if(editType == null){
+			Messenger.send(sender, "&cPlease specify an editing type");
 			return false;
 		}
 		if(arena.getMode() instanceof Editor){
@@ -45,22 +42,16 @@ public class editCommand implements BGCommand{
 			Messenger.send(sender, editor.getCreator().getDisplayName() + " &cis already editing this arena!");
 			return false;
 		}
-		// NEED TO CHANGE THIS TO REGISTER EACH EDIT TYPE (like commands) AND THEN SEARCH FOR KEYWORDS
-		Editor editor = (Editor) arena.setMode(new Editor(plugin, arena, sender));
-		if(editType.toLowerCase().contains("spawn")){
-			editor.newEditorType(new SpawnEditor(plugin, arena, sender, editor));
-		} else if (editType.toLowerCase().contains("build")){
-			editor.newEditorType(new BuildEditor(plugin, arena, sender, editor));
-		} else if (editType.toLowerCase().contains("class")){
-			editor.newEditorType(new ClassEditor(plugin, arena, sender, editor));
-		} else if (editType.toLowerCase().contains("ground")){
-			editor.newEditorType(new GroundEditor(plugin, arena, sender, editor));
-		} else if (editType.toLowerCase().contains("lobby")){
-			editor.newEditorType(new LobbyEditor(plugin, arena, sender, editor));
-		} else{
+		Class<? extends EditorType> editorClass = EditorTypes.getEditorType(editType);
+		if(editorClass == null){
 			Messenger.send(sender, "&cPlease type a valid editor type (eg. /bg edit [arena] build)");
 			return false;
 		}
+		Editor editor = (Editor) arena.setMode(new Editor(plugin, arena, sender));
+		try {
+			EditorType editorType= editorClass.getConstructor(Plugin.class, Arena.class, Player.class, Editor.class).newInstance(plugin, arena, sender, editor);
+			editor.newEditorType(editorType);
+		} catch (Exception e) {	e.printStackTrace();}
 		return true;
 	}
 

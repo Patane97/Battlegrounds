@@ -10,4 +10,5 @@ public interface ArenaMode{
 	public void sessionOver();
 	public void sessionOver(ArenaMode newMode);
 	public ArenaListener getListener();
+	public void unregister();
 }

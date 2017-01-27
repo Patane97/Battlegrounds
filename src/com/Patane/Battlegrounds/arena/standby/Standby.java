@@ -23,8 +23,12 @@ public class Standby implements ArenaMode{
 	
 	public Standby(){}
 	public Standby(Plugin plugin, Arena arena){
-		this.plugin	= plugin;
-		this.arena 	= arena;
+		this(plugin, arena, new ArenaListener(plugin, arena));
+	}
+	public Standby(Plugin plugin, Arena arena, ArenaListener listener){
+		this.plugin		= plugin;
+		this.arena 		= arena;
+		this.listener	= listener;
 	}
 	public Arena getArena(){
 		return arena;
@@ -70,9 +74,7 @@ public class Standby implements ArenaMode{
 
 	@Override
 	public void sessionOver(ArenaMode newMode) {
-		try{
-			listener.unregister();
-		} catch (NullPointerException e){}
+		unregister();
 		arena.setMode(newMode);
 	}
 	@Override
@@ -80,14 +82,17 @@ public class Standby implements ArenaMode{
 		for(String selectedPlayer : arena.getPlayers()){
 			arena.removePlayer(selectedPlayer, false);
 		}
-		try{
-			listener.unregister();
-		} catch (NullPointerException e){}
+		unregister();
 		arena.setMode(new Standby(plugin, arena));
 	}
 	@Override
 	public ArenaListener getListener() {
 		return listener;
+	}
+	@Override
+	public void unregister(){
+		if(listener != null)
+			listener.unregister();
 	}
 
 }

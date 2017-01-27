@@ -7,11 +7,15 @@ import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.util.util;
 import com.sk89q.worldedit.regions.AbstractRegion;
 
+@EditorInfo(
+		name = "lobby", permission = ""
+	)
 public class LobbyEditor implements EditorType{
 	Plugin plugin;
 	Arena arena;

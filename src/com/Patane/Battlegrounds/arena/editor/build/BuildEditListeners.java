@@ -9,9 +9,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.material.Sign;
 import org.bukkit.plugin.Plugin;
 
@@ -28,32 +32,67 @@ public class BuildEditListeners extends EditorListeners{
 		super(plugin, arena, editor);
 		this.buildEditor = buildEditor;
 	}
-	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event){
-		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		if(playerName.equals(creatorName)){
-			Block block = event.getBlockPlaced();
-			if(spawnBelow(block.getLocation())){
+	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event){
+		if(arena.isWithin(event.getBlock()) != 0){
+			Block block = event.getBlock();
+			Player player = event.getPlayer();
+			String playerName = player.getDisplayName();
+			if(!playerName.equals(creatorName)){
 				event.setCancelled(true);
-				Messenger.send(player, "&cBlocks cannot be placed above spawn Locations");
 				return;
 			}
-			if(arena.isWithin(block) != 0 && event.isCancelled())
-				event.setCancelled(false);
-		}		
-	}
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event){
-		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		Block block = event.getBlock();
-		if(playerName.equals(creatorName) && 
-				arena.isWithin(block) != 0 && 
-				event.isCancelled()){
-				event.setCancelled(false);
+			if (spawnAt(block.getLocation())){
+				event.setCancelled(true);
+				return;
+			}
+			event.setCancelled(false);
 		}
 	}
+	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPlace(BlockPlaceEvent event){
+		if(arena.isWithin(event.getBlockPlaced()) != 0){
+			Block block = event.getBlockPlaced();
+			Player player = event.getPlayer();
+			String playerName = player.getDisplayName();
+			if(!playerName.equals(creatorName)){
+				event.setCancelled(true);
+				return;
+			}
+			if (spawnAt(block.getLocation())){
+				event.setCancelled(true);
+				Messenger.send(player, "&cYou can not place a block on a spawn location!");
+				return;
+			} else if(spawnBelow(block.getLocation())){
+				event.setCancelled(true);
+				Messenger.send(player, "&cYou can not place a block above a spawn location!");
+				return;
+			}
+			event.setCancelled(false);
+		}		
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onHangingBreak(HangingBreakByEntityEvent event){
+		if(arena.isWithin(event.getEntity()) != 0){
+			event.setCancelled(false);
+		}
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onHangingPlace(HangingPlaceEvent event){
+		if(arena.isWithin(event.getEntity()) != 0){
+			event.setCancelled(false);
+		}
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+    public void onItemFrameHit(EntityDamageEvent event) {
+		if(arena.isWithin(event.getEntity()) != 0){
+			if (event.getEntity() instanceof ItemFrame) {
+				event.setCancelled(false);
+	        }
+		}
+    }
 	@EventHandler
 	public void onSignChange(SignChangeEvent event){
 		Player player = event.getPlayer();
@@ -67,11 +106,9 @@ public class BuildEditListeners extends EditorListeners{
 					Block signBlock = event.getBlock();
 					Sign sign = (Sign) signBlock.getState().getData();
 					signBlock.setType(Material.AIR);
-					Messenger.send(player, "Detected!");
 					className = m.group();
-					className = Classes.convertName(className);
+					className = Classes.partlyContains(className);
 					if(className != null){
-						Messenger.send(player, "Class: " + className);
 						BGClass newClass = Classes.grab(className);
 						ItemFrame newClassFrame = (ItemFrame) arena.getWorld().spawnEntity(signBlock.getLocation(), EntityType.ITEM_FRAME);
 						newClassFrame.setFacingDirection(sign.getFacing());

@@ -19,21 +19,32 @@ public class EditorListeners extends ArenaListener{
 		this.creatorName 	= creator.getDisplayName();
 
 	}
-	public boolean spawnAboveOrBelow(Location location){
+	protected boolean spawnAboveOrBelow(Location location){
 		for(Location spawnLocation : arena.getAllSpawns()){
-			if(location.getBlockX() == spawnLocation.getBlockX() && location.getBlockZ() == spawnLocation.getBlockZ()){
+			if(location.getBlockX() == spawnLocation.getBlockX() 
+					&& location.getBlockZ() == spawnLocation.getBlockZ()){
 				if(location.getBlockY()+1 == spawnLocation.getBlockY() || location.getBlockY()-1 == spawnLocation.getBlockY())
 					return true;
 			}
 		}
 		return false;
 	}
-	public boolean spawnBelow(Location location){
+	protected boolean spawnBelow(Location location){
 		for(Location spawnLocation : arena.getAllSpawns()){
-			if(location.getBlockX() == spawnLocation.getBlockX() && location.getBlockZ() == spawnLocation.getBlockZ()){
+			if(location.getBlockX() == spawnLocation.getBlockX() 
+					&& location.getBlockZ() == spawnLocation.getBlockZ()){
 				if(location.getBlockY()-1 == spawnLocation.getBlockY())
 					return true;
 			}
+		}
+		return false;
+	}
+	protected boolean spawnAt(Location location){
+		for(Location spawnLocation : arena.getAllSpawns()){
+			if(location.getBlockX() == spawnLocation.getBlockX() 
+					&& location.getBlockY() == spawnLocation.getBlockY() 
+					&& location.getBlockZ() == spawnLocation.getBlockZ())
+				return true;
 		}
 		return false;
 	}

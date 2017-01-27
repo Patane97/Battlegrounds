@@ -38,7 +38,7 @@ public class Editor extends Standby{
 	 * @param arena
 	 */
 	public Editor(Plugin plugin, Arena arena, Player creator){
-		super(plugin, arena);
+		super(plugin, arena, null);
 		this.arenaName 	= arena.getName();
 		this.creator 	= creator;
 	}
@@ -66,17 +66,18 @@ public class Editor extends Standby{
 		return editorType;
 	}
 	public void newEditorType(EditorType editorType) {
-		try{
+		if(this.editorType != null)
 			this.editorType.save();
-			this.editorType.getListener().unregister();
-		} catch (NullPointerException e){}
-		this.editorType = editorType;
+		try{ this.listener.unregister(); } catch (NullPointerException e){}
+		this.editorType = editorType; 
 		this.listener	= editorType.getListener();
 		this.editorType.initilize();
 	}
 	@Override
 	public void sessionOver() {
+		try{
 		editorType.save();
-		super.sessionOver(new Standby(plugin, arena));
+		} catch (NullPointerException e) {}
+		super.sessionOver();
 	}
 }

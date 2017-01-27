@@ -8,9 +8,13 @@ import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.classes.BGClassYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 
+@EditorInfo(
+		name = "class", permission = ""
+	)
 public class ClassEditor implements EditorType{
 	Plugin plugin;
 	Arena arena;

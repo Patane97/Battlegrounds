@@ -15,7 +15,7 @@ public class CommandHandler implements CommandExecutor{
 	
 	private Battlegrounds plugin;
 	
-	private HashMap<String,BGCommand> commands;
+	private HashMap<String, BGCommand> commands;
 	
 	public CommandHandler(Battlegrounds battlegrounds) {
 		this.plugin = battlegrounds;
@@ -46,7 +46,7 @@ public class CommandHandler implements CommandExecutor{
 		return null;
 	}
 	private void registerAll() {
-		commands = new HashMap<String,BGCommand>();
+		commands = new HashMap<String, BGCommand>();
 		register(joinCommand.class);
 		register(leaveCommand.class);
 		register(editCommand.class);
@@ -60,7 +60,7 @@ public class CommandHandler implements CommandExecutor{
 	public void register(Class< ? extends BGCommand> command){
 		CommandInfo cmdInfo = command.getAnnotation(CommandInfo.class);
 		if(cmdInfo == null) {
-			Messenger.warning("cmdInfo = null");
+			Messenger.warning("A command is missing its attached CommandInfo Annotation!");
 			return;
 		}
 		try {

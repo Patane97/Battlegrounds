@@ -6,15 +6,21 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 
+@EditorInfo(
+		name = "build", permission = ""
+	)
 public class BuildEditor implements EditorType{
 	Arena arena;
 	String arenaName;
 	Player creator;
 	EditorListeners listener;
-	
+	public BuildEditor(String s){
+		Messenger.info("BUILD CLASS");
+	}
 	public BuildEditor(Plugin plugin, Arena arena, Player creator, Editor editor){
 		this.arena 		= arena;
 		this.arenaName 	= arena.getName();

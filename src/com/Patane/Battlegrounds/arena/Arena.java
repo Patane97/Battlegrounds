@@ -22,9 +22,12 @@ import com.Patane.Battlegrounds.arena.standby.ArenaMode;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
+import com.Patane.Battlegrounds.listeners.ArenaListener;
 import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class Arena {
 	protected Plugin plugin;
@@ -40,6 +43,8 @@ public class Arena {
 	protected ArrayList<Location> spectatorSpawns;
 	
 	protected ArrayList<String> classes;
+	
+	protected ArenaListener arenaListener;
 	
 	// <PlayerName, ClassName>
 	public HashMap<String, String> playerClasses = new HashMap<String, String>();
@@ -106,9 +111,7 @@ public class Arena {
 		return mode;
 	}
 	public ArenaMode setMode(ArenaMode mode) {
-		try{
-			this.mode.getListener().unregister();
-		} catch (NullPointerException e){}
+		this.mode.unregister();
 		this.mode = mode;
 		return this.mode;
 	}
@@ -308,6 +311,8 @@ public class Arena {
 		}
 	}
 	public void equipClass(Player player, BGClass bgClass) {
+		if(bgClass == null || playerClasses.get(player.getDisplayName()) == bgClass.getName())
+			return;
 		ItemStack[] inv 		= bgClass.getInventory().getContents();
 		int invLength = inv.length;
 		ItemStack helmet 		= inv[0];
@@ -331,8 +336,8 @@ public class Arena {
 		for(int i = 0 ; i < hotbar.length ; i++){
 			player.getInventory().setItem(i, hotbar[i]);
 		}
-		if(playerClasses.put(player.getDisplayName(), bgClass.getName()) != bgClass.getName())
-			Messenger.send(player, "&aYou have chosen the &7" + playerClasses.get(player.getDisplayName()) + "&a class.");
+		playerClasses.put(player.getDisplayName(), bgClass.getName());
+		Messenger.send(player, "&aYou have chosen the &7" + bgClass.getName() + "&a class.");
 		
 	}
 	public ArrayList<String> getClasses() {
@@ -345,7 +350,7 @@ public class Arena {
 	}
 	public boolean hasClass(String className) {
 		for(String selectedClass : classes){
-			if(selectedClass.equalsIgnoreCase(className))
+			if(selectedClass.equalsIgnoreCase(ChatColor.stripColor(className)))
 				return true;
 		}
 		return false;

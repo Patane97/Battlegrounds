@@ -8,10 +8,14 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.playerData.Inventories;
 
+@EditorInfo(
+		name = "initilize", permission = ""
+	)
 public class Initialize implements EditorType{
 	Arena arena;
 	String arenaName;

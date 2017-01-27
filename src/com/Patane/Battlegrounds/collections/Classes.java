@@ -13,7 +13,7 @@ public class Classes {
 	private static HashMap<String, BGClass> classes = new HashMap<String, BGClass>();
 
 	public static BGClass add(BGClass bgClass, boolean save){
-		classes.put(ChatColor.stripColor(bgClass.getName()).toUpperCase(), bgClass);
+		classes.put(convert(bgClass.getName()), bgClass);
 		if(save)
 			BGClassYML.saveClass(bgClass);
 		return bgClass;
@@ -28,14 +28,16 @@ public class Classes {
 		}
 	}
 	public static boolean remove(String className){
-		if(classes.remove(className.toUpperCase()) != null){
-			BGClassYML.remove(className.toUpperCase());
+		className = convert(className);
+		if(classes.remove(className) != null){
+			BGClassYML.remove(className);
 			return true;
 		}
 		return false;
 	}
 	public static BGClass grab(String className){
-		return classes.get(className.toUpperCase());
+		className = convert(className);
+		return classes.get(className);
 	}
 	public static ArrayList<BGClass> get(){
 		ArrayList<BGClass> tempClasses = new ArrayList<BGClass>();
@@ -44,13 +46,17 @@ public class Classes {
 		return tempClasses;
 	}
 	public static boolean contains(String className) {
-		return classes.containsKey(className.toUpperCase());
+		return classes.containsKey(convert(className));
 	}
-	public static String convertName(String className) {
+	public static String partlyContains(String className) {
+		className = convert(className);
 		for(String selectedClassName : classes.keySet()){
-			if(className.toUpperCase().contains(selectedClassName))
+			if(className.contains(selectedClassName))
 				return selectedClassName;
 		}
 		return null;
+	}
+	private static String convert(String name){
+		return ChatColor.stripColor(name.toUpperCase());
 	}
 }

@@ -6,7 +6,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -39,7 +38,6 @@ public class LobbyListeners extends ArenaListener{
 			}
 		}
 	}
-	// FIND WHY NOT WORKING!!
 	@EventHandler
 	public void onItemFrameRightHit(PlayerInteractEntityEvent event){
 		Player player = event.getPlayer();
@@ -48,16 +46,17 @@ public class LobbyListeners extends ArenaListener{
 			event.setCancelled(equipClass(entity, player));
 		}
 	}
-	@EventHandler
-	public void onItemFrameLeftHit(EntityDamageEvent event){
-		if(event.getEntity().getLastDamageCause() instanceof Player){
-			Player player = (Player) event.getEntity().getLastDamageCause();
-			if(arena.hasPlayer(player)){
-				Entity entity = event.getEntity();
-				event.setCancelled(equipClass(entity, player));
-			}
-		}
-	}
+//	public void onItemFrameLeftHit(HangingBreakByEntityEvent event){
+//		Messenger.arenaCast(arena, "entity hit entity!");
+//		if(event.getRemover() instanceof Player){
+//			Messenger.arenaCast(arena, "player hit entity!");
+//			Player player = (Player) event.getRemover();
+//			if(arena.hasPlayer(player)){
+//				Entity entity = event.getEntity();
+//				event.setCancelled(equipClass(entity, player));
+//			}
+//		}
+//	}
 	private boolean equipClass(Entity entity, Player player){
 		if(entity instanceof ItemFrame){
 			ItemFrame itemFrame = (ItemFrame) entity;
@@ -65,8 +64,7 @@ public class LobbyListeners extends ArenaListener{
 			if(!itemFrameItem.hasItemMeta() || !itemFrameItem.getItemMeta().hasDisplayName())
 				return false;
 			String itemName = itemFrameItem.getItemMeta().getDisplayName();
-			if(arena.hasClass(itemName))
-				arena.equipClass(player, Classes.grab(itemName));
+			arena.equipClass(player, Classes.grab(itemName));
 			return true;
 		}
 		return false;
