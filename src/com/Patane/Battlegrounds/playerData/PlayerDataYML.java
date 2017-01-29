@@ -98,6 +98,8 @@ public class PlayerDataYML {
 		Player player = Bukkit.getPlayerExact(playerName);
 		header.set("wellbeing.health", player.getHealth());
 		header.set("wellbeing.food", player.getFoodLevel());
+		header.set("wellbeing.exp", player.getExp());
+		header.set("wellbeing.level", player.getLevel());
 		if(save)
 			playerDataConfig.save();
 	}
@@ -152,8 +154,11 @@ public class PlayerDataYML {
 	public static double getHealth(String playerName){
 		if(playerDataConfig.isConfigurationSection("player." + playerName)){
 			header = playerDataConfig.getConfigurationSection("player." + playerName + ".wellbeing");
-			if(header.getKeys(false).isEmpty())
-				playerDataConfig.getConfigurationSection("player." + playerName).set("wellbeing", null);
+			if(header.getKeys(false).isEmpty()){
+				header = playerDataConfig.getConfigurationSection("player." + playerName);
+				header.set("wellbeing", null);
+				return -1;
+			}
 			return header.getDouble("health");
 		}
 		return -1;
@@ -164,6 +169,24 @@ public class PlayerDataYML {
 			if(header.getKeys(false).isEmpty())
 				playerDataConfig.getConfigurationSection("player." + playerName).set("wellbeing", null);
 			return header.getInt("food");
+		}
+		return -1;
+	}
+	public static float getExp(String playerName) {
+		if(playerDataConfig.isConfigurationSection("player." + playerName)){
+			header = playerDataConfig.getConfigurationSection("player." + playerName + ".wellbeing");
+			if(header.getKeys(false).isEmpty())
+				playerDataConfig.getConfigurationSection("player." + playerName).set("wellbeing", null);
+			return (float) header.getDouble("exp");
+		}
+		return -1;
+	}
+	public static int getLevel(String playerName){
+		if(playerDataConfig.isConfigurationSection("player." + playerName)){
+			header = playerDataConfig.getConfigurationSection("player." + playerName + ".wellbeing");
+			if(header.getKeys(false).isEmpty())
+				playerDataConfig.getConfigurationSection("player." + playerName).set("wellbeing", null);
+			return header.getInt("level");
 		}
 		return -1;
 	}

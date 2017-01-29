@@ -10,6 +10,7 @@ import com.Patane.Battlegrounds.arena.game.Game;
 
 
 public class Spawner {
+	boolean spawningCreature;
 	/**
 	 * 
 	 * Runs all calculations to spawn mobs for the round
@@ -36,7 +37,9 @@ public class Spawner {
 			EntityType entityType = Randoms.entityType(allowedTypes);
 			if(entityType == null) return null;
 			// spawns creature
+			game.setSpawning(true);
 			Creature newCreature = (Creature) game.getArena().getWorld().spawnEntity(randomSpawn, entityType);
+			game.setSpawning(false);
 			newCreature.setCustomNameVisible(true);
 			newCreature.setTarget(Locating.findClosestPlayer(newCreature, game.getArena().getPlayers()));
 			

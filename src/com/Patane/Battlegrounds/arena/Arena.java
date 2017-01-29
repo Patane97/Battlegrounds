@@ -147,6 +147,14 @@ public class Arena {
 			return true;
 		return false;
 	}
+	public int howManyPlayers(boolean value){
+		int count = 0;
+		for(boolean selectedValue : players.values()){
+			if(value == selectedValue)
+				count++;
+		}
+		return count;
+	}
 	/**
 	 * 
 	 * @param player removed
@@ -159,6 +167,7 @@ public class Arena {
 			PlayerData.restoreData(Bukkit.getPlayerExact(player));
 			if(check && mode.checkSessionOver())
 				mode.sessionOver();
+			((Standby) mode).setAllLevel(players.size());
 			return true;
 		}
 		return false;
@@ -265,6 +274,14 @@ public class Arena {
 	}
 	public int isWithin(Entity entity){
 		Location location = entity.getLocation();
+		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+		if(ground != null && ground.contains(vector))
+			return 1;
+		if(lobby != null && lobby.contains(vector))
+			return 2;
+		return 0;
+	}
+	public int isWithin(Location location) {
 		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
 		if(ground != null && ground.contains(vector))
 			return 1;

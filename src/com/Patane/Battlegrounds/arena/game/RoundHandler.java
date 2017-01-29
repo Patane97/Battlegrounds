@@ -25,8 +25,8 @@ public class RoundHandler {
 	RoundHandler(Plugin plugin, Game game){
 		this.game 	= game;
 		this.roundNo 		= 1;
-		this.defaultDelay	= 5;
-		this.firstWaveDelay = 10;
+		this.defaultDelay	= 3;
+		this.firstWaveDelay = 5;
 		this.creatureSpawns	= game.getArena().getCreatureSpawns();
 		this.plugin			= plugin;
 	}
@@ -38,10 +38,10 @@ public class RoundHandler {
 		// spawns creatures after delay
 		spawnTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
-				if(!activeCreatures.addAll(Spawner.roundSpawn(roundNo, game, creatureSpawns)))
-					Messenger.warning("A round started with 0 mobs spawned. This is a problem :(");
+				activeCreatures.addAll(Spawner.roundSpawn(roundNo, game, creatureSpawns));
 				// change above to try/catch and print stacktrace
-				Messenger.arenaCast(game.getArena(), "&aRound " + roundNo + "!");
+				Messenger.arenaCast(game.getArena(), "&2Round &a" + roundNo + "&2!");
+				checkRoundEnd();
 			}
 		}, spawnDelay*20); // seconds * 20 ticks
 		

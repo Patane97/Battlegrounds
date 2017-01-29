@@ -31,6 +31,7 @@ public class Lobby extends Standby{
 		}
 		arena.putPlayer(player, true);
 		Messenger.arenaCast(arena, player.getDisplayName() + " &ais ready!");
+		setAllExp(player.getExpToLevel()*(arena.howManyPlayers(true)/arena.getPlayers().size()));
 		if(checkStartGame())
 			startGame();
 	}

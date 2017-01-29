@@ -10,6 +10,8 @@ import com.Patane.Battlegrounds.arena.standby.Standby;
 
 public class Game extends Standby{
 	
+	boolean spawningCreature;
+	
 	RoundHandler roundHandler;
 	
 	public Game (Plugin plugin, Arena arena) {
@@ -30,6 +32,12 @@ public class Game extends Standby{
 	
 	public RoundHandler getRoundHandler(){
 		return roundHandler;
+	}
+	public void setSpawning(boolean spawning){
+		this.spawningCreature = spawning;
+	}
+	public boolean getSpawning(){
+		return spawningCreature;
 	}
 	@Override
 	public void addPlayer(Player player){

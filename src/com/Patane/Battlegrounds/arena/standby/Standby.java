@@ -2,6 +2,7 @@ package com.Patane.Battlegrounds.arena.standby;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -54,14 +55,31 @@ public class Standby implements ArenaMode{
 			arena.putPlayer(player, false);
 			player.setHealth(20);
 			player.setFoodLevel(20);
+			player.setExp(0);
+			player.setLevel(0);
 			player.getInventory().clear();
 			player.setGameMode(GameMode.SURVIVAL);
+			setAllLevel(arena.getPlayers().size());
+			setAllExp(player.getExpToLevel()*(arena.howManyPlayers(true)/arena.getPlayers().size()));
+			Messenger.send(player, "exp: " + player.getExp());
+			Messenger.send(player, "expNext: " + player.getExpToLevel());
 		} else{
 			PlayerData.restoreData(player);
 			Messenger.send(player, "&cFailed to teleport you! Reverting join...");
 		}
 	}
-
+	public void setAllExp(float exp){
+		for(String playerName : arena.getPlayers()){
+			Player player = Bukkit.getPlayerExact(playerName);
+			player.setExp(exp);
+		}
+	}
+	public void setAllLevel(int lvl){
+		for(String playerName : arena.getPlayers()){
+			Player player = Bukkit.getPlayerExact(playerName);
+			player.setLevel(lvl);
+		}
+	}
 	@Override
 	/**
 	 * @return true if there are no players left in this session
