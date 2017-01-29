@@ -26,8 +26,10 @@ public class GameListeners extends ArenaListener{
 	}
 	@EventHandler
 	public void onMonsterCombust(EntityCombustEvent event){
-		if(game.getRoundHandler().hasCreature((Creature) event.getEntity())){
-			if(!(event instanceof EntityCombustByBlockEvent || event instanceof EntityCombustByEntityEvent))
+		if(event.getEntity() instanceof Creature 
+				&& game.getRoundHandler().hasCreature((Creature) event.getEntity())){
+			if(!(event instanceof EntityCombustByBlockEvent 
+					|| event instanceof EntityCombustByEntityEvent))
 				event.setCancelled(true);
 		}
 	}
@@ -35,6 +37,7 @@ public class GameListeners extends ArenaListener{
 	public void onCreatureDeath(EntityDeathEvent event){
 		if(event.getEntity() instanceof Creature){
 			if(game.getRoundHandler().creatureKilled((Creature) event.getEntity())){
+				game.updateExp();
 				game.getRoundHandler().checkRoundEnd();
 				event.getDrops().clear();
 			}

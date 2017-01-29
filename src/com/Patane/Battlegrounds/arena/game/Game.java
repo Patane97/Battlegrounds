@@ -19,7 +19,7 @@ public class Game extends Standby{
 
 		this.listener		= new GameListeners(plugin, arena, this);
 		this.roundHandler 	= new RoundHandler(plugin, this);
-		
+		this.colorCode	= "&e";
 		this.defaultLocations = arena.getGameSpawns();
 		
 		for(String playerName : arena.getPlayers())
@@ -40,9 +40,20 @@ public class Game extends Standby{
 		return spawningCreature;
 	}
 	@Override
+	public void updateExp(){
+		setAllLevel(roundHandler.getRoundNo());
+		if(roundHandler.getTotalMobs() == 0)
+			setAllExp(0);
+		else
+			setAllExp((float)(roundHandler.getTotalMobs() 
+					- roundHandler.getAmountMobs())/roundHandler.getTotalMobs());
+	}
+	@Override
 	public boolean addPlayer(Player player){
-		if(teleportPlayer(player))
+		if(teleportPlayer(player)){
+			updateExp();
 			return true;
+		}
 		return false;
 	}
 	/**

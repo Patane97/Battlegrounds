@@ -1,4 +1,4 @@
-package com.Patane.Battlegrounds.arena.standby;
+       package com.Patane.Battlegrounds.arena.standby;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ import com.Patane.Battlegrounds.util.Randoms;
 public class Standby implements ArenaMode{
 	
 	protected ArenaListener listener;
-	
+	protected String colorCode;
 	protected Arena arena;
 	protected Plugin plugin;
 	protected ArrayList<Location> defaultLocations = new ArrayList<Location>();
@@ -30,6 +30,7 @@ public class Standby implements ArenaMode{
 		this.plugin		= plugin;
 		this.arena 		= arena;
 		this.listener	= listener;
+		this.colorCode	= "&a";
 	}
 	public Arena getArena(){
 		return arena;
@@ -49,6 +50,7 @@ public class Standby implements ArenaMode{
 		return false;
 	}
 	public void updateExp(){}
+	
 	public void setAllExp(float exp){
 		for(String playerName : arena.getPlayers()){
 			Player player = Bukkit.getPlayerExact(playerName);
@@ -123,6 +125,10 @@ public class Standby implements ArenaMode{
 	public void unregister(){
 		if(listener != null)
 			listener.unregister();
+	}
+	@Override
+	public String getColor() {
+		return colorCode;
 	}
 
 }

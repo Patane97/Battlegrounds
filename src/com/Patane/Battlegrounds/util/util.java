@@ -1,5 +1,9 @@
 package com.Patane.Battlegrounds.util;
 
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,7 +17,10 @@ import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.collections.Arenas;
 import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
@@ -53,16 +60,13 @@ public class util {
 	@SuppressWarnings("deprecation")
 	public static AbstractRegion getAbstractRegion(Plugin plugin, Player creator){
 		WorldEditPlugin worldEditPlugin = (WorldEditPlugin) plugin.getServer().getPluginManager().getPlugin("WorldEdit");
-		String error = null;
 		if(worldEditPlugin == null){
-			error = "Worldedit plugin required!";
-			Messenger.send(creator, "&cError: " + error);
+			Messenger.send(creator, "&cWorldedit plugin required!");
 			return null;
 		}
 		Selection selection = worldEditPlugin.getSelection(creator);
 		if(selection == null){
-			error = "Please make a worldedit selection.";
-			Messenger.send(creator, "&cError: " + error);
+			Messenger.send(creator, "&cPlease make a worldedit selection.");
 			return null;
 		}
 		World world = selection.getWorld();
@@ -77,10 +81,77 @@ public class util {
 			BlockVector max = selection.getNativeMaximumPoint().toBlockVector();
 			region = new CuboidRegion (BukkitUtil.getLocalWorld(world), min, max);
 		} else {
-			error = "Cuboid or Polygonal region required!";
-			Messenger.send(creator, "&cError: " + error);
+			Messenger.send(creator, "&cCuboid or Polygonal region selection is required!");
 			return null;
 		}
+		for(Arena selectedArena : Arenas.get()){
+			if(intersecting(region, selectedArena.getLobby())){
+				Messenger.send(creator, "&cSelected Region is intersecting with arena &7" + selectedArena.getName() + "&c's &7Lobby &cregion.");
+				region = null;
+			}
+			if(intersecting(region, selectedArena.getGround())){
+				Messenger.send(creator, "&cSelected Region is intersecting with arena &7" + selectedArena.getName() + "'s Ground &cregion.");
+				region = null;
+			}
+		}
 		return region;
+	}
+	public static boolean intersecting(AbstractRegion region1, AbstractRegion region2){
+		if(region1 == null || region2 == null)
+			return false;
+		int r1max, r2max, r1min, r2min;
+		r1max = (region1 instanceof Polygonal2DRegion ? ((Polygonal2DRegion) region1).getMaximumY() : region1.getMaximumPoint().getBlockY());
+		r2max = (region2 instanceof Polygonal2DRegion ? ((Polygonal2DRegion) region2).getMaximumY() : region2.getMaximumPoint(). getBlockY());
+		r1min = (region1 instanceof Polygonal2DRegion ? ((Polygonal2DRegion) region1).getMinimumY() : region1.getMinimumPoint().getBlockY());
+		r2min = (region2 instanceof Polygonal2DRegion ? ((Polygonal2DRegion) region2).getMinimumY() : region2.getMinimumPoint().getBlockY());
+		
+		if(Math.max(r1min,r2min) > Math.min(r1max,r2max)){
+			return false;
+		}
+		List<BlockVector2D> r1points = getPoints(region1);
+		List<BlockVector2D> r2points = getPoints(region2);
+		
+		BlockVector2D lastR1Point = r1points.get(r1points.size() - 1);
+        BlockVector2D lastR2Point = r2points.get(r2points.size() - 1);
+        for (BlockVector2D selectedR1Point : r1points) {
+            for (BlockVector2D selectedR2Point : r2points) {
+
+                Line2D line1 = new Line2D.Double(
+                		lastR1Point.getBlockX(),
+                		lastR1Point.getBlockZ(),
+                        selectedR1Point.getBlockX(),
+                        selectedR1Point.getBlockZ());
+
+                if (line1.intersectsLine(
+                		lastR2Point.getBlockX(),
+                		lastR2Point.getBlockZ(),
+                        selectedR2Point.getBlockX(),
+                        selectedR2Point.getBlockZ())) {
+                    return true;
+                }
+                lastR2Point = selectedR2Point;
+            }
+            lastR1Point = selectedR1Point;
+        }
+		return false;
+	}
+	public static List<BlockVector2D> getPoints(AbstractRegion region){
+		if(region instanceof CuboidRegion){
+			List<BlockVector2D> points = new ArrayList<BlockVector2D>();
+	        int x1 = region.getMinimumPoint().getBlockX();
+	        int x2 = region.getMaximumPoint().getBlockX();
+	        int z1 = region.getMinimumPoint().getBlockZ();
+	        int z2 = region.getMaximumPoint().getBlockZ();
+
+	        points.add(new BlockVector2D(x1, z1));
+	        points.add(new BlockVector2D(x2, z1));
+	        points.add(new BlockVector2D(x2, z2));
+	        points.add(new BlockVector2D(x1, z2));
+	        return points;
+		}
+		if(region instanceof Polygonal2DRegion)
+			return ((Polygonal2DRegion) region).getPoints();
+		else
+			return null;
 	}
 }

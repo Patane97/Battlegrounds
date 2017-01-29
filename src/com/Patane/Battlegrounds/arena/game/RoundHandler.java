@@ -11,6 +11,7 @@ import com.Patane.Battlegrounds.util.Spawner;
 
 public class RoundHandler {
 	int roundNo;
+	int totalMobs;
 	// delay of creatures spawning in seconds
 	long spawnDelay;
 	long firstWaveDelay;
@@ -42,6 +43,8 @@ public class RoundHandler {
 				// change above to try/catch and print stacktrace
 				Messenger.arenaCast(game.getArena(), "&2Round &a" + roundNo + "&2!");
 				checkRoundEnd();
+				totalMobs = activeCreatures.size();
+				game.updateExp();
 			}
 		}, spawnDelay*20); // seconds * 20 ticks
 		
@@ -53,6 +56,15 @@ public class RoundHandler {
 			return true;
 		}
 		return false;
+	}
+	public int getRoundNo(){
+		return roundNo;
+	}
+	public int getTotalMobs(){
+		return totalMobs;
+	}
+	public int getAmountMobs(){
+		return activeCreatures.size();
 	}
 	public void checkRoundEnd(){
 		if(activeCreatures.isEmpty()){

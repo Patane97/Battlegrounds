@@ -18,9 +18,6 @@ public class BuildEditor implements EditorType{
 	String arenaName;
 	Player creator;
 	EditorListeners listener;
-	public BuildEditor(String s){
-		Messenger.info("BUILD CLASS");
-	}
 	public BuildEditor(Plugin plugin, Arena arena, Player creator, Editor editor){
 		this.arena 		= arena;
 		this.arenaName 	= arena.getName();

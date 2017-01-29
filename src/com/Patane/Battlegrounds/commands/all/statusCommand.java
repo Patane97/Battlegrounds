@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.game.Game;
 import com.Patane.Battlegrounds.arena.lobby.Lobby;
 import com.Patane.Battlegrounds.collections.Arenas;
@@ -39,10 +40,12 @@ public class statusCommand implements BGCommand{
 			return false;
 		}
 		String active = (arena.isActive() ? "&aACTIVE" : "&cINACTIVE");
-		if(arena.getMode() instanceof Lobby)
-			active = "&aIN LOBBY";
+		if(arena.getMode() instanceof Editor)
+			active = arena.getMode().getColor() + "EDIT MODE";
+		else if(arena.getMode() instanceof Lobby)
+			active = arena.getMode().getColor() + "IN LOBBY";
 		else if(arena.getMode() instanceof Game)
-			active = "&eIN GAME";
+			active = arena.getMode().getColor() + "IN GAME";
 		String groundRegion = (arena.hasGround() ? "&aSaved" : "&cMissing");
 		String lobbyRegion = (arena.hasLobby() ? "&aSaved" : "&cMissing");
 

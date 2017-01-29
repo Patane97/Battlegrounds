@@ -7,8 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.editor.Editor;
-import com.Patane.Battlegrounds.arena.game.Game;
+import com.Patane.Battlegrounds.arena.standby.ArenaMode;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
@@ -24,15 +23,14 @@ public class listCommand implements BGCommand{
 	@Override
 	public boolean execute(Plugin plugin, Player sender, String[] args) {
 
-		StringJoiner list = new StringJoiner(", ");
+		StringJoiner list = new StringJoiner("&7, ");
 		int amount = 0;
 		for(String arenaName : Arenas.getNames()){
 			Arena arena = Arenas.grab(arenaName);
-			String name = "&a" + arenaName;
-			if(arena.getMode() instanceof Editor || arena.hasEmptySpawns())
-				name = "&c" + arenaName;
-			else if (arena.getMode() instanceof Game)
-				name = "&6" + arenaName;
+			ArenaMode mode = arena.getMode();
+			String name = mode.getColor() + arenaName;
+			if(!arena.isActive())
+				name = "&c" + arenaName;			
 			list.add(name);
 			amount++;
 		}

@@ -28,6 +28,7 @@ public class Editor extends Standby{
 		this.plugin 	= plugin;
 		this.arenaName 	= arenaName;
 		this.creator 	= creator;
+		this.colorCode	= "&e";
 		//this.listener 	= new EditorListeners(plugin, arena);
 		createArena();
 	}
@@ -41,6 +42,7 @@ public class Editor extends Standby{
 		super(plugin, arena, null);
 		this.arenaName 	= arena.getName();
 		this.creator 	= creator;
+		this.colorCode	= "&e";
 	}
 	public Player getCreator(){
 		return creator;
