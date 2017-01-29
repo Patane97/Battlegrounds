@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -23,11 +23,8 @@ import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.listeners.ArenaListener;
-import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class Arena {
 	protected Plugin plugin;
@@ -154,23 +151,6 @@ public class Arena {
 				count++;
 		}
 		return count;
-	}
-	/**
-	 * 
-	 * @param player removed
-	 * @param check if session over
-	 * @return true if player was removed from Hashmap
-	 */
-	public boolean removePlayer(String player, boolean check){
-		if(players.remove(player) != null){
-			playerClasses.remove(player);
-			PlayerData.restoreData(Bukkit.getPlayerExact(player));
-			if(check && mode.checkSessionOver())
-				mode.sessionOver();
-			((Standby) mode).setAllLevel(players.size());
-			return true;
-		}
-		return false;
 	}
 	/**
 	 * Finds & removes respective spawns. Returns name of spawn type removed.
@@ -390,5 +370,15 @@ public class Arena {
 				classes.remove(className);
 			}
 		} //ArenaYML.saveClasses(name);
+	}
+	public boolean removePlayer(String player) {
+		if(players.remove(player) != null)
+			return true;
+		return false;
+	}
+	public boolean removePlayerClass(String player) {
+		if(playerClasses.remove(player) != null)
+			return true;
+		return false;
 	}
 }

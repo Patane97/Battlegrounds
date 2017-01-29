@@ -48,26 +48,7 @@ public class Standby implements ArenaMode{
 		}
 		return false;
 	}
-	@Override
-	public void addPlayer(Player player){
-		PlayerData.saveData(player);
-		if(teleportPlayer(player)){
-			arena.putPlayer(player, false);
-			player.setHealth(20);
-			player.setFoodLevel(20);
-			player.setExp(0);
-			player.setLevel(0);
-			player.getInventory().clear();
-			player.setGameMode(GameMode.SURVIVAL);
-			setAllLevel(arena.getPlayers().size());
-			setAllExp(player.getExpToLevel()*(arena.howManyPlayers(true)/arena.getPlayers().size()));
-			Messenger.send(player, "exp: " + player.getExp());
-			Messenger.send(player, "expNext: " + player.getExpToLevel());
-		} else{
-			PlayerData.restoreData(player);
-			Messenger.send(player, "&cFailed to teleport you! Reverting join...");
-		}
-	}
+	public void updateExp(){}
 	public void setAllExp(float exp){
 		for(String playerName : arena.getPlayers()){
 			Player player = Bukkit.getPlayerExact(playerName);
@@ -79,6 +60,37 @@ public class Standby implements ArenaMode{
 			Player player = Bukkit.getPlayerExact(playerName);
 			player.setLevel(lvl);
 		}
+	}
+	@Override
+	public boolean addPlayer(Player player){
+		PlayerData.saveData(player);
+		if(teleportPlayer(player)){
+			arena.putPlayer(player, false);
+			player.setHealth(20);
+			player.setFoodLevel(20);
+			player.setExp(0);
+			player.setLevel(0);
+			player.getInventory().clear();
+			player.setGameMode(GameMode.SURVIVAL);
+			updateExp();
+			return true;
+		} else{
+			PlayerData.restoreData(player);
+			Messenger.send(player, "&cFailed to teleport you! Reverting join...");
+			return false;
+		}
+	}
+	@Override
+	public boolean removePlayer(String player, boolean check){
+		if(arena.removePlayer(player)){
+			arena.removePlayerClass(player);
+			PlayerData.restoreData(Bukkit.getPlayerExact(player));
+			updateExp();
+			if(check && checkSessionOver())
+				sessionOver();
+			return true;
+		}
+		return false;
 	}
 	@Override
 	/**
@@ -98,7 +110,7 @@ public class Standby implements ArenaMode{
 	@Override
 	public void sessionOver() {
 		for(String selectedPlayer : arena.getPlayers()){
-			arena.removePlayer(selectedPlayer, false);
+			removePlayer(selectedPlayer, false);
 		}
 		unregister();
 		arena.setMode(new Standby(plugin, arena));

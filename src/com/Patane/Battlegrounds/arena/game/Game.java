@@ -40,8 +40,10 @@ public class Game extends Standby{
 		return spawningCreature;
 	}
 	@Override
-	public void addPlayer(Player player){
-		teleportPlayer(player);
+	public boolean addPlayer(Player player){
+		if(teleportPlayer(player))
+			return true;
+		return false;
 	}
 	/**
 	 * @param player to check and kill
@@ -68,7 +70,7 @@ public class Game extends Standby{
 		Messenger.arenaCast(arena, "All players have been eliminated!");
 		// running through players
 		for(String selectedPlayer : arena.getPlayers()){
-			arena.removePlayer(selectedPlayer, false);
+			removePlayer(selectedPlayer, false);
 		}
 		// cleaning up mobs
 		Bukkit.getServer().getScheduler().cancelTask(roundHandler.getSpawnTaskID());

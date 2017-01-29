@@ -23,7 +23,7 @@ public class leaveCommand implements BGCommand{
 			Messenger.send(sender, "&cYou must be in an arena to leave it!");
 			return false;
 		}
-		Arenas.grab(sender).removePlayer(sender.getDisplayName(), true);
+		Arenas.grab(sender).getMode().removePlayer(sender.getDisplayName(), true);
 		return true;
 	}
 

@@ -62,7 +62,7 @@ public class Arenas {
 	public static void removePlayer(Player player) {
 		Arena arena = grab(player);
 		if(arena != null)
-			arena.removePlayer(player.getDisplayName(), true);
+			arena.getMode().removePlayer(player.getDisplayName(), true);
 	}
 	public static void removeClass(String name) {
 		for(Arena arena : arenas.values())

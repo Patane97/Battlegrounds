@@ -24,14 +24,22 @@ public class Lobby extends Standby{
 	public void startGame(){
 		arena.setMode(new Game(plugin, arena));
 	}
-	public void playerReady(Player player) {
+	@Override
+	public void updateExp(){
+		setAllLevel(arena.getPlayers().size());
+		setAllExp((float)arena.howManyPlayers(true)/arena.getPlayers().size());
+	}
+	public void toggleReady(Player player) {
 		if(!arena.playerHasClass(player)){
 			Messenger.send(player, "&cYou must select a class before being ready!");
 			return;
 		}
-		arena.putPlayer(player, true);
-		Messenger.arenaCast(arena, player.getDisplayName() + " &ais ready!");
-		setAllExp(player.getExpToLevel()*(arena.howManyPlayers(true)/arena.getPlayers().size()));
+		arena.putPlayer(player, !arena.getPlayerStatus(player));
+		if(arena.getPlayerStatus(player))
+			Messenger.arenaCast(arena, player.getDisplayName() + " &ais ready!");
+		else
+			Messenger.arenaCast(arena, player.getDisplayName() + " &7is not ready!");
+		updateExp();
 		if(checkStartGame())
 			startGame();
 	}

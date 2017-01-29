@@ -32,7 +32,7 @@ public class LobbyListeners extends ArenaListener{
 					Block block = event.getClickedBlock();
 					if(block.getType().equals(Material.ANVIL)){
 						event.setCancelled(true);
-						lobby.playerReady(player);
+						lobby.toggleReady(player);
 					}
 				}
 			}
