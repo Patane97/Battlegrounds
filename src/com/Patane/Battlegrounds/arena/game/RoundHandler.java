@@ -2,11 +2,11 @@ package com.Patane.Battlegrounds.arena.game;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.util.Spawner;
 
 public class RoundHandler {
@@ -21,7 +21,9 @@ public class RoundHandler {
 	Game game;
 	ArrayList<Location> creatureSpawns;
 	ArrayList<Creature> activeCreatures = new ArrayList<Creature>();
-	int spawnTaskID;
+	private int spawnTaskID;
+
+	int count = 0;
 	
 	RoundHandler(Plugin plugin, Game game){
 		this.game 	= game;
@@ -32,21 +34,15 @@ public class RoundHandler {
 		this.plugin			= plugin;
 	}
 	public void startRound(){
-		if(roundNo == 1)
-			spawnDelay = firstWaveDelay;
-		else
-			spawnDelay = defaultDelay;
-		// spawns creatures after delay
-		spawnTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			public void run() {
-				activeCreatures.addAll(Spawner.roundSpawn(roundNo, game, creatureSpawns));
-				// change above to try/catch and print stacktrace
-				Messenger.arenaCast(game.getArena(), "&2Round &a" + roundNo + "&2!");
-				checkRoundEnd();
-				totalMobs = activeCreatures.size();
-				game.updateExp();
-			}
-		}, spawnDelay*20); // seconds * 20 ticks
+		spawnDelay = (roundNo == 1 ? firstWaveDelay : defaultDelay);
+		
+		// re-create this:
+		/*	a method that runs whats in spawner and returns a hashmap of <creature(type of mob), Integer (int for location in creatureSpawns)>
+		 *  a repeated task taht starts at (spawndelay*20)-(20/4) and runs 3 times (shown below) which spawns particles at each location to show where mobs are spawning
+		 *  a delayed task at spawnDelay*20 which runs through the previous hashmap and spawns respective mob at respective int-location in creatureSpawns (similar to below)  
+		 * 
+		 */
+		spawnTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Spawner(this), spawnDelay*20); // seconds * 20 ticks
 		
 	}
 	// removes a mob when they have been killed then checks if the round has ended from it
@@ -68,12 +64,15 @@ public class RoundHandler {
 	}
 	public void checkRoundEnd(){
 		if(activeCreatures.isEmpty()){
-			roundNo++;
-			startRound();
+			nextRound();
 		}
 	}
-	public int getSpawnTaskID(){
-		return spawnTaskID;
+	public void nextRound(){
+		roundNo++;
+		startRound();
+	}
+	public void stopAllTasks(){
+		Bukkit.getServer().getScheduler().cancelTask(spawnTaskID);
 	}
 	public ArrayList<Creature> getActiveCreatures(){
 		return activeCreatures;
@@ -89,5 +88,14 @@ public class RoundHandler {
 				return true;
 		}
 		return false;
+	}
+	public Game getGame() {
+		return game;
+	}
+	public ArrayList<Location> getCreatureSpawns() {
+		return creatureSpawns;
+	}
+	public void updateTotalMobs() {
+		totalMobs = activeCreatures.size();
 	}
 }

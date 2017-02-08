@@ -84,7 +84,7 @@ public class Game extends Standby{
 			removePlayer(selectedPlayer, false);
 		}
 		// cleaning up mobs
-		Bukkit.getServer().getScheduler().cancelTask(roundHandler.getSpawnTaskID());
+		roundHandler.stopAllTasks();
 		roundHandler.clearMobs();
 
 		Messenger.broadcast("A game has just finished! Type /bg join [arena name] to start a new BattleGround!");
