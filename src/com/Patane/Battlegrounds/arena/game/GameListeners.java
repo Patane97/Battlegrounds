@@ -4,13 +4,13 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.Plugin;
@@ -44,6 +44,15 @@ public class GameListeners extends ArenaListener{
 		}
 	}
 	@EventHandler
+	public void onCreeperExplode(EntityExplodeEvent event){
+		if(event.getEntity() instanceof Creature){
+			if(game.getRoundHandler().creatureKilled((Creature) event.getEntity())){
+				game.updateExp();
+				game.getRoundHandler().checkRoundEnd();
+			}
+		}
+	}
+	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent event){
 		if(event.getEntity() instanceof Player){
 			final Player player = (Player) event.getEntity();
@@ -66,10 +75,9 @@ public class GameListeners extends ArenaListener{
 		}
 	}
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCreatureSpawn(CreatureSpawnEvent event){
 		if(arena.isWithin(event.getEntity()) != 0){
-			if(game.getSpawning()){
+			if(game.getRoundHandler().hasCreature((Creature) event.getEntity())){
 				event.setCancelled(false);
 				return;
 			}

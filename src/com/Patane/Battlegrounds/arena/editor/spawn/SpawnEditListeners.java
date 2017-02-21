@@ -82,17 +82,6 @@ public class SpawnEditListeners extends EditorListeners{
 					}
 					spawnEditor.addSpectatorSpawn(location);
 				}
-//				if(itemInHandName.contains("Lobby Spawn") || itemInHandName.contains("Spectator Spawn")){
-//					if(arena.isWithin(block)){
-//						event.setCancelled(true);
-//						Messenger.send(player, itemInHandName + "s &cmust be placed outside the arena.");
-//						return;
-//					}
-//					if(itemInHandName.contains("Lobby Spawn"))
-//						spawnEditor.addLobbySpawn(location);
-//					else if (itemInHandName.contains("Spectator Spawn"))
-//						spawnEditor.addSpectatorSpawn(location);
-//				}
 				spawnEditor.refreshPlayerItems();
 				Messenger.send(player, itemInHandName + "&a added at (" + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + ")");
 				return;

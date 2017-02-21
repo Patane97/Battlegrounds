@@ -49,7 +49,7 @@ public class editCommand implements BGCommand{
 		}
 		Editor editor = (Editor) arena.setMode(new Editor(plugin, arena, sender));
 		try {
-			EditorType editorType= editorClass.getConstructor(Plugin.class, Arena.class, Player.class, Editor.class).newInstance(plugin, arena, sender, editor);
+			EditorType editorType = editorClass.getConstructor(Plugin.class, Arena.class, Player.class, Editor.class).newInstance(plugin, arena, sender, editor);
 			editor.newEditorType(editorType);
 		} catch (Exception e) {	e.printStackTrace();}
 		return true;

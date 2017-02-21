@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.util.Spawner;
+import com.Patane.Battlegrounds.arena.game.util.Spawner;
 
 public class RoundHandler {
 	int roundNo;
@@ -48,7 +48,7 @@ public class RoundHandler {
 	// removes a mob when they have been killed then checks if the round has ended from it
 	public boolean creatureKilled(Creature creature){
 		if(activeCreatures.remove(creature)){
-			//Messenger.gameCast(gameInstance, "Mob killed!");
+//			Messenger.arenaCast(game.getArena(), "&6Creature &7" + creature.getName() + "&6 killed.");
 			return true;
 		}
 		return false;
