@@ -14,6 +14,7 @@ import com.Patane.Battlegrounds.arena.game.Game;
 import com.Patane.Battlegrounds.arena.game.RoundHandler;
 import com.Patane.Battlegrounds.custom.BGCreatureInfo;
 import com.Patane.Battlegrounds.custom.BGEntityType;
+import com.Patane.Battlegrounds.custom.Spawning;
 import com.Patane.Battlegrounds.util.Locating;
 
 
@@ -72,7 +73,7 @@ public class Spawner implements Runnable{
 			spawnIteration ++;
 			Location spawnLocation = roundHandler.getCreatureSpawns().get(spawnNo);
 			spawnLocation = new Location(spawnLocation.getWorld(), spawnLocation.getX()+0.5, spawnLocation.getY(), spawnLocation.getZ()+0.5, spawnLocation.getYaw(), spawnLocation.getPitch());
-			Creature newCreature = (Creature) BGEntityType.spawnEntity(roundHandler.getGame().getArena(), entityType, spawnLocation);
+			Creature newCreature = (Creature) Spawning.spawnEntity(roundHandler.getGame().getArena(), entityType, spawnLocation);
 //			// EFFECT //
 			spawnLocation.getWorld().spawnParticle(Particle.CLOUD, spawnLocation, 50, 0.5, 1, 0.5, 0.02);
 			newCreature.setCustomNameVisible(true);

@@ -1,16 +1,11 @@
 package com.Patane.Battlegrounds.custom;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
-import org.bukkit.entity.Creature;
-
-import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.game.Game;
+import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.custom.creatures.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +13,6 @@ import net.minecraft.server.v1_11_R1.Entity;
 import net.minecraft.server.v1_11_R1.EntityTypes;
 import net.minecraft.server.v1_11_R1.MinecraftKey;
 import net.minecraft.server.v1_11_R1.RegistryMaterials;
-import net.minecraft.server.v1_11_R1.World;
 
 public enum BGEntityType {
 	// NAME("Entity name", Entity ID, yourcustomclass.class);
@@ -31,92 +25,63 @@ public enum BGEntityType {
 	VINDICATOR("Vindicator", 36, BGVindicator.class),
 	CHICKEN("Chicken", 93, BGChicken.class),
 	ZOMBIE_SERVANT("Zombie Servant", 54, BGZombieServant.class);
+
+	 // <ID, oldName&oldClazz>
+	static HashMap<Integer, oldMobEntry> overriddenMobs = new HashMap<Integer, oldMobEntry>();
+	
+	int id;
 	
 	String name;
-	int id;
 	Class<? extends Entity> clazz;
 	
 	private BGEntityType(String name, int id, Class <? extends Entity> custom){
-		registerEntity(name, id, custom);
 		this.name 	= name;
 		this.id 	= id;
 		this.clazz 	= custom;
 	}
-	public String getName(){
-		return this.name;
-	}
 	public int getID(){
 		return this.id;
+	}
+	public String getName(){
+		return this.name;
 	}
 	public Class<? extends Entity> getEntityClass(){
 		return this.clazz;
 	}
-
-	/**
-     * Spawns custom entities via entityTypes
-     *
-     * (eg. spawnEntity(CustomEntityType.Zombie, location);)
-     *
-     * @param arena
-     * @param entityType
-     * @param loc
-     * @return
-     */
-	public static org.bukkit.entity.Entity spawnEntity(Arena arena, BGEntityType entityType, Location loc){
-		return spawnEntity(arena, entityType.getName(), entityType.getEntityClass(), loc);
-	}
-	/**
-     * Spawns custom entities via class
-    *
-    * (eg. spawnEntity("Fast Zombie", FastZombie.class, location);)
-    *
-    * @param arena
-    * @param clazz
-    * @param loc
-    * @return
-    */
-	public static org.bukkit.entity.Entity spawnEntity(Arena arena, String name, Class<? extends Entity> clazz, Location loc){
-		Entity entity = null;
-		// creates new instance of entity from given Class<? extends Entity>. Returns null if failed.
-		try { 
-			CraftWorld world = (CraftWorld) loc.getWorld();
-			entity = (Entity) clazz.getConstructor(World.class).newInstance(world.getHandle());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		entity.setCustomName(name);
-		// grabbing a bukkit version of the entity
-		org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
-		
-		// if arena is in Game Mode, adds the creature to activeCreatures list
-		if(arena != null && arena.getMode() instanceof Game && bukkitEntity instanceof Creature)
-			((Game) arena.getMode()).getRoundHandler().getActiveCreatures().add((Creature) bukkitEntity);
-		
-		// spawns entity at loc
-		entity.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-		((CraftWorld) loc.getWorld()).getHandle().addEntity(entity);
-		
-		// checks if entity has an "onSpawn" method and runs it if so.
-		try { 
-			Method method = clazz.getDeclaredMethod("onSpawn");
-			method.setAccessible(true);
-			method.invoke(entity);
-			}
-		catch (Exception e) {}
-		return bukkitEntity;
-	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static void registerEntity(String name, int id, Class<? extends Entity> customClass){
+	static void registerEntity(String name, int id, Class<? extends Entity> customClass){
 		MinecraftKey key = new MinecraftKey(name);
 		try {
-			((RegistryMaterials) getPrivateStatic(EntityTypes.class, "b")).a(id, key, customClass);
-			((Set) getPrivateStatic(EntityTypes.class, "d")).add(key);
-			((List) getPrivateStatic(EntityTypes.class, "g")).set(id, name);
+			RegistryMaterials b = ((RegistryMaterials) getPrivateStatic(EntityTypes.class, "b"));
+			Set d = ((Set) getPrivateStatic(EntityTypes.class, "d"));
+			List g = ((List) getPrivateStatic(EntityTypes.class, "g"));
+			
+			Class<? extends Entity> oldClass = (Class<? extends Entity>) b.getId(id);
+//			MinecraftKey oldKey = (MinecraftKey) ((RegistryMaterials) getPrivateStatic(EntityTypes.class, "b")).b(oldClass);
+			String oldName = (String) g.get(id);
+//			Messenger.info("ID: " + id + " | Name: " + oldName + " | Class: " + oldClass.getName());
+			oldMobEntry old = new oldMobEntry(oldName, oldClass);
+			
+			if(overriddenMobs == null) overriddenMobs = new HashMap<Integer, oldMobEntry>();
+			
+			overriddenMobs.put(id, old);
+			b.a(id, key, customClass);
+			d.add(key);
+			g.set(id, name);
+//			Messenger.broadcast("&7Registered Mob " + name);
 		} catch (Exception e) {
+			Messenger.warning("Failed to register Mob!");
 			e.printStackTrace();
 		}
+	}
+	static void unregisterEntity(int id){
+		oldMobEntry old = overriddenMobs.get(id);
+		try{
+//			Messenger.broadcast("&7Restoring Mob " + old.retrieveName());
+			registerEntity(old.retrieveName(), id, old.retrieveClass());
+			overriddenMobs.remove(id);
+		} catch (NullPointerException e){}
 	}
 
 	@SuppressWarnings("rawtypes")

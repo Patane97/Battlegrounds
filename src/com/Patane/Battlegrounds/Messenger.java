@@ -31,19 +31,19 @@ public class Messenger {
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
         return true;
 	}
-	public static void broadcast(String string){
-		Bukkit.broadcastMessage(Chat.PLUGIN_PREFIX_SMALL + string);
+	public static void broadcast(String msg){
+		Bukkit.broadcastMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
 	}
 	public static void info(String msg) {
-		logger.info(Chat.STRIPPED_PLUGIN_PREFIX + msg);
+		logger.info(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
 	}
 
 	public static void warning(String msg) {
-		logger.warning(Chat.STRIPPED_PLUGIN_PREFIX + msg);
+		logger.warning(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
 	}
 
 	public static void severe(String msg) {
-		logger.severe(Chat.STRIPPED_PLUGIN_PREFIX + msg);
+		logger.severe(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
 	}
 	// sends only to people in specific game
 	public static void arenaCast(Arena arena, String string) {
