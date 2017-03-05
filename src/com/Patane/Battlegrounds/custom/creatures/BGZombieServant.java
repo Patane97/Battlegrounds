@@ -1,5 +1,10 @@
 package com.Patane.Battlegrounds.custom.creatures;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+
 import net.minecraft.server.v1_11_R1.DamageSource;
 import net.minecraft.server.v1_11_R1.EntityAnimal;
 import net.minecraft.server.v1_11_R1.EntityMonster;
@@ -20,8 +25,9 @@ public class BGZombieServant extends EntityZombie{
 	protected void initAttributes(){
 		super.initAttributes();
 		getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.3D);
-		getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(5.0D);
+		getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(6.0D);
 		getAttributeInstance(GenericAttributes.FOLLOW_RANGE).setValue(30.0D);
+		getAttributeInstance(GenericAttributes.maxHealth).setValue(5.0D);
 	}
 	@Override
 	public boolean damageEntity(DamageSource damagesource, float f){
@@ -36,22 +42,12 @@ public class BGZombieServant extends EntityZombie{
 	    this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, true, new Class[] { EntityPigZombie.class }));
 	    this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget(this, EntityMonster.class, true));
 	}
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
-//	protected void r()
-//	  {
-//	    this.goalSelector.a(0, new PathfinderGoalFloat(this));
-//	    this.goalSelector.a(1, new PathfinderGoalMeleeAttack(this, 1.0D, false));
-//	    this.goalSelector.a(6, new PathfinderGoalFollowOwner(this, 1.0D, 10.0F, 2.0F));
-//	    this.goalSelector.a(8, new PathfinderGoalRandomStrollLand(this, 1.0D));
-//	    this.goalSelector.a(10, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
-//	    this.goalSelector.a(10, new PathfinderGoalRandomLookaround(this));
-//	    this.targetSelector.a(1, new PathfinderGoalOwnerHurtByTarget(this));
-//	    this.targetSelector.a(2, new PathfinderGoalOwnerHurtTarget(this));
-//	    this.targetSelector.a(3, new PathfinderGoalHurtByTarget(this, true, new Class[0]));
-//	    this.targetSelector.a(5, new PathfinderGoalNearestAttackableTarget(this, EntityMonster.class, false));
-//	  }
-//	@Override
-//	public EntityAgeable createChild(EntityAgeable arg0) {
-//		return null;
-//	}
+	public void onSpawn(){
+		Zombie zombie = (Zombie) bukkitEntity;
+		EntityEquipment	ee = zombie.getEquipment();
+		ee.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+//		ee.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+//		ee.setBoots(new ItemStack(Material.IRON_BOOTS));
+//		ee.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+	}
 }
