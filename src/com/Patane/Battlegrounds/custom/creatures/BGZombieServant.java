@@ -1,9 +1,11 @@
 package com.Patane.Battlegrounds.custom.creatures;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import net.minecraft.server.v1_11_R1.DamageSource;
 import net.minecraft.server.v1_11_R1.EntityAnimal;
@@ -45,7 +47,11 @@ public class BGZombieServant extends EntityZombie{
 	public void onSpawn(){
 		Zombie zombie = (Zombie) bukkitEntity;
 		EntityEquipment	ee = zombie.getEquipment();
-		ee.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+		ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+		LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+		chestplateMeta.setColor(Color.fromRGB(150, 255, 0));
+		chestplate.setItemMeta(chestplateMeta);
+		ee.setChestplate(chestplate);
 //		ee.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
 //		ee.setBoots(new ItemStack(Material.IRON_BOOTS));
 //		ee.setItemInMainHand(new ItemStack(Material.IRON_SWORD));

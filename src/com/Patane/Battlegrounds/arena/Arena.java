@@ -23,8 +23,11 @@ import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.listeners.ArenaListener;
+import com.Patane.Battlegrounds.util.RelativePoint;
+import com.Patane.Battlegrounds.util.util;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
+import com.sk89q.worldedit.regions.RegionOperationException;
 
 public class Arena {
 	protected Plugin plugin;
@@ -42,6 +45,9 @@ public class Arena {
 	protected ArrayList<String> classes;
 	
 	protected ArenaListener arenaListener;
+	
+	protected ArenaSettings arenaSettings;
+	
 	
 	// <PlayerName, ClassName>
 	public HashMap<String, String> playerClasses = new HashMap<String, String>();
@@ -83,6 +89,7 @@ public class Arena {
 		this.classes 			= (classes 			== null ? new ArrayList<String>() : classes);
 		syncClasses();
 		this.mode 				= new Standby(plugin, this);
+		this.arenaSettings		= new ArenaSettings();
 		Arenas.add(this);
 	}
 	
@@ -97,6 +104,9 @@ public class Arena {
 	}
 	public AbstractRegion getLobby(){
 		return lobby;
+	}
+	public ArenaSettings getSettings(){
+		return arenaSettings;
 	}
 	public void setGround(AbstractRegion region){
 		this.ground = region;
@@ -239,35 +249,40 @@ public class Arena {
 		
 		return emptySpawns;
 	}
-	/**
-	 * 
-	 * @return 0: Outside both battleground and lobby | 1: Inside battleground | 2: Inside lobby
-	 */
-	public int isWithin(Block block){
+	public RelativePoint isWithin(Location location) {
+		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+		if(ground != null){
+			AbstractRegion innerGround = ground.clone();
+			quickContract(innerGround, -1);
+			if(innerGround.contains(vector))
+				return RelativePoint.GROUNDS_INNER;
+			else if(ground.contains(vector))
+				return RelativePoint.GROUNDS_BORDER;
+		}
+		if(lobby != null){
+			AbstractRegion innerLobby = lobby.clone();
+			quickContract(innerLobby, -1);
+			if(innerLobby.contains(vector))
+				return RelativePoint.LOBBY_INNER;
+			else if(lobby.contains(vector))
+				return RelativePoint.LOBBY_BORDER;
+		}
+		return RelativePoint.OUTSIDE;
+	}
+	public void quickContract(AbstractRegion region, int amount){
+		try {
+			region.contract(util.changeEachDir(amount));
+		} catch (RegionOperationException e) {
+			e.printStackTrace();
+		}
+	}
+	public RelativePoint isWithin(Block block){
 		Location location = block.getLocation();
-		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
-		if(ground != null && ground.contains(vector))
-			return 1;
-		if(lobby != null && lobby.contains(vector))
-			return 2;
-		return 0;
+		return isWithin(location);
 	}
-	public int isWithin(Entity entity){
+	public RelativePoint isWithin(Entity entity){
 		Location location = entity.getLocation();
-		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
-		if(ground != null && ground.contains(vector))
-			return 1;
-		if(lobby != null && lobby.contains(vector))
-			return 2;
-		return 0;
-	}
-	public int isWithin(Location location) {
-		Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
-		if(ground != null && ground.contains(vector))
-			return 1;
-		if(lobby != null && lobby.contains(vector))
-			return 2;
-		return 0;
+		return isWithin(location);
 	}
 	/**
 	 * 

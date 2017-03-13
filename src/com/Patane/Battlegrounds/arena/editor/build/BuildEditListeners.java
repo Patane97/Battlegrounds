@@ -25,6 +25,7 @@ import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.collections.Classes;
+import com.Patane.Battlegrounds.util.RelativePoint;
 
 public class BuildEditListeners extends EditorListeners{
 	BuildEditor buildEditor;
@@ -35,7 +36,7 @@ public class BuildEditListeners extends EditorListeners{
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event){
-		if(arena.isWithin(event.getBlock()) != 0){
+		if(arena.isWithin(event.getBlock()) != RelativePoint.OUTSIDE){
 			Block block = event.getBlock();
 			Player player = event.getPlayer();
 			String playerName = player.getDisplayName();
@@ -53,7 +54,7 @@ public class BuildEditListeners extends EditorListeners{
 	@Override
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event){
-		if(arena.isWithin(event.getBlockPlaced()) != 0){
+		if(arena.isWithin(event.getBlockPlaced()) != RelativePoint.OUTSIDE){
 			Block block = event.getBlockPlaced();
 			Player player = event.getPlayer();
 			String playerName = player.getDisplayName();
@@ -75,19 +76,19 @@ public class BuildEditListeners extends EditorListeners{
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onHangingBreak(HangingBreakByEntityEvent event){
-		if(arena.isWithin(event.getEntity()) != 0){
+		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
 			event.setCancelled(false);
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onHangingPlace(HangingPlaceEvent event){
-		if(arena.isWithin(event.getEntity()) != 0){
+		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
 			event.setCancelled(false);
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
     public void onItemFrameHit(EntityDamageEvent event) {
-		if(arena.isWithin(event.getEntity()) != 0){
+		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
 			if (event.getEntity() instanceof ItemFrame) {
 				event.setCancelled(false);
 	        }

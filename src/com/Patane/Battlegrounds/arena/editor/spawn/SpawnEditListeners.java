@@ -16,6 +16,7 @@ import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
+import com.Patane.Battlegrounds.util.RelativePoint;
 
 public class SpawnEditListeners extends EditorListeners{
 	SpawnEditor spawnEditor;
@@ -55,8 +56,9 @@ public class SpawnEditListeners extends EditorListeners{
 					Messenger.send(player, "&cThere cannot be a block above a " + itemInHandName + "&c.");
 					return;
 				}
+				RelativePoint relativePoint = arena.isWithin(block);
 				if(itemInHandName.contains("Game") || itemInHandName.contains("Creature")){
-					if(arena.isWithin(block) != 1){
+					if(relativePoint != RelativePoint.GROUNDS_BORDER || relativePoint != RelativePoint.GROUNDS_BORDER){
 						event.setCancelled(true);
 						Messenger.send(player, itemInHandName + "s &cmust be placed within the battleground.");
 						return;
@@ -67,7 +69,7 @@ public class SpawnEditListeners extends EditorListeners{
 						spawnEditor.addCreatureSpawn(location);
 				}
 				else if(itemInHandName.contains("Lobby")){
-					if(arena.isWithin(block) != 2){
+					if(relativePoint != RelativePoint.LOBBY_BORDER || relativePoint != RelativePoint.LOBBY_BORDER){
 						event.setCancelled(true);
 						Messenger.send(player, itemInHandName + "s &cmust be placed within the lobby.");
 						return;
@@ -75,7 +77,7 @@ public class SpawnEditListeners extends EditorListeners{
 					spawnEditor.addLobbySpawn(location);
 				}
 				else if(itemInHandName.contains("Spectator")){
-					if(arena.isWithin(block) != 0){
+					if(relativePoint != RelativePoint.OUTSIDE){
 						event.setCancelled(true);
 						Messenger.send(player, itemInHandName + "s &cmust not be placed inside the battleground or lobby");
 						return;
