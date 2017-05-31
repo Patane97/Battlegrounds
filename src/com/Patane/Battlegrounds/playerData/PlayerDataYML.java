@@ -2,6 +2,7 @@ package com.Patane.Battlegrounds.playerData;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -24,14 +25,15 @@ public class PlayerDataYML {
 		plugin = Battlegrounds;
 		playerDataConfig = new Config(plugin, "playerData.yml");
 		
-		if(!playerDataConfig.isConfigurationSection("player")){
-			playerDataConfig.createSection("player");
+		if(!playerDataConfig.isConfigurationSection("playerUUID")){
+			playerDataConfig.createSection("playerUUID");
 		} else{
 			// checks and restores the data of all online players in the yml file
-			header = playerDataConfig.getConfigurationSection("player");
+			header = playerDataConfig.getConfigurationSection("playerUUID");
 			Player player;
-			for(String playerName : header.getKeys(false)){
-				player = Bukkit.getPlayerExact(playerName);
+			for(String stringUUID : header.getKeys(false)){
+				UUID newUUID = UUID.fromString(stringUUID);
+				player = Bukkit.getPlayer(newUUID);
 				if(Bukkit.getOnlinePlayers().contains(player)){
 					loadAllData(player);
 				}
@@ -45,11 +47,12 @@ public class PlayerDataYML {
 	 * 
 	 * @param playerName Name of the player to create.
 	 */
-	public static void checkCreatePlayer(String playerName){
-		if(!playerDataConfig.isConfigurationSection("player." + playerName)){
-			playerDataConfig.createSection("player." + playerName);
+	public static void checkCreatePlayer(UUID playerUUID){
+		String stringUUID = playerUUID.toString();
+		if(!playerDataConfig.isConfigurationSection("playerUUID." + stringUUID)){
+			playerDataConfig.createSection("playerUUID." + stringUUID);
 		}
-		header = playerDataConfig.getConfigurationSection("player." + playerName);
+		header = playerDataConfig.getConfigurationSection("playerUUID." + stringUUID);
 	}
 	/**
 	 * Saves the players data into PlayerData.yml
@@ -71,6 +74,7 @@ public class PlayerDataYML {
 	 * @param player Player to load.
 	 */
 	public static void loadAllData(Player player){
+		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
 		if(playerDataConfig.isConfigurationSection("player." + playerName)){
 			if(playerDataConfig.isConfigurationSection("player." + playerName + ".wellbeing.health")){
@@ -143,9 +147,10 @@ public class PlayerDataYML {
 		}
 		return null;
 	}
-	public static GameMode getGameMode(String playerName){
-		if(playerDataConfig.isConfigurationSection("player." + playerName)){
-			header = playerDataConfig.getConfigurationSection("player." + playerName);
+	public static GameMode getGameMode(UUID playerUUID){
+		String stringUUID = playerUUID.toString();
+		if(playerDataConfig.isConfigurationSection("player." + stringUUID)){
+			header = playerDataConfig.getConfigurationSection("player." + stringUUID);
 			String gameMode = header.getString("gamemode");
 			return GameMode.valueOf(gameMode);
 		}
@@ -194,8 +199,8 @@ public class PlayerDataYML {
 		playerDataConfig.getConfigurationSection("player").set(playerName, null);
 		playerDataConfig.save();
 	}
-	public static void deletePlayer(String playerName, String type){
-		playerDataConfig.getConfigurationSection("player." + playerName).set(type, null);
+	public static void deletePlayer(UUID playerUUID, String type){
+		playerDataConfig.getConfigurationSection("player." + playerUUID.toString()).set(type, null);
 		if(type.contains("wellbeing")){
 			checkWellbeing(playerName);
 		}

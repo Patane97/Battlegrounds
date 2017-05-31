@@ -154,7 +154,7 @@ public class GameListeners extends ArenaListener {
 	}
 
 	@EventHandler
-	public void onCreeperExplode(EntityExplodeEvent event) {
+	public void onCreatureExplode(EntityExplodeEvent event) {
 		if (event.getEntity() instanceof Creature) {
 			if (game.getRoundHandler().creatureKilled((Creature) event.getEntity())) {
 				game.updateExp();
@@ -177,15 +177,17 @@ public class GameListeners extends ArenaListener {
 			}
 		}
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerByPlayerDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
 			if(!arena.getSettings().isPvpEnabled())
 				event.setCancelled(true);
+			else
+				event.setCancelled(false);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
@@ -195,6 +197,7 @@ public class GameListeners extends ArenaListener {
 	}
 
 	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE) {
 			if (game.getRoundHandler().hasCreature((Creature) event.getEntity())) {

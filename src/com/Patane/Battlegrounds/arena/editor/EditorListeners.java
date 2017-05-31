@@ -1,5 +1,7 @@
 package com.Patane.Battlegrounds.arena.editor;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -10,13 +12,13 @@ import com.Patane.Battlegrounds.listeners.ArenaListener;
 public class EditorListeners extends ArenaListener{
 	protected Editor editor;
 	protected Player creator;
-	protected String creatorName;
+	protected UUID creatorUUID;
 	
 	public EditorListeners(Plugin plugin, Arena arena, Editor editor){
 		super(plugin, arena);
 		this.editor 		= editor;
 		this.creator 		= editor.getCreator();
-		this.creatorName 	= creator.getDisplayName();
+		this.creatorUUID	= creator.getUniqueId();
 
 	}
 	protected boolean spawnAboveOrBelow(Location location){

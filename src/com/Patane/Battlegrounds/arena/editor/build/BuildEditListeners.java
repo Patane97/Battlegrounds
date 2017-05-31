@@ -1,5 +1,6 @@
 package com.Patane.Battlegrounds.arena.editor.build;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,8 +40,8 @@ public class BuildEditListeners extends EditorListeners{
 		if(arena.isWithin(event.getBlock()) != RelativePoint.OUTSIDE){
 			Block block = event.getBlock();
 			Player player = event.getPlayer();
-			String playerName = player.getDisplayName();
-			if(!playerName.equals(creatorName)){
+			UUID playerUUID = player.getUniqueId();
+			if(!playerUUID.equals(creatorUUID)){
 				event.setCancelled(true);
 				return;
 			}
@@ -57,8 +58,8 @@ public class BuildEditListeners extends EditorListeners{
 		if(arena.isWithin(event.getBlockPlaced()) != RelativePoint.OUTSIDE){
 			Block block = event.getBlockPlaced();
 			Player player = event.getPlayer();
-			String playerName = player.getDisplayName();
-			if(!playerName.equals(creatorName)){
+			UUID playerUUID = player.getUniqueId();
+			if(!playerUUID.equals(creatorUUID)){
 				event.setCancelled(true);
 				return;
 			}
@@ -97,8 +98,8 @@ public class BuildEditListeners extends EditorListeners{
 	@EventHandler
 	public void onSignChange(SignChangeEvent event){
 		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		if(playerName.equals(creatorName)){
+		UUID playerUUID = player.getUniqueId();
+		if(playerUUID.equals(creatorUUID)){
 			Pattern p = Pattern.compile("<(.+)>");
 			String className;
 			for(String line : event.getLines()){

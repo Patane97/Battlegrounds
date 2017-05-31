@@ -40,6 +40,19 @@ public class Game extends Standby{
 		return spawningCreature;
 	}
 	@Override
+	public boolean teleportPlayer(Player player){
+		if(!arena.getSettings().isSpectateDeath()){
+			/*
+			 * Need to change this 'removePlayer' to a soft remove that removes the physical person
+			 * but keeps the player in the arena data for scoreboard and such. This data then gets
+			 * removed when game session ends.
+			 */
+			removePlayer(player.getDisplayName(), false);
+			return true;
+		}
+		return super.teleportPlayer(player);
+	}
+	@Override
 	public void updateExp(){
 		setAllLevel(roundHandler.getRoundNo());
 		if(roundHandler.getTotalMobs() == 0)
