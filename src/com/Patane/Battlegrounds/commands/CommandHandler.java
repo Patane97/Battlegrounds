@@ -28,7 +28,7 @@ public class CommandHandler implements CommandExecutor{
 		// checking if sender is from console
 		Player target = ((sender instanceof Player) ? (Player) sender : null);
 		if (target == null){
-			Messenger.send(sender, "Command cannot be executed from console!");
+			Messenger.send(target, "Command cannot be executed from console!");
 			return false;
 		}
 		BGCommand newCommand = getCommand(command);

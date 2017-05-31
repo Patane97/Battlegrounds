@@ -89,7 +89,7 @@ public class Arena {
 		this.classes 			= (classes 			== null ? new ArrayList<String>() : classes);
 		syncClasses();
 		this.mode 				= new Standby(plugin, this);
-		this.arenaSettings		= new ArenaSettings();
+		this.arenaSettings		= new ArenaSettings(false, false, true, true, true, -1, 1, -1, 5, 7, -1);
 		Arenas.add(this);
 	}
 	
