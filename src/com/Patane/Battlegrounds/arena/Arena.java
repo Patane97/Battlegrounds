@@ -56,7 +56,7 @@ public class Arena {
 	// map of players <String name, Boolean value>
 	// 'value' is used for different things in different modes.
 	// Lobby: value = ready/not ready
-	// Game: value = alive/dead
+	// Game: value = active/eliminated
 	public HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	
 	

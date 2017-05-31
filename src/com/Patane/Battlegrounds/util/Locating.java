@@ -14,7 +14,7 @@ public class Locating {
 		Player player = null;
 		Player temp;
 		for(String selectedPlayer : playerList){
-			temp = Bukkit.getPlayerExact(selectedPlayer);
+			temp = Bukkit.getPlayerExact(util.getStripDispName(selectedPlayer));
 			if(temp.getLocation().distance(entity.getLocation()) <= closestDistance){
 				player = temp;
 			}

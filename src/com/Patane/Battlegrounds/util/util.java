@@ -31,6 +31,8 @@ import com.sk89q.worldedit.regions.AbstractRegion;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class util {
 	public static void setColouredWool(Block block, DyeColor color) {
 		block.setType(Material.WOOL);
@@ -171,5 +173,11 @@ public class util {
 		changes.add(new Vector(0, 0, 1).multiply(amount));
 		changes.add(new Vector(0, 0, -1).multiply(amount));
 		return (Vector[]) changes.toArray(new Vector[0]);
+	}
+	public static String getStripDispName(Player player){
+		return ChatColor.stripColor(player.getDisplayName());
+	}
+	public static String getStripDispName(String playerName){
+		return ChatColor.stripColor(playerName);
 	}
 }

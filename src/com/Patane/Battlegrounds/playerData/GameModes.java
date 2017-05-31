@@ -10,30 +10,34 @@ import org.bukkit.entity.Player;
 import com.Patane.Battlegrounds.Messenger;
 
 public class GameModes {
-	private static HashMap<UUID, GameMode> savedGameModes = new HashMap<UUID, GameMode>();
+	private static HashMap<String, GameMode> savedGameModes = new HashMap<String, GameMode>();
 
 	public static void save(Player player){
-		savedGameModes.put(player.getUniqueId(), player.getGameMode());
-		PlayerDataYML.saveGameMode(player.getDisplayName(), true);
+		String stringUUID = player.getUniqueId().toString();
+		savedGameModes.put(stringUUID, player.getGameMode());
+		PlayerDataYML.saveGameMode(stringUUID, true);
 	}
-	public static void save(String playerName){
-		save(Bukkit.getPlayerExact(playerName));
+	public static void save(UUID playerUUID){
+		save(Bukkit.getPlayer(playerUUID));
+	}
+	public static void save(String stringUUID){
+		save(Bukkit.getPlayer(stringUUID));
 	}
 	public static boolean restore (Player player){
-		UUID playerUUID = player.getUniqueId();
+		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
-		if (!savedGameModes.containsKey(playerUUID)){
+		if (!savedGameModes.containsKey(stringUUID)){
 			Messenger.info("Failed to find " + playerName + "'s game mode in List. Checking yml...");
-			GameMode gameMode = PlayerDataYML.getGameMode(playerUUID);
+			GameMode gameMode = PlayerDataYML.getGameMode(stringUUID);
 			if(gameMode == null){
 				Messenger.warning("Failed to find " + playerName + "'s game mode from yml. Game mode Lost.");
 				return false;
 			}
-			savedGameModes.put(playerUUID, gameMode);
+			savedGameModes.put(stringUUID, gameMode);
 		}
 		try{
-			player.setGameMode(savedGameModes.remove(playerUUID));
-			PlayerDataYML.deletePlayer(playerUUID, "gamemode");
+			player.setGameMode(savedGameModes.remove(stringUUID));
+			PlayerDataYML.deletePlayer(stringUUID, "gamemode");
 			Messenger.warning("Successfully restored " + playerName + "'s game mode.");
 		} catch (Exception e){
 			Messenger.warning("Failed to set " + playerName + "'s game mode.");
@@ -42,7 +46,10 @@ public class GameModes {
 		}
 		return true;
 	}
-	public static boolean restore (String playerName){
-		return restore(Bukkit.getPlayerExact(playerName));
+	public static boolean restore (UUID playerUUID){
+		return restore(Bukkit.getPlayer(playerUUID));
+	}
+	public static boolean restore (String stringUUID){
+		return restore(Bukkit.getPlayer(stringUUID));
 	}
 }

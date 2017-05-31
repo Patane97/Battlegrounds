@@ -1,8 +1,12 @@
 package com.Patane.Battlegrounds.playerData;
 
 import java.util.HashMap;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import com.Patane.Battlegrounds.Messenger;
 
 public class Wellbeing {
 
@@ -12,101 +16,75 @@ public class Wellbeing {
 	private static HashMap<String, Integer> savedLevel = new HashMap<String, Integer>();
 	
 	public static void save(Player player){
-		savedHealth.put(player.getDisplayName(), player.getHealth());
-		savedFoodLevel.put(player.getDisplayName(), player.getFoodLevel());
-		savedExp.put(player.getDisplayName(), player.getExp());
-		savedLevel.put(player.getDisplayName(), player.getLevel());
-		PlayerDataYML.saveWellbeing(player.getDisplayName(), true);
+		String stringUUID = player.getUniqueId().toString();
+		savedHealth.put(stringUUID, player.getHealth());
+		savedFoodLevel.put(stringUUID, player.getFoodLevel());
+		savedExp.put(stringUUID, player.getExp());
+		savedLevel.put(stringUUID, player.getLevel());
+		PlayerDataYML.saveWellbeing(stringUUID, true);
+	}
+	public static void save(UUID playerUUID){
+		save(Bukkit.getPlayer(playerUUID));
+	}
+	public static void save(String stringUUID){
+		save(Bukkit.getPlayer(stringUUID));
 	}
 	public static boolean restore (Player player){
+		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
-		player.setHealth(getHealth(playerName));
-		player.setFoodLevel(getFood(playerName));
-		player.setExp(getExp(playerName));
-		player.setLevel(getLevel(playerName));
-//		boolean Bhealth = true, Bfood = true, Bexp = true, Blevel = true;
-//		if(!savedHealth.containsKey(playerName)){
-//			double health = PlayerDataYML.getHealth(playerName);
-//			if(health < 0){
-//				Messenger.warning("Failed to find " + playerName + "'s health from yml.");
-//				Bhealth = false;
-//			}
-//			savedHealth.put(playerName, health);
-//		}
-//		if(!savedFoodLevel.containsKey(playerName)){
-//			int food = PlayerDataYML.getFoodLevel(playerName);
-//			if(food < 0){
-//				Messenger.warning("Failed to find " + playerName + "'s food from yml.");
-//				Bfood = false;
-//			}
-//		}
-//		if(!savedExp.containsKey(playerName)){
-//			float exp = PlayerDataYML.getExp(playerName);
-//			if(exp < 0){
-//				Messenger.warning("Failed to find " + playerName + "'s exp from yml.");
-//				Bexp = false;
-//			}
-//		}
-//		if(!savedLevel.containsKey(playerName)){
-//			float level = PlayerDataYML.getLevel(playerName);
-//			if(level < 0){
-//				Messenger.warning("Failed to find " + playerName + "'s level from yml.");
-//				Blevel = false;
-//			}
-//		}
-//		try{
-//			if(Bhealth){
-//				player.setHealth(savedHealth.remove(playerName));
-//				PlayerDataYML.deletePlayer(playerName, "wellbeing.health");
-//			}
-//			if(Bfood){
-//				player.setFoodLevel(savedFoodLevel.remove(playerName));
-//				PlayerDataYML.deletePlayer(playerName, "wellbeing.food");
-//			}
-//			if(Bexp){
-//				player.setExp(savedExp.remove(arg0));
-//			}
-//		} catch (Exception e){
-//			Messenger.warning("Failed to set " + playerName + "'s health.");
-//			e.printStackTrace();
-//			return false;
-//		}
+		player.setHealth(getHealth(stringUUID, playerName));
+		PlayerDataYML.deletePlayer(stringUUID, "wellbeing.health");
+		player.setFoodLevel(getFood(stringUUID, playerName));
+		PlayerDataYML.deletePlayer(stringUUID, "wellbeing.food");
+		player.setExp(getExp(stringUUID, playerName));
+		PlayerDataYML.deletePlayer(stringUUID, "wellbeing.exp");
+		player.setLevel(getLevel(stringUUID, playerName));
+		PlayerDataYML.deletePlayer(stringUUID, "wellbeing.level");
 		return true;
 	}
-	public static double getHealth(String playerName){
-		if(savedHealth.get(playerName) != null)
-			return savedHealth.remove(playerName);
-		double value = PlayerDataYML.getHealth(playerName);
+	public static double getHealth(String stringUUID, String playerName){
+		if(savedHealth.get(stringUUID) != null)
+			return savedHealth.remove(stringUUID);
+		double value = PlayerDataYML.getHealth(stringUUID);
 		if(value >= 0){
 			return value;
 		}
-		return 20;
+		value = 20;
+		Messenger.warning("Failed to find " + playerName + "'s health from yml. Setting to '" + value + "'");
+		PlayerDataYML.deletePlayer(stringUUID, "wellbeing");
+		return value;
 	}
-	public static int getFood(String playerName){
-		if(savedFoodLevel.get(playerName) != null)
-			return savedFoodLevel.remove(playerName);
-		int value = PlayerDataYML.getFoodLevel(playerName);
+	public static int getFood(String stringUUID, String playerName){
+		if(savedFoodLevel.get(stringUUID) != null)
+			return savedFoodLevel.remove(stringUUID);
+		int value = PlayerDataYML.getFoodLevel(stringUUID);
 		if(value >= 0){
 			return value;
 		}
-		return 20;
+		value = 20;
+		Messenger.warning("Failed to find " + playerName + "'s food level from yml. Setting to '" + value + "'");
+		return value;
 	}
-	public static float getExp(String playerName){
-		if(savedExp.get(playerName) != null)
-			return savedExp.remove(playerName);
-		float value = PlayerDataYML.getExp(playerName);
+	public static float getExp(String stringUUID, String playerName){
+		if(savedExp.get(stringUUID) != null)
+			return savedExp.remove(stringUUID);
+		float value = PlayerDataYML.getExp(stringUUID);
 		if(value >= 0){
 			return value;
 		}
-		return 0;
+		value = 0;
+		Messenger.warning("Failed to find " + playerName + "'s exp from yml. Setting to '" + value + "'");
+		return value;
 	}
-	public static int getLevel(String playerName){
-		if(savedLevel.get(playerName) != null)
-			return savedLevel.remove(playerName);
-		int value = PlayerDataYML.getLevel(playerName);
+	public static int getLevel(String stringUUID, String playerName){
+		if(savedLevel.get(stringUUID) != null)
+			return savedLevel.remove(stringUUID);
+		int value = PlayerDataYML.getLevel(stringUUID);
 		if(value >= 0){
 			return value;
 		}
-		return 5;
+		value = 0;
+		Messenger.warning("Failed to find " + playerName + "'s level from yml. Setting to '" + value + "'");
+		return value;
 	}
 }

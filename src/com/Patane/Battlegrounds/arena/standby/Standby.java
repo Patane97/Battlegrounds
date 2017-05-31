@@ -13,6 +13,7 @@ import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.listeners.ArenaListener;
 import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.Patane.Battlegrounds.util.Randoms;
+import com.Patane.Battlegrounds.util.util;
 
 public class Standby implements ArenaMode{
 	
@@ -53,13 +54,13 @@ public class Standby implements ArenaMode{
 	
 	public void setAllExp(float exp){
 		for(String playerName : arena.getPlayers()){
-			Player player = Bukkit.getPlayerExact(playerName);
+			Player player = Bukkit.getPlayerExact(util.getStripDispName(playerName));
 			player.setExp(exp);
 		}
 	}
 	public void setAllLevel(int lvl){
 		for(String playerName : arena.getPlayers()){
-			Player player = Bukkit.getPlayerExact(playerName);
+			Player player = Bukkit.getPlayerExact(util.getStripDispName(playerName));
 			player.setLevel(lvl);
 		}
 	}
@@ -83,10 +84,10 @@ public class Standby implements ArenaMode{
 		}
 	}
 	@Override
-	public boolean removePlayer(String player, boolean check){
-		if(arena.removePlayer(player)){
-			arena.removePlayerClass(player);
-			PlayerData.restoreData(Bukkit.getPlayerExact(player));
+	public boolean removePlayer(String playerName, boolean check){
+		if(arena.removePlayer(playerName)){
+			arena.removePlayerClass(playerName);
+			PlayerData.restoreData(Bukkit.getPlayerExact(util.getStripDispName(playerName)));
 			updateExp();
 			if(check && checkSessionOver())
 				sessionOver();

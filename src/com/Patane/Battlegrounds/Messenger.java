@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.util.util;
 
 public class Messenger {
 	private static final Logger logger = Logger.getLogger("Minecraft");
@@ -48,7 +49,7 @@ public class Messenger {
 	// sends only to people in specific game
 	public static void arenaCast(Arena arena, String string) {
 		for(String selectedPlayer : arena.getPlayers()){
-			send(Bukkit.getPlayerExact(selectedPlayer), string);
+			send(Bukkit.getPlayerExact(util.getStripDispName(selectedPlayer)), string);
 		}
 		
 	}

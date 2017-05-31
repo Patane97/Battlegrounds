@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.standby.Standby;
+import com.Patane.Battlegrounds.util.util;
 
 public class Game extends Standby{
 	
@@ -23,7 +24,7 @@ public class Game extends Standby{
 		this.defaultLocations = arena.getGameSpawns();
 		
 		for(String playerName : arena.getPlayers())
-			addPlayer(Bukkit.getPlayerExact(playerName));
+			addPlayer(Bukkit.getPlayerExact(util.getStripDispName(playerName)));
 		
 		this.defaultLocations = arena.getSpectatorSpawns();
 		Messenger.arenaCast(arena, "Prepare to begin the battle!");

@@ -59,7 +59,6 @@ public class joinCommand implements BGCommand{
 		}
 		arenaMode = arena.setMode(new Lobby(plugin, arena));
 		arenaMode.addPlayer(sender);
-		
 		return true;
 	}
 
