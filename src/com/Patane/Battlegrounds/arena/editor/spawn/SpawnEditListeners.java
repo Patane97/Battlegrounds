@@ -1,6 +1,7 @@
 package com.Patane.Battlegrounds.arena.editor.spawn;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,9 +28,8 @@ public class SpawnEditListeners extends EditorListeners{
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event){
 		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		
-		if(playerName.equals(creatorName)){
+		UUID playerUUID = player.getUniqueId();
+		if(playerUUID.equals(creatorUUID)){
 			if(event.getBlockPlaced().getType().equals(Material.WOOL)){
 				Block block = event.getBlockPlaced();
 				
@@ -96,8 +96,8 @@ public class SpawnEditListeners extends EditorListeners{
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event){
 		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		if(playerName.equals(creatorName)){
+		UUID playerUUID = player.getUniqueId();
+		if(playerUUID.equals(creatorUUID)){
 			Block block = event.getBlock();
 			Location location = block.getLocation();
 			// if block broken is wool AND a spawn location
@@ -115,8 +115,8 @@ public class SpawnEditListeners extends EditorListeners{
 	@EventHandler
 	public void onItemPickup(PlayerPickupItemEvent event){
 		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		if(playerName.equals(creatorName)){
+		UUID playerUUID = player.getUniqueId();
+		if(playerUUID.equals(creatorUUID)){
 			event.setCancelled(true);
 		}
 	}

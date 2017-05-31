@@ -1,5 +1,7 @@
 package com.Patane.Battlegrounds.arena.editor.initialize;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,8 +29,8 @@ public class InitializeListeners extends EditorListeners{
 	@EventHandler
 	public void onAnvilPlace(BlockPlaceEvent event){
 		Player player = event.getPlayer();
-		String playerName = player.getDisplayName();
-		if(playerName.equals(creatorName) && event.getBlock().getType() == Material.ANVIL){
+		UUID playerUUID = player.getUniqueId();
+		if(playerUUID.equals(creatorUUID) && event.getBlock().getType() == Material.ANVIL){
 			AbstractRegion region = util.getAbstractRegion(plugin, player);
 			Location location = event.getBlock().getLocation();
 			Vector vector = new Vector(location.getX(), location.getY(), location.getZ());

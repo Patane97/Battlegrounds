@@ -5,12 +5,12 @@ public class ArenaSettings {
 	boolean destructable;
 	// Whether players can damage other players || COMPLETE ||
 	boolean pvpEnabled;
-	// Whether players spectate after dying in-game
+	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer
 	boolean spectateDeath;
 	// Globally announces the opening of a new lobby to the server
-	boolean globalJoin;
+	boolean globalNewLobby;
 	// Globally announces the ending of a game to the server
-	boolean globalEnd;
+	boolean globalEndGame;
 	
 	// Final wave of this arenas game (-1 = infinite)
 	int finalWave;
@@ -28,13 +28,13 @@ public class ArenaSettings {
 	 * Itegrate Entry-fee's and money rewards with vault
 	 */
 	
-	public ArenaSettings(boolean destructable, boolean pvpEnabled, boolean spectateDeath, boolean globalJoin, boolean globalEnd, 
+	public ArenaSettings(boolean destructable, boolean pvpEnabled, boolean spectateDeath, boolean globalNewLobby, boolean globalEndGame, 
 			int finalWave, int minimumPlayers, int maximumPlayers, int waveDelay, int firstDelay, int foodRegen){
 		this.destructable = destructable;
 		this.pvpEnabled = pvpEnabled;
 		this.spectateDeath = spectateDeath;
-		this.globalJoin = globalJoin;
-		this.globalEnd = globalEnd;
+		this.globalNewLobby = globalNewLobby;
+		this.globalEndGame = globalEndGame;
 		this.finalWave = finalWave;
 		this.minimumPlayers = minimumPlayers;
 	}
@@ -48,11 +48,11 @@ public class ArenaSettings {
 	public boolean isSpectateDeath() {
 		return spectateDeath;
 	}
-	public boolean isGlobalJoin() {
-		return globalJoin;
+	public boolean isglobalNewLobby() {
+		return globalNewLobby;
 	}
 	public boolean isGlobalEnd() {
-		return globalEnd;
+		return globalEndGame;
 	}
 	public int getFinalWave() {
 		return finalWave;
@@ -81,11 +81,11 @@ public class ArenaSettings {
 	public void setSpectateDeath(boolean spectateDeath) {
 		this.spectateDeath = spectateDeath;
 	}
-	public void setGlobalJoin(boolean globalJoin) {
-		this.globalJoin = globalJoin;
+	public void setglobalNewLobby(boolean globalNewLobby) {
+		this.globalNewLobby = globalNewLobby;
 	}
-	public void setGlobalEnd(boolean globalEnd) {
-		this.globalEnd = globalEnd;
+	public void setGlobalEnd(boolean globalEndGame) {
+		this.globalEndGame = globalEndGame;
 	}
 	public void setFinalWave(int finalWave) {
 		this.finalWave = finalWave;
