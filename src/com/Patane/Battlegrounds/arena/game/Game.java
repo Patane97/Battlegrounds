@@ -42,7 +42,7 @@ public class Game extends Standby{
 	}
 	@Override
 	public boolean teleportPlayer(Player player){
-		if(!arena.getSettings().isSpectateDeath()){
+		if(!arena.getSettings().SPECTATE_DEATH){
 			/*
 			 * Need to change this 'removePlayer' to a soft remove that removes the physical person
 			 * but keeps the player in the arena data for scoreboard and such. This data then gets

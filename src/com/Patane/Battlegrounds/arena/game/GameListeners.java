@@ -42,7 +42,7 @@ public class GameListeners extends ArenaListener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		RelativePoint point = arena.isWithin(event.getBlock());
 		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().isDestructable() && point == RelativePoint.GROUNDS_INNER) {
+			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
 				event.setCancelled(false);
 				return;
 			}
@@ -55,7 +55,7 @@ public class GameListeners extends ArenaListener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		RelativePoint point = arena.isWithin(event.getBlock());
 		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().isDestructable() && point == RelativePoint.GROUNDS_INNER) {
+			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
 				event.setCancelled(false);
 				return;
 			}
@@ -68,7 +68,7 @@ public class GameListeners extends ArenaListener {
 	public void onHangingBreak(HangingBreakByEntityEvent event) {
 		RelativePoint point = arena.isWithin(event.getEntity());
 		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().isDestructable() && point == RelativePoint.GROUNDS_INNER) {
+			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
 				event.setCancelled(false);
 				return;
 			}
@@ -81,7 +81,7 @@ public class GameListeners extends ArenaListener {
 	public void onHangingPlace(HangingPlaceEvent event) {
 		RelativePoint point = arena.isWithin(event.getEntity());
 		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().isDestructable() && point == RelativePoint.GROUNDS_INNER) {
+			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
 				event.setCancelled(false);
 				return;
 			}
@@ -100,7 +100,7 @@ public class GameListeners extends ArenaListener {
 		RelativePoint point = arena.isWithin(event.getEntity());
 		if (point != RelativePoint.OUTSIDE) {
 			if (event.getEntity() instanceof ItemFrame) {
-				if (arena.getSettings().isDestructable() && point == RelativePoint.GROUNDS_INNER) {
+				if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
 					event.setCancelled(false);
 					return;
 				}
@@ -120,7 +120,7 @@ public class GameListeners extends ArenaListener {
 						blockIterator.remove();
 		}
 		else if (point == RelativePoint.GROUNDS_INNER) {
-			if (arena.getSettings().isDestructable()) {
+			if (arena.getSettings().DESTRUCTABLE) {
 				Iterator<Block> blockIterator = event.blockList().iterator();
 				while(blockIterator.hasNext())
 					if(arena.isWithin(blockIterator.next()) != RelativePoint.GROUNDS_INNER)
@@ -180,7 +180,7 @@ public class GameListeners extends ArenaListener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerByPlayerDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
-			if(!arena.getSettings().isPvpEnabled())
+			if(!arena.getSettings().PVP_ENABLED)
 				event.setCancelled(true);
 			else
 				event.setCancelled(false);

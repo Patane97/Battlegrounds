@@ -22,6 +22,9 @@ import com.sk89q.worldedit.regions.AbstractRegion;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 
+/*
+ * NEED TO ADD "setHeader" etc. just like playerDataYML!!!
+ */
 public class ArenaYML {
 	static Config arenasConfig;
 	static Plugin plugin;
