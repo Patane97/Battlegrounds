@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.game.util.Spawner;
 
 public class RoundHandler {
@@ -26,7 +27,7 @@ public class RoundHandler {
 	int count = 0;
 	
 	RoundHandler(Plugin plugin, Game game){
-		this.game 	= game;
+		this.game 			= game;
 		this.roundNo 		= 1;
 		this.defaultDelay	= 3;
 		this.firstWaveDelay = 5;
@@ -38,7 +39,7 @@ public class RoundHandler {
 		
 		// re-create this:
 		/*	a method that runs whats in spawner and returns a hashmap of <creature(type of mob), Integer (int for location in creatureSpawns)>
-		 *  a repeated task taht starts at (spawndelay*20)-(20/4) and runs 3 times (shown below) which spawns particles at each location to show where mobs are spawning
+		 *  a repeated task that starts at (spawndelay*20)-(20/4) and runs 3 times (shown below) which spawns particles at each location to show where mobs are spawning
 		 *  a delayed task at spawnDelay*20 which runs through the previous hashmap and spawns respective mob at respective int-location in creatureSpawns (similar to below)  
 		 * 
 		 */
@@ -68,6 +69,11 @@ public class RoundHandler {
 		}
 	}
 	public void nextRound(){
+		int finalWave = game.getArena().getSettings().FINAL_WAVE;
+		if(finalWave != -1 && roundNo >= finalWave){
+			game.finalRoundEnd();
+			Messenger.arenaCast(game.getArena(), "&2Congradulations! You passed the final round.");
+		}
 		roundNo++;
 		startRound();
 	}

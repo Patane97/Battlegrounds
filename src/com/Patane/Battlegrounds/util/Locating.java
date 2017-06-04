@@ -3,6 +3,7 @@ package com.Patane.Battlegrounds.util;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class Locating {
 		Player player = null;
 		Player temp;
 		for(String selectedPlayer : playerList){
-			temp = Bukkit.getPlayerExact(util.getStripDispName(selectedPlayer));
+			temp = Bukkit.getPlayerExact(ChatColor.stripColor(selectedPlayer));
 			if(temp.getLocation().distance(entity.getLocation()) <= closestDistance){
 				player = temp;
 			}

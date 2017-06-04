@@ -27,9 +27,9 @@ public class BuildEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		Messenger.send(creator, "&2Build/Break blocks within &7Ground &2and &7Lobby Regions&2:");
-		Messenger.sendRaw(creator, "&a You can now break and place blocks in this arena's ground and lobby regions.");
-		Messenger.sendRaw(creator, "&a Type &7/bg save &ato save arena!");
+		Messenger.send(creator, "&2Build/Break blocks within &7Ground &2and &7Lobby Regions&2:"
+							+ "\n&a You can now break and place blocks in this arena's ground and lobby regions."
+							+ "\n&a Type &7/bg save &ato save arena!");
 	}
 	@Override
 	public void save() {

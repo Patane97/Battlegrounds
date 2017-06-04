@@ -186,7 +186,6 @@ public class GameListeners extends ArenaListener {
 				event.setCancelled(false);
 		}
 	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		if (event.getEntity() instanceof Player) {

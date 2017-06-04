@@ -30,9 +30,9 @@ public class Initialize implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		Messenger.send(creator, "&2Create your &7Lobby Region&2:");
-		Messenger.sendRaw(creator, "&a Make a region selection with worldedit and place");
-		Messenger.sendRaw(creator, "&a the given anvil within it to save your Lobby Region!");
+		Messenger.send(creator, "&2Create your &7Lobby Region&2:"
+							+ "\n&a Make a region selection with worldedit and place"
+							+ "\n&a the given anvil within it to save your Lobby Region!");
 		if(!Inventories.isSaved(creator))
 			Inventories.save(creator);
 		
@@ -50,8 +50,8 @@ public class Initialize implements EditorType{
 			Messenger.send(creator, "&aSaved &7Lobby Region &afor Arena &7" + arenaName + "&a.");
 			return;
 		}
-		Messenger.send(creator, "&cFailed to save &7Lobby Region &cfor Arena &7" + arenaName + "&c.");
-		Messenger.sendRaw(creator, "&cType &7/bg edit [arena] lobby &cto re-edit &7Lobby Region");
+		Messenger.send(creator, "&cFailed to save &7Lobby Region &cfor Arena &7" + arenaName + "&c."
+							+ "\n&c Type &7/bg edit [arena] lobby &cto re-edit &7Lobby Region");
 	}
 
 	@Override

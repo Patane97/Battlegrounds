@@ -36,6 +36,13 @@ public class Arenas {
 		}
 		return null;
 	}
+	public static Arena grabSpect(Player player){
+		for(Arena selectedArena : arenas.values()){
+			if(selectedArena.hasSpectator(player))
+				return selectedArena;
+		}
+		return null;
+	}
 	public static void allSessionsOver(){
 		for(Arena selectedArena : arenas.values())
 			selectedArena.getMode().sessionOver();

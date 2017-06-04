@@ -3,18 +3,16 @@
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.listeners.ArenaListener;
 import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.Patane.Battlegrounds.util.Randoms;
-import com.Patane.Battlegrounds.util.util;
-
 public class Standby implements ArenaMode{
 	
 	protected ArenaListener listener;
@@ -32,19 +30,22 @@ public class Standby implements ArenaMode{
 		this.arena 		= arena;
 		this.listener	= listener;
 		this.colorCode	= "&a";
+		
+		initilizeMessage();
 	}
 	public Arena getArena(){
 		return arena;
 	}
+	protected void initilizeMessage(){}
 	/**
 	 * Checks if defaultLocations is empty and attempts to teleport the player
 	 * 
 	 * @param player to teleport
 	 * @return true if player successfully gets teleported
 	 */
-	public boolean teleportPlayer(Player player){
-		if(defaultLocations.size() > 0){
-			Location location = defaultLocations.get(Randoms.integer(0, defaultLocations.size()-1));
+	public boolean randomTeleport(Player player, ArrayList<Location> locations){
+		if(locations.size() > 0){
+			Location location = locations.get(Randoms.integer(0, locations.size()-1));
 			player.teleport(location);
 			return true;
 		}
@@ -54,40 +55,38 @@ public class Standby implements ArenaMode{
 	
 	public void setAllExp(float exp){
 		for(String playerName : arena.getPlayers()){
-			Player player = Bukkit.getPlayerExact(util.getStripDispName(playerName));
+			Player player = Bukkit.getPlayerExact(ChatColor.stripColor(playerName));
 			player.setExp(exp);
 		}
 	}
 	public void setAllLevel(int lvl){
 		for(String playerName : arena.getPlayers()){
-			Player player = Bukkit.getPlayerExact(util.getStripDispName(playerName));
+			Player player = Bukkit.getPlayerExact(ChatColor.stripColor(playerName));
 			player.setLevel(lvl);
 		}
 	}
 	@Override
 	public boolean addPlayer(Player player){
-		PlayerData.saveData(player);
-		if(teleportPlayer(player)){
-			arena.putPlayer(player, false);
-			player.setHealth(20);
-			player.setFoodLevel(20);
-			player.setExp(0);
-			player.setLevel(0);
-			player.getInventory().clear();
-			player.setGameMode(GameMode.SURVIVAL);
-			updateExp();
-			return true;
-		} else{
-			PlayerData.restoreData(player);
-			Messenger.send(player, "&cFailed to teleport you! Reverting join...");
-			return false;
-		}
+		arena.putPlayer(player, false);
+		return true;
 	}
+	public void playerSetupValues(Player player){
+		player.setHealth(20);
+		player.setFoodLevel(20);
+		player.setExp(0);
+		player.setLevel(0);
+		player.getInventory().clear();
+		player.setGameMode(GameMode.SURVIVAL);
+	}
+	/**
+	 * Removes player from the arena and checks if player being removed will cause arena session to end.
+	 * This will also restore all player data that was stored when entering the arena.
+	 */
 	@Override
 	public boolean removePlayer(String playerName, boolean check){
-		if(arena.removePlayer(playerName)){
+		if(arena.removePlayerFromList(playerName)){
 			arena.removePlayerClass(playerName);
-			PlayerData.restoreData(Bukkit.getPlayerExact(util.getStripDispName(playerName)));
+			PlayerData.restoreData(Bukkit.getPlayerExact(ChatColor.stripColor(playerName)));
 			updateExp();
 			if(check && checkSessionOver())
 				sessionOver();

@@ -5,11 +5,11 @@ public class ArenaSettings {
 	public final boolean DESTRUCTABLE;
 	// Whether players can damage other players || COMPLETE ||
 	public final boolean PVP_ENABLED;
-	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer
+	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer (see Game.teleportPlayer())
 	public final boolean SPECTATE_DEATH;
-	// Globally announces the opening of a new lobby to the server
-	public final boolean GLOBAL_NEW_ANNOUNCE;
-	// Globally announces the ending of a game to the server
+	// Globally announces the opening of a new lobby to the server || COMPLETE || <-|
+	public final boolean GLOBAL_NEW_ANNOUNCE;								   //   | Eventually need to add custom announcements
+	// Globally announces the ending of a game to the server || COMPLETE || <-------|
 	public final boolean GLOBAL_END_ANNOUNCE;
 	
 	// Final wave of this arenas game (-1 = infinite)

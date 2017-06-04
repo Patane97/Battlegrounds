@@ -15,8 +15,10 @@ public class Inventories {
 
 	public static void save(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		savedInventories.put(stringUUID, player.getInventory().getContents());
-		PlayerDataYML.saveInventory(stringUUID, true);
+		if(!savedInventories.containsKey(stringUUID)){
+			savedInventories.put(stringUUID, player.getInventory().getContents());
+			PlayerDataYML.saveInventory(stringUUID, true);
+		}
 	}
 	public static void save(UUID playerUUID){
 		save(Bukkit.getPlayer(playerUUID));

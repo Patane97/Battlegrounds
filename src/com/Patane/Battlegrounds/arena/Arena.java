@@ -23,6 +23,7 @@ import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.listeners.ArenaListener;
+import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.Patane.Battlegrounds.util.RelativePoint;
 import com.Patane.Battlegrounds.util.util;
 import com.sk89q.worldedit.Vector;
@@ -57,8 +58,9 @@ public class Arena {
 	// 'value' is used for different things in different modes.
 	// Lobby: value = ready/not ready
 	// Game: value = active/eliminated
-	public HashMap<String, Boolean> players = new HashMap<String, Boolean>();
-	
+	// UPDATE THIS!! (CHANGE String name TO UUID).. big task :(
+	private HashMap<String, Boolean> players = new HashMap<String, Boolean>();
+	private ArrayList<String> spectators = new ArrayList<String>();
 	
 	public Arena(){}
 	/**
@@ -129,6 +131,12 @@ public class Arena {
 		ArrayList<String> playerStrings = new ArrayList<String>();
 		playerStrings.addAll(players.keySet());
 		return playerStrings;
+	}
+	/**
+	 * @return List of spectators active in this arena
+	 */
+	public ArrayList<String> getSpectators(){
+		return spectators;
 	}
 	/**
 	 * 
@@ -287,10 +295,20 @@ public class Arena {
 	/**
 	 * 
 	 * @param player
-	 * @return true if the player is within the arena instance
+	 * @return true if the player is in this arena (not spectating)
 	 */
 	public boolean hasPlayer(Player player) {
 		if(players.containsKey(player.getDisplayName()))
+			return true;
+		return false;
+	}
+	/**
+	 * 
+	 * @param player
+	 * @return true if the player is spectating this arena
+	 */
+	public boolean hasSpectator(Player player) {
+		if(spectators.contains(player.getDisplayName()))
 			return true;
 		return false;
 	}
@@ -308,6 +326,7 @@ public class Arena {
 	}
 	public void clean() {
 		clearSpawnBlocks(false);
+		// if "revert" setting is true, this needs to get a saved version of the arena and restore it.
 	}
 
 	/**
@@ -386,14 +405,27 @@ public class Arena {
 			}
 		} //ArenaYML.saveClasses(name);
 	}
-	public boolean removePlayer(String player) {
-		if(players.remove(player) != null)
+	public boolean removePlayerFromList(String playerName) {
+		if(players.remove(playerName) != null)
 			return true;
 		return false;
 	}
 	public boolean removePlayerClass(String player) {
-		if(playerClasses.remove(player) != null)
+		return (playerClasses.remove(player) != null ? true : false);
+	}
+	public boolean joinSpectator(Player player){
+		PlayerData.saveData(player);
+		mode.playerSetupValues(player);
+		spectators.add(player.getDisplayName());
+		mode.randomTeleport(player, spectatorSpawns);
+		return false;
+	}
+	public boolean leaveSpectator(Player player){
+		if(spectators.remove(player.getDisplayName())){
+			removePlayerFromList(player.getDisplayName());
+			PlayerData.restoreData(player);
 			return true;
+		}
 		return false;
 	}
 }

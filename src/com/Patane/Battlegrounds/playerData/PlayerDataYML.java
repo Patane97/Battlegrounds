@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.YML;
 
@@ -33,9 +34,8 @@ public class PlayerDataYML {
 			Player player;
 			for(String stringUUID : header.getKeys(false)){
 				player = Bukkit.getPlayer(UUID.fromString(stringUUID));
-				if(Bukkit.getOnlinePlayers().contains(player)){
+				if(Bukkit.getOnlinePlayers().contains(player))
 					loadAllData(player);
-				}
 			}
 		}
 		playerDataConfig.save();
@@ -73,7 +73,10 @@ public class PlayerDataYML {
 	 */
 	public static void loadAllData(Player player){
 		String stringUUID = player.getUniqueId().toString();
+		Messenger.info(stringUUID);
 		if(checkSection(stringUUID)){
+			Messenger.info("Found UUID!");
+			// ADD EXP/LEVEL AS WELL!
 			if(checkSection(stringUUID + ".wellbeing.health")){
 				double health = getHealth(stringUUID);
 				if(health > 0)
@@ -84,9 +87,9 @@ public class PlayerDataYML {
 				if(food > 0)
 					player.setFoodLevel(food);
 			}
-			if(checkSection("playerUUID." + stringUUID + ".gamemode"))
+			if(checkSection(stringUUID + ".gamemode"))
 				player.setGameMode(getGameMode(stringUUID));
-			if(checkSection("playerUUID." + stringUUID + ".location"))
+			if(checkSection(stringUUID + ".location"))
 				player.teleport(getLocation(stringUUID));
 			if(checkSection(stringUUID + ".inventory")){
 				player.getInventory().clear();
@@ -101,6 +104,34 @@ public class PlayerDataYML {
 		header.set("wellbeing.health", player.getHealth());
 		header.set("wellbeing.food", player.getFoodLevel());
 		header.set("wellbeing.exp", player.getExp());
+		header.set("wellbeing.level", player.getLevel());
+		if(save)
+			playerDataConfig.save();
+	}
+	public static void saveHealth(String stringUUID, boolean save){
+		checkCreatePlayer(stringUUID);
+		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+		header.set("wellbeing.health", player.getHealth());
+		if(save)
+			playerDataConfig.save();
+	}
+	public static void saveFood(String stringUUID, boolean save){
+		checkCreatePlayer(stringUUID);
+		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+		header.set("wellbeing.food", player.getFoodLevel());
+		if(save)
+			playerDataConfig.save();
+	}
+	public static void saveExp(String stringUUID, boolean save){
+		checkCreatePlayer(stringUUID);
+		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+		header.set("wellbeing.exp", player.getExp());
+		if(save)
+			playerDataConfig.save();
+	}
+	public static void saveLevel(String stringUUID, boolean save){
+		checkCreatePlayer(stringUUID);
+		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
 		header.set("wellbeing.level", player.getLevel());
 		if(save)
 			playerDataConfig.save();

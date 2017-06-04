@@ -44,6 +44,10 @@ public class Editor extends Standby{
 		this.creator 	= creator;
 		this.colorCode	= "&e";
 	}
+	@Override
+	protected void initilizeMessage(){
+		Messenger.broadcast("&aYou are now editing arena &7" + arena.getName() + "&a.");
+	}
 	public Player getCreator(){
 		return creator;
 	}

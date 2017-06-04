@@ -14,8 +14,10 @@ public class GameModes {
 
 	public static void save(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		savedGameModes.put(stringUUID, player.getGameMode());
-		PlayerDataYML.saveGameMode(stringUUID, true);
+		if(!savedGameModes.containsKey(stringUUID)){
+			savedGameModes.put(stringUUID, player.getGameMode());
+			PlayerDataYML.saveGameMode(stringUUID, true);
+		}
 	}
 	public static void save(UUID playerUUID){
 		save(Bukkit.getPlayer(playerUUID));

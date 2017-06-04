@@ -31,9 +31,9 @@ public class GroundEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		Messenger.send(creator, "&2Create new &7Ground Region&2:");
-		Messenger.sendRaw(creator, "&a Select a region with worldedit and");
-		Messenger.sendRaw(creator, "&a type &7/bg save &ato save new ground region");
+		Messenger.send(creator, "&2Create new &7Ground Region&2:"
+							+ "\n&a Select a region with worldedit and"
+							+ "\n&a type &7/bg save &ato save new ground region");
 	}
 	@Override
 	public void save() {

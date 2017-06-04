@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.util.util;
 
 public class Messenger {
 	private static final Logger logger = Logger.getLogger("Minecraft");
@@ -23,15 +22,15 @@ public class Messenger {
         sender.sendMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
         return true;
     }
-	public static boolean sendRaw(CommandSender sender, String msg) {
-		if (sender == null || msg.equals("")) {
-            return false;
-        }
-
-        // Otherwise, send the message with the plugin prefix.
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-        return true;
-	}
+//	public static boolean sendRaw(CommandSender sender, String msg) {
+//		if (sender == null || msg.equals("")) {
+//            return false;
+//        }
+//
+//        // Otherwise, send the message with the plugin prefix.
+//        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+//        return true;
+//	}
 	public static void broadcast(String msg){
 		Bukkit.broadcastMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
 	}
@@ -49,7 +48,7 @@ public class Messenger {
 	// sends only to people in specific game
 	public static void arenaCast(Arena arena, String string) {
 		for(String selectedPlayer : arena.getPlayers()){
-			send(Bukkit.getPlayerExact(util.getStripDispName(selectedPlayer)), string);
+			send(Bukkit.getPlayerExact(ChatColor.stripColor(selectedPlayer)), string);
 		}
 		
 	}

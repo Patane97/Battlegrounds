@@ -24,12 +24,13 @@ public class joinCommand implements BGCommand{
 	public boolean execute(Plugin plugin, Player sender, String[] args) {
 		String arenaName = (args.length > 1 ? args[1] : null);
 		Arena currentArena = Arenas.grab(sender);
-		if (currentArena != null){
-			Messenger.send(sender, "&cPlease leave your current game before starting a new one");
+		if (currentArena != null || Arenas.grabSpect(sender) != null){
+			Messenger.send(sender, "&cPlease leave your current game before joining a new one");
 			return false;
 		}
 		if(arenaName == null){
-			Messenger.send(sender, "&cPlease specify an arena! Usage: &7/bg join [arena]");
+			Messenger.send(sender, "&cPlease specify an arena!"
+							   + "\n&7 Usage: &7/bg join [arena]");
 			return false;
 		}
 		Arena arena = Arenas.grab(arenaName);
@@ -37,6 +38,10 @@ public class joinCommand implements BGCommand{
 			Messenger.send(sender, "&cArena &7" + arenaName + "&c does not exist");
 			return false;
 		}
+		/*
+		 * CHANGE THIS AREA TO BE WITHIN EACH ArenaMode. "joinAttempt(Player player)" for ArenaMode 
+		 * and arena.getMode().joinAttempt(sender) for here.
+		 */
 		ArenaMode arenaMode = arena.getMode();
 		if(arenaMode instanceof Editor){
 			Messenger.send(sender, "&cArena &7" + arenaName + "&c is currently in edit mode");
@@ -48,17 +53,15 @@ public class joinCommand implements BGCommand{
 		}
 		if(arenaMode instanceof Game){
 			Messenger.send(sender, "&aArena is already in a game. Joining spectators...");
-			Game game = (Game) arenaMode;
-			game.addPlayer(sender);
+			arena.joinSpectator(sender);
 			return true;
 		}
 		if(arenaMode instanceof Lobby){
-			Lobby lobby = (Lobby) arenaMode;
-			lobby.addPlayer(sender);
+			arenaMode.addPlayer(sender);
 			return true;
 		}
-		arenaMode = arena.setMode(new Lobby(plugin, arena));
 		arenaMode.addPlayer(sender);
+		arenaMode = arena.setMode(new Lobby(plugin, arena));
 		return true;
 	}
 

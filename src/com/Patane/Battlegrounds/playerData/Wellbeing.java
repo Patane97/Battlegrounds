@@ -17,11 +17,23 @@ public class Wellbeing {
 	
 	public static void save(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		savedHealth.put(stringUUID, player.getHealth());
-		savedFoodLevel.put(stringUUID, player.getFoodLevel());
-		savedExp.put(stringUUID, player.getExp());
-		savedLevel.put(stringUUID, player.getLevel());
-		PlayerDataYML.saveWellbeing(stringUUID, true);
+		if(!savedHealth.containsKey(stringUUID)){
+			savedHealth.put(stringUUID, player.getHealth());
+			PlayerDataYML.saveHealth(stringUUID, true);
+		}
+		if(!savedFoodLevel.containsKey(stringUUID)){
+			savedFoodLevel.put(stringUUID, player.getFoodLevel());
+			PlayerDataYML.saveFood(stringUUID, true);
+		}
+		if(!savedExp.containsKey(stringUUID)){
+			savedExp.put(stringUUID, player.getExp());
+			PlayerDataYML.saveExp(stringUUID, true);
+		}
+		if(!savedLevel.containsKey(stringUUID)){
+			savedLevel.put(stringUUID, player.getLevel());
+			PlayerDataYML.saveLevel(stringUUID, true);
+		}
+//		PlayerDataYML.saveWellbeing(stringUUID, true);
 	}
 	public static void save(UUID playerUUID){
 		save(Bukkit.getPlayer(playerUUID));

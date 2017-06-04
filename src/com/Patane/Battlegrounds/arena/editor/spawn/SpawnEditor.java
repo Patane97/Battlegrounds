@@ -46,10 +46,10 @@ public class SpawnEditor implements EditorType{
 
 	@Override
 	public void initilize() {
-		Messenger.send(creator, "&2Add/Remove Arena &7Spawns&2:");
-		Messenger.sendRaw(creator, "&a Place/Break the given wool blocks to add/remove their respective spawn locations.");
-		Messenger.sendRaw(creator, "&7&oNOTE: The direction the player places the block is the direction entities will face when being teleported/spawned.");
-		Messenger.sendRaw(creator, "&a Type &7/bg save &awhen you're done!");
+		Messenger.send(creator, "&2Add/Remove Arena &7Spawns&2:"
+							+ "\n&a Place/Break the given wool blocks to add/remove their respective spawn locations."
+							+ "\n&7&o NOTE: The direction the player places the block is the direction entities will face when being teleported/spawned."
+							+ "\n&a Type &7/bg save &awhen you're done!");
 		if(!Inventories.isSaved(creator))
 			Inventories.save(creator);
 		
@@ -148,8 +148,8 @@ public class SpawnEditor implements EditorType{
 			StringJoiner emptySpawnString = new StringJoiner("&c, ");
 			for(String spawn : emptySpawns)
 				emptySpawnString.add("&c" + spawn);
-			Messenger.send(creator, "&cWarning! Missing spawns for " + emptySpawnString.toString());
-			Messenger.sendRaw(creator, "&cType &7/bg edit [arena] spawns&c to re-edit spawns");
+			Messenger.send(creator, "&cWarning! Missing spawns for " + emptySpawnString.toString() 
+								+ "\n&cType &7/bg edit [arena] spawns&c to re-edit spawns");
 		}
 		Messenger.send(creator, "&aSaved &7All Spawns &afor Arena &7" + arenaName + "&a.");
 	}

@@ -19,12 +19,17 @@ public class leaveCommand implements BGCommand{
 	@Override
 	public boolean execute(Plugin plugin, Player sender, String[] args) {
 		Arena arena = Arenas.grab(sender);
-		if(arena == null){
-			Messenger.send(sender, "&cYou must be in an arena to leave it!");
-			return false;
+		if(arena != null){
+			arena.getMode().removePlayer(sender.getDisplayName(), true);
+			return true;
 		}
-		Arenas.grab(sender).getMode().removePlayer(sender.getDisplayName(), true);
-		return true;
+		arena = Arenas.grabSpect(sender);
+		if(arena != null){
+			arena.leaveSpectator(sender);
+			return true;
+		}
+		Messenger.send(sender, "&cYou must be in an arena to leave it!");
+		return false;
 	}
 
 }

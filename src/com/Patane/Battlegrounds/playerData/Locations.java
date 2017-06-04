@@ -14,8 +14,10 @@ public class Locations {
 
 	public static void save(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		savedLocations.put(stringUUID, player.getLocation());
-		PlayerDataYML.saveLocation(stringUUID, true);
+		if(!savedLocations.containsKey(stringUUID)){
+			savedLocations.put(stringUUID, player.getLocation());
+			PlayerDataYML.saveLocation(stringUUID, true);
+		}
 	}
 	public static void save(UUID playerUUID){
 		save(Bukkit.getPlayer(playerUUID));

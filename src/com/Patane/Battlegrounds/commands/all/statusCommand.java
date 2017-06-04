@@ -22,11 +22,12 @@ import com.Patane.Battlegrounds.commands.CommandInfo;
 )
 public class statusCommand implements BGCommand{
 
+	@SuppressWarnings("unused")
 	@Override
 	public boolean execute(Plugin plugin, Player sender, String[] args) {
 		String arenaName = (args.length > 1 ? args[1] : null);
 		Arena currentArena = Arenas.grab(sender);
-		if (currentArena != null){
+		if (currentArena != null && false){ // check if this command is allowed in the list in settings!!!!
 			Messenger.send(sender, "&cPlease leave your current game before starting a new one");
 			return false;
 		}
@@ -39,7 +40,7 @@ public class statusCommand implements BGCommand{
 			Messenger.send(sender, "&cArena &7" + arenaName + "&c does not exist");
 			return false;
 		}
-		String active = (arena.isActive() ? "&aACTIVE" : "&cINACTIVE");
+		String active = (arena.isActive() ? "&aREADY" : "&cINACTIVE");
 		if(arena.getMode() instanceof Editor)
 			active = arena.getMode().getColor() + "EDIT MODE";
 		else if(arena.getMode() instanceof Lobby)
@@ -66,12 +67,12 @@ public class statusCommand implements BGCommand{
 				emptySpawnString.add("&c" + spawn.substring(2));
 			spawnsStatus = emptySpawnString.toString();
 		}
-		Messenger.send(sender, "&2Arena &7" + arena.getName() + "&2 Status Report:");
-		Messenger.sendRaw(sender, "  &2Current Status: " 	+ active);
-		Messenger.sendRaw(sender, "  &2Ground Region: " 	+ groundRegion);
-		Messenger.sendRaw(sender, "  &2Lobby Region: " 		+ lobbyRegion);
-		Messenger.sendRaw(sender, "  &2Empty Spawns: " 		+ spawnsStatus);
-		Messenger.sendRaw(sender, "  &2Available Classes: " + classes);
+		Messenger.send(sender, "&2Arena &7" + arena.getName() + "&2 Status Report:"
+						   + "\n&2  Current Status: " 	+ active
+						   + "\n&2  Ground Region: " 	+ groundRegion
+						   + "\n&2  Lobby Region: " 	+ lobbyRegion
+						   + "\n&2  Empty Spawns: " 	+ spawnsStatus
+						   + "\n&2  Playable Classes: " + classes);
 		return true;
 	}
 
