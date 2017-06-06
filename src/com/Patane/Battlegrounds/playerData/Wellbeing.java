@@ -58,21 +58,20 @@ public class Wellbeing {
 		if(savedHealth.get(stringUUID) != null)
 			return savedHealth.remove(stringUUID);
 		double value = PlayerDataYML.getHealth(stringUUID);
-		if(value >= 0){
+		if(value >= 0)
 			return value;
-		}
+		Messenger.warning("Health: " + value);
 		value = 20;
 		Messenger.warning("Failed to find " + playerName + "'s health from yml. Setting to '" + value + "'");
-		PlayerDataYML.deletePlayer(stringUUID, "wellbeing");
 		return value;
 	}
 	public static int getFood(String stringUUID, String playerName){
 		if(savedFoodLevel.get(stringUUID) != null)
 			return savedFoodLevel.remove(stringUUID);
 		int value = PlayerDataYML.getFoodLevel(stringUUID);
-		if(value >= 0){
+		if(value >= 0)
 			return value;
-		}
+		Messenger.warning("Food: " + value);
 		value = 20;
 		Messenger.warning("Failed to find " + playerName + "'s food level from yml. Setting to '" + value + "'");
 		return value;
@@ -84,6 +83,7 @@ public class Wellbeing {
 		if(value >= 0){
 			return value;
 		}
+		Messenger.warning("Exp: " + value);
 		value = 0;
 		Messenger.warning("Failed to find " + playerName + "'s exp from yml. Setting to '" + value + "'");
 		return value;
@@ -95,6 +95,7 @@ public class Wellbeing {
 		if(value >= 0){
 			return value;
 		}
+		Messenger.warning("Level: " + value);
 		value = 0;
 		Messenger.warning("Failed to find " + playerName + "'s level from yml. Setting to '" + value + "'");
 		return value;

@@ -87,7 +87,7 @@ public class Standby implements ArenaMode{
 		if(arena.removePlayerFromList(playerName)){
 			arena.removePlayerClass(playerName);
 			PlayerData.restoreData(Bukkit.getPlayerExact(ChatColor.stripColor(playerName)));
-			updateExp();
+			updateExp(); 
 			if(check && checkSessionOver())
 				sessionOver();
 			return true;

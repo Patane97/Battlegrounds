@@ -30,8 +30,15 @@ public class Lobby extends Standby{
 		}
 	}
 	public boolean checkStartGame(){
-		if(!arena.anyPlayers(false))
+		if(!arena.anyPlayers(false)){
+			int playerCount = arena.getPlayers().size();
+			int minPlayers = arena.getSettings().MIN_PLAYERS;
+			if(minPlayers > playerCount){
+				Messenger.arenaCast(arena, "&cNot enough players to start a game &7[" + playerCount + "/" + minPlayers + "]&c.");
+				return false;
+			}
 			return true;
+		}
 		return false;
 	}
 	public void startGame(){
@@ -40,7 +47,7 @@ public class Lobby extends Standby{
 	@Override
 	public void updateExp(){
 		setAllLevel(arena.getPlayers().size());
-		setAllExp((float)arena.howManyPlayers(true)/arena.getPlayers().size());
+		setAllExp((float)arena.howManyPlayers(true)/Math.max(arena.getPlayers().size(), arena.getSettings().MIN_PLAYERS));
 	}
 	/**
 	 * Sets up and adds a new player to the arena and Lobby as well as saving their data.
@@ -55,19 +62,26 @@ public class Lobby extends Standby{
 	 */
 	@Override
 	public boolean addPlayer(Player player){
+		int playerCount = arena.getPlayers().size();
+		int maxPlayers = arena.getSettings().MAX_PLAYERS;
+		if(maxPlayers != -1
+				&& !player.equals(creator) 
+				&& maxPlayers >= playerCount){
+			Messenger.send(player, "&cUnable to join. &7" + arena.getName() + "&c is currently full &7[" + playerCount + "/" + maxPlayers + "]&c.");
+			return false;
+		}
 		PlayerData.saveData(player);
 		if(randomTeleport(player, arena.getLobbySpawns())){
 			if(!player.equals(creator))
 				arena.putPlayer(player, false);
 			playerSetupValues(player);
 			return true;
-		} else{
-			PlayerData.restoreData(player);
-			if(player.equals(creator))
-				arena.removePlayerFromList(player.getDisplayName());
-			Messenger.send(player, "&cFailed to teleport you! Reverting join...");
-			return false;
 		}
+		PlayerData.restoreData(player);
+		if(player.equals(creator))
+			arena.removePlayerFromList(player.getDisplayName());
+		Messenger.send(player, "&cFailed to teleport you! Reverting join...");
+		return false;
 	}
 	@Override
 	public void playerSetupValues(Player player){

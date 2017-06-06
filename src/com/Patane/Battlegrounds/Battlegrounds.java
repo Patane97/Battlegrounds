@@ -27,10 +27,6 @@ public class Battlegrounds extends JavaPlugin {
 		this.getCommand("bg").setExecutor(commandHandler);
 		EditorTypes.registerAll();
 	}
-	public void onDisable() {
-		Arenas.allSessionsOver();
-		ArenaYML.saveAllArenas();
-	}
 	private void loadFiles(){
 		BGClassYML.load(this);
 		PlayerDataYML.load(this);
@@ -38,5 +34,9 @@ public class Battlegrounds extends JavaPlugin {
 	}
 	private void cleanArenas(){
 		Arenas.cleanAll();
+	}
+	public void onDisable() {
+		Arenas.allSessionsOver();
+		ArenaYML.saveAllArenas();
 	}
 }

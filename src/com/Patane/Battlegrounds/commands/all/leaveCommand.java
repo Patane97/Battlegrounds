@@ -21,11 +21,13 @@ public class leaveCommand implements BGCommand{
 		Arena arena = Arenas.grab(sender);
 		if(arena != null){
 			arena.getMode().removePlayer(sender.getDisplayName(), true);
+			Messenger.send(sender, "&aYou have left &7" + arena.getName() + "&a.");
 			return true;
 		}
 		arena = Arenas.grabSpect(sender);
 		if(arena != null){
 			arena.leaveSpectator(sender);
+			Messenger.send(sender, "&aYou have stopped spectating &7" + arena.getName() + "&a.");
 			return true;
 		}
 		Messenger.send(sender, "&cYou must be in an arena to leave it!");

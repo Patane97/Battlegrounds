@@ -32,6 +32,9 @@ public class PlayerDataYML {
 			// checks and restores the data of all online players in the yml file
 			header = getRootSection();
 			Player player;
+			for(String s : header.getKeys(true)){
+				Messenger.warning(s);
+			}
 			for(String stringUUID : header.getKeys(false)){
 				player = Bukkit.getPlayer(UUID.fromString(stringUUID));
 				if(Bukkit.getOnlinePlayers().contains(player))
@@ -73,29 +76,31 @@ public class PlayerDataYML {
 	 */
 	public static void loadAllData(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		Messenger.info(stringUUID);
 		if(checkSection(stringUUID)){
-			Messenger.info("Found UUID!");
-			// ADD EXP/LEVEL AS WELL!
-			if(checkSection(stringUUID + ".wellbeing.health")){
-				double health = getHealth(stringUUID);
-				if(health > 0)
-					player.setHealth(health);
-			}
-			if(checkSection(stringUUID + ".wellbeing.food")){
-				int food = getFoodLevel(stringUUID);
-				if(food > 0)
-					player.setFoodLevel(food);
-			}
-			if(checkSection(stringUUID + ".gamemode"))
-				player.setGameMode(getGameMode(stringUUID));
-			if(checkSection(stringUUID + ".location"))
-				player.teleport(getLocation(stringUUID));
-			if(checkSection(stringUUID + ".inventory")){
-				player.getInventory().clear();
-				player.getInventory().setContents(getInventory(stringUUID));
-			}
-			deletePlayer(player.getUniqueId().toString());
+			Messenger.info("Found '" + stringUUID + "' in YML");
+			Wellbeing.restore(player);
+			GameModes.restore(player);
+			Locations.restore(player);
+			Inventories.restore(player);
+//			if(checkSection(stringUUID + ".wellbeing.health")){
+//				Messenger.info("Found Health!");
+//				double health = (getHealth(stringUUID) > 0 ? getHealth(stringUUID) : 20);
+//				player.setHealth(health);
+//			}
+//			if(checkSection(stringUUID + ".wellbeing.food")){
+//				Messenger.info("Found Food!");
+//				int food = (getFoodLevel(stringUUID) > 0 ? getFoodLevel(stringUUID) : 20);
+//				player.setFoodLevel(food);
+//			}
+//			if(checkSection(stringUUID + ".gamemode"))
+//				player.setGameMode(getGameMode(stringUUID));
+//			if(checkSection(stringUUID + ".location"))
+//				player.teleport(getLocation(stringUUID));
+//			if(checkSection(stringUUID + ".inventory")){
+//				player.getInventory().clear();
+//				player.getInventory().setContents(getInventory(stringUUID));
+//			}
+//			deletePlayer(player.getUniqueId().toString());
 		}
 	}
 	public static void saveWellbeing(String stringUUID, boolean save){
@@ -194,6 +199,7 @@ public class PlayerDataYML {
 			}
 			return header.getDouble("health");
 		}
+		Messenger.warning("Returning -1 for Health");
 		return -1;
 	}
 	public static int getFoodLevel(String stringUUID){
@@ -224,17 +230,18 @@ public class PlayerDataYML {
 		return -1;
 	}
 	public static void deletePlayer(String stringUUID){
+		Messenger.warning("DELETING UUID: " + stringUUID);
 		getRootSection().set(stringUUID, null);
 		playerDataConfig.save();
 	}
 	public static void deletePlayer(String stringUUID, String type){
-		getSection(stringUUID).set(type, null);
-		if(type.contains("wellbeing")){
-			checkWellbeing(stringUUID);
+		if(getSection(stringUUID) != null){
+			Messenger.warning("DELETING UUID + TYPE: " + stringUUID + " : " + type);
+			getSection(stringUUID).set(type, null);
+			if(getSection(stringUUID).getKeys(false).isEmpty())
+				getRootSection().set(stringUUID, null);
+			playerDataConfig.save();
 		}
-		if(getSection(stringUUID).getKeys(false).isEmpty())
-			getRootSection().set(stringUUID, null);
-		playerDataConfig.save();
 	}
 	public static void checkWellbeing(String stringUUID) {
 		setHeader(stringUUID + ".wellbeing");

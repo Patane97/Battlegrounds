@@ -33,17 +33,18 @@ public class Config extends YamlConfiguration{
             File file = new File(plugin.getDataFolder(), fileName);
             if (!file.exists()){
                 if (plugin.getResource(fileName) != null){
-                	Messenger.info("Creating " + fileName +"...");
+                	Messenger.info("Creating " + fileName + "...");
                     plugin.saveResource(fileName, false);
                 }else{
                     save(file);
                 }
             }else{
+            	Messenger.info("Loading " + fileName + "...");
                 load(file);
                 save(file);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
  

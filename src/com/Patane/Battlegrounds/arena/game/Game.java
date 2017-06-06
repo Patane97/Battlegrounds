@@ -96,8 +96,8 @@ public class Game extends Standby{
 		roundHandler.stopAllTasks();
 		roundHandler.clearMobs();
 		if(arena.getSettings().GLOBAL_END_ANNOUNCE){
-			Messenger.broadcast("&2A game in arena &a" + arena.getName() + "&2 has just finished! They made it past the final round (&a" + roundHandler.getRoundNo() + "&2)!"
-							  + "&7 Type /bg join " + arena.getName() + " to start a new game at that arena!");
+			Messenger.broadcast("&2The game in &a" + arena.getName() + "&2 just finished! They made it past the final round (&a" + roundHandler.getRoundNo() + "&2)!"
+							+ "\n&7 Type /bg join " + arena.getName() + " to start a new game at that arena!");
 		}
 	}
 	private void playerExit(Player player){
@@ -126,8 +126,8 @@ public class Game extends Standby{
 		roundHandler.stopAllTasks();
 		roundHandler.clearMobs();
 		if(arena.getSettings().GLOBAL_END_ANNOUNCE){
-			Messenger.broadcast("&2A game in arena &a" + arena.getName() + "&2 has just finished! They made it to round &a" + roundHandler.getRoundNo() + "&2!"
-							  + "&7 Type /bg join " + arena.getName() + " to start a new game at that arena!");
+			Messenger.broadcast("&2The game in &a" + arena.getName() + "&2 just finished! They made it to round &a" + roundHandler.getRoundNo() + "&2!"
+							+ "\n&7 Type /bg join " + arena.getName() + " to start a new game at that arena!");
 		}
 		super.sessionOver(new Standby(plugin, arena));
 	}

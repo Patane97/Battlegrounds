@@ -5,18 +5,18 @@ public class ArenaSettings {
 	public final boolean DESTRUCTABLE;
 	// Whether players can damage other players || COMPLETE ||
 	public final boolean PVP_ENABLED;
-	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer (see Game.teleportPlayer())
+	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer (see Game.teleportPlayer()) [check if this was done with spectator remake]
 	public final boolean SPECTATE_DEATH;
 	// Globally announces the opening of a new lobby to the server || COMPLETE || <-|
 	public final boolean GLOBAL_NEW_ANNOUNCE;								   //   | Eventually need to add custom announcements
 	// Globally announces the ending of a game to the server || COMPLETE || <-------|
 	public final boolean GLOBAL_END_ANNOUNCE;
 	
-	// Final wave of this arenas game (-1 = infinite)
+	// Final wave of this arenas game (-1 = infinite) || COMPLETE ||
 	public final int FINAL_WAVE;
-	// Minimum amount of players
+	// Minimum amount of players || COMPLETE ||
 	public final int MIN_PLAYERS;
-	// Minimum amount of players (-1 = infinite)
+	// Minimum amount of players (-1 = infinite) || COMPLETE ||
 	public final int MAX_PLAYERS;
 	// Delay per-wave
 	public final int WAVE_DELAY;
@@ -35,7 +35,7 @@ public class ArenaSettings {
 		this.GLOBAL_NEW_ANNOUNCE 	= true;
 		this.GLOBAL_END_ANNOUNCE 	= true;
 		this.FINAL_WAVE 			= -1;
-		this.MIN_PLAYERS 			= 2;
+		this.MIN_PLAYERS 			= 1;
 		this.MAX_PLAYERS 			= -1;
 		this.WAVE_DELAY 			= 5;
 		this.FIRST_DELAY 			= 10;
