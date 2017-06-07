@@ -1,10 +1,11 @@
-package com.Patane.Battlegrounds.GUI;
+package com.Patane.Battlegrounds.GUI.classes;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Arenas;

@@ -15,8 +15,8 @@ public class RoundHandler {
 	int totalMobs;
 	// delay of creatures spawning in seconds
 	long spawnDelay;
-	long firstWaveDelay;
-	long defaultDelay;
+	float firstDelay;
+	float waveDelay;
 	
 	Plugin plugin;
 	Game game;
@@ -29,13 +29,13 @@ public class RoundHandler {
 	RoundHandler(Plugin plugin, Game game){
 		this.game 			= game;
 		this.roundNo 		= 1;
-		this.defaultDelay	= 3;
-		this.firstWaveDelay = 5;
+		this.waveDelay		= game.getArena().getSettings().WAVE_DELAY;
+		this.firstDelay 	= game.getArena().getSettings().FIRST_DELAY;
 		this.creatureSpawns	= game.getArena().getCreatureSpawns();
 		this.plugin			= plugin;
 	}
 	public void startRound(){
-		spawnDelay = (roundNo == 1 ? firstWaveDelay : defaultDelay);
+		spawnDelay = (long) (roundNo == 1 ? firstDelay : waveDelay);
 		
 		// re-create this:
 		/*	a method that runs whats in spawner and returns a hashmap of <creature(type of mob), Integer (int for location in creatureSpawns)>
@@ -46,7 +46,7 @@ public class RoundHandler {
 		spawnTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Spawner(this), spawnDelay*20); // seconds * 20 ticks
 		
 	}
-	// removes a mob when they have been killed then checks if the round has ended from it
+	// removes a mob when they have been killed
 	public boolean creatureKilled(Creature creature){
 		if(activeCreatures.remove(creature)){
 //			Messenger.arenaCast(game.getArena(), "&6Creature &7" + creature.getName() + "&6 killed.");

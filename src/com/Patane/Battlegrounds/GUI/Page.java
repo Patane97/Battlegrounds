@@ -4,33 +4,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 
 public class Page {
-	String title;
-	Inventory inventory;
-	Page back;
+	protected String title;
+	protected Inventory inventory;
+	protected Page back;
 	
-	ItemStack backIcon;
-	ItemStack barIcon;
+	protected ItemStack backIcon;
+	protected ItemStack barIcon;
 	
-	HashMap<ItemStack, Page> links;
-	ItemStack[] menuBar;
-	int menuSize;
+	protected HashMap<ItemStack, Page> links;
+	protected ItemStack[] menuBar;
+	protected int menuSize;
 	
-	GUI gui;
+	protected GUI gui;
 
 	public Page (GUI gui, String name,  int invSize){
 		this(gui, name, invSize, null);
 	}
 	public Page (GUI gui, String name, int invSize, Page back){
-		name = GUIenum.translate(name);
+		name = Chat.translate(name);
 		this.title 		= name;
 		this.gui 		= gui;
 		this.menuSize	= 9;
@@ -76,16 +75,10 @@ public class Page {
 		}
 	}
 	protected void createBackIcon() {
-		backIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 0);
-		ItemMeta backMeta= backIcon.getItemMeta();
-		backMeta.setDisplayName(GUIenum.BACK.toString());
-		backIcon.setItemMeta(backMeta);
+		backIcon = GUIutil.stainedPane(0, GUIutil.BACK);
 	}
 	protected void createBarIcon() {
-		barIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-		ItemMeta barMeta= backIcon.getItemMeta();
-		barMeta.setDisplayName(GUIenum.BAR.toString());
-		barIcon.setItemMeta(barMeta);
+		barIcon = GUIutil.stainedPane(15, GUIutil.BAR);
 	}
 	public boolean addLink(int slot, ItemStack icon, Page linkPage){
 		if(alreadyIcon(icon)){
@@ -124,11 +117,8 @@ public class Page {
 		return false;
 	}
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot) {
-		String name = (item.hasItemMeta() 
-				? ChatColor.stripColor(item.getItemMeta().getDisplayName()) 
-				: "");
 		if(isMenu(slot)){
-			if(item.getType() == backIcon.getType() && name.equalsIgnoreCase("back"))
+			if(item.equals(backIcon))
 				gui.switchPage(back);
 			return true;
 		}

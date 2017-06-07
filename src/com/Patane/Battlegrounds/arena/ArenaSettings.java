@@ -18,10 +18,10 @@ public class ArenaSettings {
 	public final int MIN_PLAYERS;
 	// Minimum amount of players (-1 = infinite) || COMPLETE ||
 	public final int MAX_PLAYERS;
-	// Delay per-wave
-	public final int WAVE_DELAY;
-	// Delay for First wave
-	public final int FIRST_DELAY;
+	// Delay per-wave || COMPLETE ||
+	public final float WAVE_DELAY;
+	// Delay for First wave || COMPLETE ||
+	public final float FIRST_DELAY;
 	// How quickly food-level regenerates (x points per 5 seconds)(-1 = Food-Level locked, 0 = no regen)
 	public final int FOOD_REGEN;
 	/*

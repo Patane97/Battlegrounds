@@ -7,6 +7,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Chat;
+
 public class GUI {
 	protected Plugin plugin;
 	
@@ -22,7 +24,7 @@ public class GUI {
 	boolean resettingInv;
 	
 	public GUI(Plugin plugin, String name, Player player){	
-		name = GUIenum.translate(name);
+		name = Chat.translate(name);
 		this.plugin 		= plugin;
 		this.player 		= player;
 		this.gui 			= plugin.getServer().createInventory(null, 54, name);
@@ -56,7 +58,7 @@ public class GUI {
 			switchPage(mainPage);
 		this.mainPage = mainPage;
 	}
-	protected void switchPage(Page page) {
+	public void switchPage(Page page) {
 		currentPage.clean();
 		currentPage = page;
 		currentPage.update();

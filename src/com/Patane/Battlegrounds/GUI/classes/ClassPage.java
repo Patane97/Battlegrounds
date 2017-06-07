@@ -1,11 +1,13 @@
-package com.Patane.Battlegrounds.GUI;
+package com.Patane.Battlegrounds.GUI.classes;
 
 import java.util.Arrays;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
 
@@ -13,7 +15,7 @@ import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
 public class ClassPage extends Page{
 	BGClass linkedClass;
 	public ClassPage(ClassesGUI gui, Page back, BGClass linkedClass) {
-		super(gui, GUIenum.translate("&l" + linkedClass.getName()), linkedClass.getInventory().getSize(), back);
+		super(gui, Chat.translate("&l" + linkedClass.getName()), linkedClass.getInventory().getSize(), back);
 		this.linkedClass 	= linkedClass;
 		loadFromClass();
 	}

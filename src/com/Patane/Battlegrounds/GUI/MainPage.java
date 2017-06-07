@@ -16,13 +16,24 @@ public class MainPage extends Page{
 	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
-		if(topInv)
-			return super.pickupItem(topInv, click, item, slot);
+		if(topInv){
+			if(isMenu(slot)){
+				if(item.equals(backIcon)){
+					gui.getPlayer().closeInventory();
+					gui.exit();
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 	@Override
 	public void buildMenuBar() {
 		super.buildMenuBar();
+	}
+	@Override
+	protected void createBackIcon() {
+		backIcon = GUIutil.stainedPane((short) 14, GUIutil.SAVE_EXIT);
 	}
 	
 }

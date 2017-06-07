@@ -3,10 +3,10 @@ package com.Patane.Battlegrounds.arena.editor.classes;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.GUI.ClassMainPage;
-import com.Patane.Battlegrounds.GUI.ClassPage;
 import com.Patane.Battlegrounds.GUI.GUI;
 import com.Patane.Battlegrounds.GUI.Page;
+import com.Patane.Battlegrounds.GUI.classes.ClassMainPage;
+import com.Patane.Battlegrounds.GUI.classes.ClassPage;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.collections.Classes;

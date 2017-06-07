@@ -9,6 +9,7 @@ import com.Patane.Battlegrounds.arena.editor.build.BuildEditor;
 import com.Patane.Battlegrounds.arena.editor.classes.ClassEditor;
 import com.Patane.Battlegrounds.arena.editor.region.GroundEditor;
 import com.Patane.Battlegrounds.arena.editor.region.LobbyEditor;
+import com.Patane.Battlegrounds.arena.editor.settings.SettingsEditor;
 import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 
 public class EditorTypes {
@@ -28,11 +29,12 @@ public class EditorTypes {
 		register(SpawnEditor.class);
 		register(GroundEditor.class);
 		register(LobbyEditor.class);
+		register(SettingsEditor.class);
 	}
 	private static void register(Class< ? extends EditorType> editorType){
 		EditorInfo ETInfo = editorType.getAnnotation(EditorInfo.class);
 		if(ETInfo == null) {
-			Messenger.warning("An editorType is missing its attached CommandInfo Annotation!");
+			Messenger.warning("An editorType is missing its attached EditorInfo Annotation!");
 			return;
 		}
 		editorTypes.put(ETInfo.name(), editorType);

@@ -1,13 +1,15 @@
-package com.Patane.Battlegrounds.GUI;
+package com.Patane.Battlegrounds.GUI.classes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.GUI.GUIutil;
+import com.Patane.Battlegrounds.GUI.MainPage;
+import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Classes;
@@ -24,19 +26,10 @@ public class ClassMainPage extends MainPage{
 		classesGui = gui;
 		links.put(menuBar[allClassesSlot], new AllClassesPage(classesGui, "&6&lOther classes", 45, this));
 	}
-	protected void createBackIcon() {
-		backIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-		ItemMeta backMeta= backIcon.getItemMeta();
-		backMeta.setDisplayName(GUIenum.SAVE_EXIT.toString());
-		backIcon.setItemMeta(backMeta);
-	}
 	@Override
 	public void buildMenuBar(){
 		super.buildMenuBar();
-		allClassesIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
-		ItemMeta allClassesMeta= allClassesIcon.getItemMeta();
-		allClassesMeta.setDisplayName(GUIenum.translate("&6&lOther Classes"));
-		allClassesIcon.setItemMeta(allClassesMeta);
+		allClassesIcon = GUIutil.stainedPane(1, "&6&lOther Classes");
 		this.allClassesSlot = 8;
 		menuBar[allClassesSlot] = allClassesIcon;
 	}
@@ -69,17 +62,12 @@ public class ClassMainPage extends MainPage{
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
+			if(super.pickupItem(topInv, click, item, slot))
+				return true;
 			if(slot == allClassesSlot){
 				classesGui.switchPage(links.get(item));
 				return true;
 				}
-			if(slot == 0){
-				classesGui.getPlayer().closeInventory();
-				classesGui.exit();
-				return true;
-				}
-			if(super.pickupItem(topInv, click, item, slot))
-				return true;
 			if(isLink(item))
 				classesGui.switchPage(links.get(item));
 			return true;
