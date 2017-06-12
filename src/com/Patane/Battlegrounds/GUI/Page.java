@@ -98,6 +98,23 @@ public class Page {
 		}
 		return false;
 	}
+	public boolean addIcon(int slot, ItemStack icon){
+		if(alreadyIcon(icon)){
+			Messenger.send(gui.getPlayer(), "&cThis item is already an Icon");
+			return false;
+		}
+		inventory.setItem(slot, icon);
+		gui.update();
+		return true;
+	}
+	public boolean addIcon(ItemStack icon){
+		for(int i=0 ; i<=inventory.getSize() ; i++){
+			if(inventory.getItem(i) == null){
+				return addIcon(i, icon);
+			}
+		}
+		return false;
+	}
 	protected boolean alreadyIcon(ItemStack item){
 		for(ItemStack selectedItem : links.keySet()){
 			if(selectedItem.getType() == item.getType() 

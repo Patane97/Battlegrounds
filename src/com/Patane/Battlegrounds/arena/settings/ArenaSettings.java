@@ -1,29 +1,29 @@
-package com.Patane.Battlegrounds.arena;
+package com.Patane.Battlegrounds.arena.settings;
 
 public class ArenaSettings {
-	// blocks can be placed/broken whilst in-game || COMPLETE ||
+	// blocks can be placed/broken whilst in-game || COMPLETE || ||| Icon: TNT
 	public final boolean DESTRUCTABLE;
-	// Whether players can damage other players || COMPLETE ||
+	// Whether players can damage other players || COMPLETE || ||| Icon: WOODEN SWORD
 	public final boolean PVP_ENABLED;
-	// Whether players spectate after dying in-game || COMPLETE || <--- Soft removePlayer in Game.teleportPlayer (see Game.teleportPlayer()) [check if this was done with spectator remake]
+	// Whether players spectate after dying in-game || COMPLETE || ||| Icon: 
 	public final boolean SPECTATE_DEATH;
-	// Globally announces the opening of a new lobby to the server || COMPLETE || <-|
+	// Globally announces the opening of a new lobby to the server || COMPLETE || <-| ||| Icon: 
 	public final boolean GLOBAL_NEW_ANNOUNCE;								   //   | Eventually need to add custom announcements
 	// Globally announces the ending of a game to the server || COMPLETE || <-------|
 	public final boolean GLOBAL_END_ANNOUNCE;
-	
+
+	// Delay for First wave || COMPLETE ||
+	public final float FIRST_DELAY;
+	// Delay per-wave || COMPLETE ||
+	public final float WAVE_DELAY;
 	// Final wave of this arenas game (-1 = infinite) || COMPLETE ||
 	public final int FINAL_WAVE;
+	// How quickly food-level regenerates (x points per 5 seconds)(-1 = Food-Level locked, 0 = no regen)
+	public final int FOOD_REGEN;
 	// Minimum amount of players || COMPLETE ||
 	public final int MIN_PLAYERS;
 	// Minimum amount of players (-1 = infinite) || COMPLETE ||
 	public final int MAX_PLAYERS;
-	// Delay per-wave || COMPLETE ||
-	public final float WAVE_DELAY;
-	// Delay for First wave || COMPLETE ||
-	public final float FIRST_DELAY;
-	// How quickly food-level regenerates (x points per 5 seconds)(-1 = Food-Level locked, 0 = no regen)
-	public final int FOOD_REGEN;
 	/*
 	 * Itegrate Entry-fee's and money rewards with vault
 	 */

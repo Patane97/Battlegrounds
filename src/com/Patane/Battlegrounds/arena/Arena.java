@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
+import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 import com.Patane.Battlegrounds.arena.standby.ArenaMode;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;

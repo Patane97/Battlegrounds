@@ -1,5 +1,8 @@
 package com.Patane.Battlegrounds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 
 public enum Chat {
@@ -30,4 +33,11 @@ public enum Chat {
     public static boolean hasAlpha(String s){
     	return s.matches(".*[a-zA-Z]+.*");
     }
+
+	public static List<String> translate(List<String> finalLore) {
+		List<String> result = new ArrayList<String>();
+		for(String s : finalLore)
+			result.add(translate(s));
+		return result;
+	}
 }
