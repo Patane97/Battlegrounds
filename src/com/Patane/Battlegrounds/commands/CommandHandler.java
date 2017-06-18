@@ -9,7 +9,16 @@ import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Battlegrounds;
 import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.commands.all.*;
+import com.Patane.Battlegrounds.commands.all.classCommand;
+import com.Patane.Battlegrounds.commands.all.createCommand;
+import com.Patane.Battlegrounds.commands.all.editCommand;
+import com.Patane.Battlegrounds.commands.all.joinCommand;
+import com.Patane.Battlegrounds.commands.all.leaveCommand;
+import com.Patane.Battlegrounds.commands.all.listCommand;
+import com.Patane.Battlegrounds.commands.all.removeCommand;
+import com.Patane.Battlegrounds.commands.all.saveCommand;
+import com.Patane.Battlegrounds.commands.all.spectateCommand;
+import com.Patane.Battlegrounds.commands.all.statusCommand;
 
 public class CommandHandler implements CommandExecutor{
 	

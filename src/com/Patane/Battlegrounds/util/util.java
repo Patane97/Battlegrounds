@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -180,6 +181,9 @@ public class util {
 		return (Vector[]) changes.toArray(new Vector[0]);
 	}
 
+	public static String stringJoiner(ArrayList<String> strings, String delimiter) {
+		return stringJoiner(strings.toArray(new String[0]), delimiter);
+	}
 	public static String stringJoiner(String[] strings, String delimiter) {
 		return stringJoiner(strings, new StringJoiner(delimiter));
 	}
@@ -192,4 +196,17 @@ public class util {
 		}
 		return stringJoiner.toString();
 	}
+
+	@SuppressWarnings("null")
+	public static int getSlot(Inventory inventory, ItemStack thisItem) {
+		int count = 0;
+		for(ItemStack item : inventory.getContents()){
+			if(thisItem.equals(item)){
+				return count;
+			}
+			count++;
+		}
+		return (Integer) null;
+	}
+
 }

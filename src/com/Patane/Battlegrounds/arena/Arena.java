@@ -34,6 +34,20 @@ import com.sk89q.worldedit.regions.AbstractRegion;
 import com.sk89q.worldedit.regions.RegionOperationException;
 
 public class Arena {
+	/**
+	 * ******************* STATIC YML SECTION *******************
+	 */
+	private static ArenaYML yml;
+
+	public static void setYML(ArenaYML yml){
+		Arena.yml = yml;
+	}
+	public static ArenaYML YML(){
+		return Arena.yml;
+	}
+	/**
+	 * **********************************************************
+	 */
 	protected Plugin plugin;
 	
 	protected String name;
@@ -136,6 +150,12 @@ public class Arena {
 		this.mode.unregister();
 		this.mode = mode;
 		return this.mode;
+	}
+	public String getCurrentColour(){
+		if(!isActive()){
+			return "&c";
+		}
+		return mode.getColor();
 	}
 	/**
 	 * @return List of players active in this arena
@@ -389,8 +409,11 @@ public class Arena {
 	}
 	public void addClass(BGClass newClass) {
 		classes.add(newClass.getName());
-		if(!Classes.contains(newClass.getName()))
-			Classes.add(newClass, true);
+		if(!Classes.contains(newClass.getName())){
+			Classes.add(newClass);
+			BGClass.YML().saveClass(newClass);
+		}
+		
 	}
 	public boolean hasClass(String className) {
 		for(String selectedClass : classes){
@@ -406,7 +429,7 @@ public class Arena {
 	}
 	public void removeClass(String className) {
 		if(classes.remove(className))
-			ArenaYML.saveClasses(name);
+			Arena.YML().saveClasses(name);
 	}
 	private void syncClasses() {
 		List<String> temp = new ArrayList<String>();
@@ -416,7 +439,7 @@ public class Arena {
 				Messenger.warning("Class " + className + " does not match CLASSES list");
 				classes.remove(className);
 			}
-		} //ArenaYML.saveClasses(name);
+		} //Arena.YML().saveClasses(name);
 	}
 	public boolean removePlayerFromList(String playerName) {
 		if(players.remove(playerName) != null)
@@ -425,6 +448,13 @@ public class Arena {
 	}
 	public boolean removePlayerClass(String player) {
 		return (playerClasses.remove(player) != null ? true : false);
+	}
+	public boolean replaceClass(BGClass thisClass, BGClass thatClass) {
+		int index = classes.indexOf(thisClass.getName());
+		if(index < 0)
+			return false;
+		classes.set(index, thatClass.getName());
+		return true;
 	}
 	public boolean joinSpectator(Player player){
 		PlayerData.saveData(player);

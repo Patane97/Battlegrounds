@@ -1,7 +1,6 @@
 package com.Patane.Battlegrounds.arena.settings;
 
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 
 public class ArenaSettings {
 	// blocks can be placed/broken whilst in-game || COMPLETE || ||| Icon: TNT
@@ -32,16 +31,16 @@ public class ArenaSettings {
 	 */
 	
 	public ArenaSettings(Arena arena){
-		this.DESTRUCTABLE 			= (boolean) ArenaYML.getSetting(arena.getName(), Setting.DESTRUCTABLE);
-		this.PVP_ENABLED 			= (boolean) ArenaYML.getSetting(arena.getName(), Setting.PVP_ENABLED);
-		this.SPECTATE_DEATH 		= (boolean) ArenaYML.getSetting(arena.getName(), Setting.SPECTATE_DEATH);
-		this.GLOBAL_NEW_ANNOUNCE 	= (boolean) ArenaYML.getSetting(arena.getName(), Setting.GLOBAL_NEW_ANNOUNCE);
-		this.GLOBAL_END_ANNOUNCE 	= (boolean) ArenaYML.getSetting(arena.getName(), Setting.GLOBAL_END_ANNOUNCE);
-		this.WAVE_DELAY 			= (float) ArenaYML.getSetting(arena.getName(), Setting.WAVE_DELAY);
-		this.FIRST_DELAY 			= (float) ArenaYML.getSetting(arena.getName(), Setting.FIRST_DELAY);
-		this.FINAL_WAVE 			= (int) ArenaYML.getSetting(arena.getName(), Setting.FINAL_WAVE);
-		this.FOOD_REGEN 			= (int) ArenaYML.getSetting(arena.getName(), Setting.FOOD_REGEN);
-		this.MIN_PLAYERS 			= (int) ArenaYML.getSetting(arena.getName(), Setting.MIN_PLAYERS);
-		this.MAX_PLAYERS 			= (int) ArenaYML.getSetting(arena.getName(), Setting.MAX_PLAYERS);
+		this.DESTRUCTABLE 			= (boolean) Arena.YML().getSetting(arena.getName(), Setting.DESTRUCTABLE);
+		this.PVP_ENABLED 			= (boolean) Arena.YML().getSetting(arena.getName(), Setting.PVP_ENABLED);
+		this.SPECTATE_DEATH 		= (boolean) Arena.YML().getSetting(arena.getName(), Setting.SPECTATE_DEATH);
+		this.GLOBAL_NEW_ANNOUNCE 	= (boolean) Arena.YML().getSetting(arena.getName(), Setting.GLOBAL_NEW_ANNOUNCE);
+		this.GLOBAL_END_ANNOUNCE 	= (boolean) Arena.YML().getSetting(arena.getName(), Setting.GLOBAL_END_ANNOUNCE);
+		this.WAVE_DELAY 			= (float) Arena.YML().getSetting(arena.getName(), Setting.WAVE_DELAY);
+		this.FIRST_DELAY 			= (float) Arena.YML().getSetting(arena.getName(), Setting.FIRST_DELAY);
+		this.FINAL_WAVE 			= (int) Arena.YML().getSetting(arena.getName(), Setting.FINAL_WAVE);
+		this.FOOD_REGEN 			= (int) Arena.YML().getSetting(arena.getName(), Setting.FOOD_REGEN);
+		this.MIN_PLAYERS 			= (int) Arena.YML().getSetting(arena.getName(), Setting.MIN_PLAYERS);
+		this.MAX_PLAYERS 			= (int) Arena.YML().getSetting(arena.getName(), Setting.MAX_PLAYERS);
 	}
 }

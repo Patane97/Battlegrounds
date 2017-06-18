@@ -9,13 +9,13 @@ import com.Patane.Battlegrounds.arena.Arena;
 
 public class Arenas {
 	private static HashMap<String, Arena> arenas = new HashMap<String, Arena>();
-	
+
+	public static Arena add(Arena arena){
+		return arenas.put(arena.getName(), arena);
+	}
 	public static void addAll(ArrayList<Arena> arenaList){
 		for(Arena selectedArena : arenaList)
 			arenas.put(selectedArena.getName(), selectedArena);
-	}
-	public static void add(Arena arena){
-		arenas.put(arena.getName(), arena);
 	}
 	public static boolean remove(Arena arena){
 		if(arenas.remove(arena.getName()) != null)
@@ -56,10 +56,13 @@ public class Arenas {
 			tempArenas.add(arena);
 		return tempArenas;
 	}
-	public static ArrayList<String> getNames(){
+	public static ArrayList<String> getNames(boolean colour){
 		ArrayList<String> tempArenas = new ArrayList<String>();
-		for(String arenaName : arenas.keySet())
+		for(String arenaName : arenas.keySet()){
+			if(colour)
+				arenaName = grab(arenaName).getCurrentColour() + arenaName;
 			tempArenas.add(arenaName);
+		}
 		return tempArenas;
 	}
 	public static void cleanAll() {
@@ -71,8 +74,8 @@ public class Arenas {
 		if(arena != null)
 			arena.getMode().removePlayer(player.getDisplayName(), true);
 	}
-	public static void removeClass(String name) {
+	public static void removeClass(String className) {
 		for(Arena arena : arenas.values())
-			arena.removeClass(name);			
+			arena.removeClass(className);			
 	}
 }

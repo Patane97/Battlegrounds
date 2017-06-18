@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.commands.BGCommand;
@@ -37,7 +36,7 @@ public class removeCommand implements BGCommand{
 		if(arena != null && Arenas.remove(arena)){
 			Messenger.arenaCast(arena, "&cYou have been kicked because this arena is being removed.");
 			arena.getMode().sessionOver();
-			ArenaYML.clearSection(arena.getName());
+			Arena.YML().clearSection(arena.getName());
 			Messenger.send(sender, "&aRemoved Arena &7" + arena.getName() + "&a.");
 		}
 		return true;

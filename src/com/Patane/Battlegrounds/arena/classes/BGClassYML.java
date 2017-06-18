@@ -1,56 +1,48 @@
 package com.Patane.Battlegrounds.arena.classes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.collections.Classes;
-import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.YML;
 import com.Patane.Battlegrounds.util.util;
 
-public class BGClassYML {
-	static Config classConfig;
-	static Plugin plugin;
-	static ConfigurationSection classSection;
+public class BGClassYML extends BasicYML{
 	
-	public static void load(Plugin battlegrounds) {
-		plugin			= battlegrounds;
-		classConfig 	= new Config(plugin, "classes.yml");
-		classSection = (classConfig.isConfigurationSection("classes") 
-						? classConfig.getConfigurationSection("classes") 
-						: classConfig.createSection("classes"));
-		Classes.addAll(loadAllClasses());
+	public void load(Plugin plugin) {
+		loadYML(plugin, "classes.yml", "classes");
+		loadAllClasses();
 	}
 	
-	public static ArrayList<BGClass> loadAllClasses(){
-		ArrayList<BGClass> bgClasses = new ArrayList<BGClass>();
-		classSection = classConfig.getConfigurationSection("classes");
-		for(String className : classSection.getKeys(false)){
+	public  void loadAllClasses(){
+		for(String className : header.getKeys(false)){
 			BGClass bgClass = loadClass(className);
 			if(bgClass == null){
+				// CHANGE THIS TO BE SIMILAR TO ARENAS. CLASSES SHOULD STILL RENDER IF CERTAIN PARTS ARE MISSING (eg missing Icon turns into default icon)
 				Messenger.warning("Class '" + className + "' not recognised in classes.yml!");
 				continue;
 			}
-			// for some reason this works WITHOUT this 'add' code. find out why.
-			bgClasses.add(bgClass);
 		}
-		return bgClasses;
+		Messenger.info("Successfully loaded Classes: " + util.stringJoiner(Classes.getNames(), ", "));
 	}
-	public static boolean saveClass(BGClass bgClass){
+	public  void saveAllClasses(){
+		clearRoot();
+		for(BGClass selectedClass : Classes.get())
+			saveClass(selectedClass);
+		Messenger.info("Successfully saved Classes: " + util.stringJoiner(Classes.getNames(), ", "));
+	}
+	public  boolean saveClass(BGClass bgClass){
 		try{
-			if(bgClass == null)
-				return false; 
-			classSection = classConfig.getConfigurationSection("classes");
-			classSection.set(bgClass.getName().toUpperCase(), null);
-			classSection = classConfig.createSection("classes." + bgClass.getName().toUpperCase());
+			String className = bgClass.getName();
+			setHeader(clearCreateSection(className));
+			
 			ItemStack[] inv 		= bgClass.getInventory().getContents();
 			ItemStack[] armor 		= new ItemStack[4];
 			armor 					= Arrays.copyOfRange(inv, 0, 4);
@@ -58,45 +50,40 @@ public class BGClassYML {
 			ItemStack[] contents 	= new ItemStack[36];
 			contents 				= Arrays.copyOfRange(inv, 9, inv.length);
 			
-			classSection.set("Icon", bgClass.getIcon());
-			classSection.set("Armor", armor);
-			classSection.set("OffHand", offHand);
+			header.set("Icon", bgClass.getIcon());
+			header.set("Armor", armor);
+			header.set("OffHand", offHand);
 			for(Entry<Integer, ItemStack> entry : YML.playerInventoryContentsFormat(contents).entrySet())
-				classSection.set("Contents." + entry.getKey(), entry.getValue());
-			classConfig.save();
+				header.set("Contents." + entry.getKey(), entry.getValue());
+			config.save();
+			Messenger.debug("info", "Successfully saved Class: " + bgClass.getName() + ".");
 			return true;
-		} catch (Exception e){
-			Messenger.warning("Class '" + bgClass.getName() + "' failed to save.");
+		} catch (NullPointerException e){
+			Messenger.warning("Error saving BGClass: " + bgClass.getName() + ".");
 			e.printStackTrace();
 			return false;
 		}
 	}
-	public static void saveAllClasses(){
-		classConfig.get("classes", null);
-		for(BGClass selectedClass : Classes.get())
-			saveClass(selectedClass);
-	}
-	public static BGClass loadClass(String className){
+	public  BGClass loadClass(String className){
 		try{
-			classSection = classConfig.getConfigurationSection("classes." + className);
+			setHeader(className);
 			
-			ItemStack icon = classSection.getItemStack("Icon");
-				
+			ItemStack icon = header.getItemStack("Icon");
+			
 			@SuppressWarnings("unchecked")
-			List<ItemStack> itemList = (List<ItemStack>) classSection.get("Armor");
+			List<ItemStack> itemList = (List<ItemStack>) header.get("Armor");
 			ItemStack[] armor = (ItemStack[]) itemList.toArray(new ItemStack[0]);
 			
-			ItemStack offHand = classSection.getItemStack("OffHand");
+			ItemStack offHand = header.getItemStack("OffHand");
 			// TO BE IMPLEMENTED!
 	//		ItemStack[] effects = new ItemStack[4];
 			
-			classSection = (classConfig.isConfigurationSection("classes." + className + ".Contents") 
-							? classConfig.getConfigurationSection("classes." + className + ".Contents")
-							: classConfig.createSection("classes." + className + ".Contents"));
+			setHeader(createSection(className + ".Contents"));
+			
 			// recalling item slots + items to be used later
 			HashMap<Integer, ItemStack> printedItems = new HashMap<Integer, ItemStack>();
-			for(String slotNo : classSection.getKeys(false))
-				printedItems.put(Integer.parseInt(slotNo), classSection.getItemStack(slotNo));
+			for(String slotNo : header.getKeys(false))
+				printedItems.put(Integer.parseInt(slotNo), header.getItemStack(slotNo));
 			// creating a contents of inventory from previous slots + items hashmap
 			ItemStack[] contents = YML.getPlayerInventoryContents(printedItems);
 			
@@ -105,7 +92,7 @@ public class BGClassYML {
 			// adding armor
 			for(i = 0, b = i ; i < armor.length ; i++)
 				classInventory[i] = armor[i-b];
-			//adding offhand
+			// adding offhand
 			classInventory[4] = offHand;
 			// adding contents
 			for(i = 9, b = i ; i < contents.length + 9; i++)
@@ -116,16 +103,12 @@ public class BGClassYML {
 				className = icon.getItemMeta().getDisplayName();
 
 			BGClass newClass = new BGClass(plugin, className, icon, classInventory);
+			Messenger.debug("info", "Successfully loaded Class: " + className + ".");
 			return newClass;
 		} catch (Exception e){
-			Messenger.warning("Class '" + className + "' failed to load.");
+			Messenger.warning("Error loading BGClass: " + className + ".");
 			e.printStackTrace();
 			return null;
 		}
-	}
-	public static void remove(String className){
-		classSection = classConfig.getConfigurationSection("classes");
-		classSection.set(className, null);
-		classConfig.save();
 	}
 }

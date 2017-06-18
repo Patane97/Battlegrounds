@@ -57,14 +57,12 @@ public class GUIListeners extends BGListener{
 		ClickType click = event.getClick();
 
 		if(clickedItem.getType() != Material.AIR && (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT)){
-//			Messenger.send(player, "Shift Click");
 			event.setCancelled(gui.shiftClick(topInv, click, clickedItem, slot));
 		} else if((clickedItem.getType() != Material.AIR 
 				|| cursorItem.getType() != Material.AIR) 
 				&& (click == ClickType.LEFT 
 				|| click == ClickType.RIGHT 
 				|| click == ClickType.MIDDLE)){
-//			Messenger.send(player, "Regular Click");
 			event.setCancelled(gui.regularClick(topInv, click, clickedItem, cursorItem, slot));
 		}
 	}

@@ -3,6 +3,7 @@ package com.Patane.Battlegrounds.arena.editor.classes;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.GUI;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.GUI.classes.ClassMainPage;
@@ -45,6 +46,16 @@ public class ClassesGUI extends GUI{
 			}
 		}
 		arena.getMode().sessionOver();
+	}
+	public boolean checkClassExisting(String itemName) {
+		if(arena.hasClass(itemName)){
+			Messenger.send(player, "&cThere is already a class in this arena with this name.");
+			return true;
+		} else if(Classes.contains(itemName)){
+			Messenger.send(player, "&cThere is already a class with that name. Add it from the &6All Classes &cmenu.");
+			return true;
+		}
+		return false;
 	}
 
 }

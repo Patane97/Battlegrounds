@@ -71,6 +71,12 @@ public class GUI {
 		player.openInventory(gui);
 		resettingInv = false;
 	}
+	public void refresh() {
+		currentPage.clean();
+		currentPage.update();
+		gui = currentPage.inventory();
+		update();
+	}
 	public void exit() {
 		listener.unregister();
 	}

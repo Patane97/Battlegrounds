@@ -17,44 +17,32 @@ import com.Patane.Battlegrounds.util.util;
 
 public class ClassMainPage extends MainPage{
 	
-	ClassesGUI classesGui;
+	ClassesGUI gui;
 	ItemStack allClassesIcon;
-	int allClassesSlot;
+	int allClassesSlot = 8;
 	
 	public ClassMainPage(ClassesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
-		this.classesGui = gui;
-		links.put(menuBar[allClassesSlot], new AllClassesPage(classesGui, "&6&lOther classes", 45, this));
+		allClassesIcon = addMenuIcon(allClassesSlot, GUIutil.stainedPane(1, "&6&lOther Classes"));
+		links.put(allClassesIcon, new AllClassesPage(gui, "&6&lOther classes", 45, this));
 	}
-	@Override
-	public void buildMenuBar(){
-		super.buildMenuBar();
-		allClassesIcon = GUIutil.stainedPane(1, "&6&lOther Classes");
-		this.allClassesSlot = 8;
-		menuBar[allClassesSlot] = allClassesIcon;
-	}
-	// ADDING A CLASS TO THE ARENA + ALL CLASSES LIST
 	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(!item.getItemMeta().hasDisplayName() || !Chat.hasAlpha(ChatColor.stripColor(item.getItemMeta().getDisplayName()))){
-				Messenger.send(gui.getPlayer(), "Item must have a non-empty custom name!");
+				Messenger.send(gui.getPlayer(), "&cItem must have a non-empty custom name!");
 				return true;
 			}
 			String itemName = item.getItemMeta().getDisplayName();
-			if(classesGui.getArena().hasClass(itemName)){
-				Messenger.send(classesGui.getPlayer(), "&cThis class already exists within this arena.");
+			if(gui.checkClassExisting(itemName))
 				return true;
-			} else if(Classes.contains(itemName)){
-				Messenger.send(classesGui.getPlayer(), "&cThis class already exists. Add it from the &6All Classes &cmenu.");
-				return true;
-			}
-			BGClass newClass = Classes.add(new BGClass(classesGui.getPlugin(), itemName, item), true);
-			classesGui.getArena().addClass(newClass);
-			ClassPage classPage = new ClassPage(classesGui, classesGui.getMainPage(), newClass);
+			BGClass newClass = Classes.add(new BGClass(gui.getPlugin(), itemName, item));
+			BGClass.YML().saveClass(newClass);
+			gui.getArena().addClass(newClass);
+			ClassPage classPage = new ClassPage(gui, gui.getMainPage(), newClass);
 			if(addLink(newClass.getIcon(), classPage)){
-				Messenger.send(classesGui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(itemName) + "&a to &7" + classesGui.getArena().getName() + "&a.");
+				Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(itemName) + "&a to &7" + gui.getArena().getName() + "&a.");
 				return false;
 			}
 		}
@@ -66,11 +54,11 @@ public class ClassMainPage extends MainPage{
 			if(super.pickupItem(topInv, click, item, slot))
 				return true;
 			if(slot == allClassesSlot){
-				classesGui.switchPage(links.get(item));
+				gui.switchPage(links.get(allClassesIcon));
 				return true;
 				}
 			if(isLink(item))
-				classesGui.switchPage(links.get(item));
+				gui.switchPage(links.get(item));
 			return true;
 		}
 		return false;
@@ -85,11 +73,11 @@ public class ClassMainPage extends MainPage{
 			inventory.setItem(slot, null);
 			if(links.containsKey(item) && links.get(item) instanceof ClassPage){
 				BGClass removingClass = ((ClassPage) links.get(item)).getLinkedClass();
-				classesGui.getArena().removeClass(removingClass.getName());
+				gui.getArena().removeClass(removingClass.getName());
 				links.remove(item);
 				update();
 				allClassesAddAnimation(item);
-				Messenger.send(classesGui.getPlayer(), "&cMoved &7" + ChatColor.stripColor(removingClass.getName()) + "&c to &7Other classes&c.");
+				Messenger.send(gui.getPlayer(), "&cMoved &7" + ChatColor.stripColor(removingClass.getName()) + "&c to &7Other classes&c.");
 				return true;
 			}
 		}
@@ -99,7 +87,7 @@ public class ClassMainPage extends MainPage{
 		// changes allClassesSlot to moved item
 		inventory.setItem(allClassesSlot, item);
 		// changes back to original Icon after 0.5 seconds
-		classesGui.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(classesGui.getPlugin(), new Runnable() {
+		gui.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(gui.getPlugin(), new Runnable() {
 			public void run() {
 				inventory.setItem(allClassesSlot, allClassesIcon);
 			}

@@ -17,8 +17,8 @@ import com.Patane.Battlegrounds.util.YML;
 
 public class PlayerDataYML extends BasicYML{
 	
-	public static void load(Plugin battlegrounds){
-		loadYML(battlegrounds, "playerData.yml", "playerUUID");
+	public void load(Plugin plugin){
+		loadYML(plugin, "playerData.yml", "playerUUID");
 		Player player;
 		for(String stringUUID : header.getKeys(false)){
 			checkEmptyClear(stringUUID);
@@ -26,14 +26,13 @@ public class PlayerDataYML extends BasicYML{
 			if(Bukkit.getOnlinePlayers().contains(player))
 				loadAllData(player);
 		}
-		config.save();
 	}
 	/**
 	 * Saves the players data into PlayerData.yml
 	 * 
 	 * @param player Player to save.
 	 */
-	public static void saveAllData(Player player){
+	public void saveAllData(Player player){
 		setHeader(player.getUniqueId().toString());
 		saveWellbeing(player, false);
 		saveGameMode(player, false);
@@ -46,7 +45,7 @@ public class PlayerDataYML extends BasicYML{
 	 *  
 	 * @param player Player to load.
 	 */
-	public static void loadAllData(Player player){
+	public void loadAllData(Player player){
 		String stringUUID = player.getUniqueId().toString();
 		if(isSection(stringUUID)){				
 			Messenger.debug("info", "Found " + stringUUID + ".");
@@ -56,7 +55,7 @@ public class PlayerDataYML extends BasicYML{
 			Inventories.restore(player);
 		}
 	}
-	 static void saveWellbeing(Player player, boolean save){
+	 void saveWellbeing(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.health", player.getHealth());
 		header.set("wellbeing.food", player.getFoodLevel());
@@ -64,116 +63,126 @@ public class PlayerDataYML extends BasicYML{
 		header.set("wellbeing.level", player.getLevel());
 		if(save) config.save();
 	}
-	public static void saveHealth(Player player, boolean save){
+	public void saveHealth(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.health", player.getHealth());
 		if(save) config.save();
 	}
-	public static void saveFood(Player player, boolean save){
+	public void saveFood(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.food", player.getFoodLevel());
 		if(save) config.save();
 	}
-	public static void saveExp(Player player, boolean save){
+	public void saveExp(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.exp", player.getExp());
 		if(save) config.save();
 	}
-	public static void saveLevel(Player player, boolean save){
+	public void saveLevel(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.level", player.getLevel());
 		if(save) config.save();
 	}
-	public static void saveLocation(Player player, boolean save){
+	public void saveLocation(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("location", YML.locationFormat(player.getLocation()));
 		if(save) config.save();
 	}
-	public static void saveInventory(Player player, boolean save){
+	public void saveInventory(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		List<ItemStack> itemList = Arrays.asList(player.getInventory().getContents());
 		header.set("inventory", itemList);
 		if(save) config.save();
 	}
-	public static void saveGameMode(Player player, boolean save){
+	public void saveGameMode(Player player, boolean save){
 		if(save) setHeader(player.getUniqueId().toString());
 		header.set("gamemode", player.getGameMode().toString());
 		if(save) config.save();
 	}
-	public static Location getLocation(String stringUUID){
+	public Location getLocation(String stringUUID){
 		if(isSection(stringUUID + ".location")){
 			setHeader(stringUUID);
 			Location location = YML.getLocation(header.getString("location"));
+			if (location == null)
+				Messenger.debug("warning", "Failed to grab player's location.");
 			return location;
 		}
+		Messenger.debug("warning", "Failed to find player's location in YML.");
 		return null;
 	}
-	public static ItemStack[] getInventory(String stringUUID){
+	public ItemStack[] getInventory(String stringUUID){
 		if(isSection(stringUUID + ".inventory")){
 			setHeader(stringUUID);
 			@SuppressWarnings("unchecked")
 			List<ItemStack> itemList = (List<ItemStack>) header.get("inventory");
 			ItemStack[] inventoryContents = (ItemStack[]) itemList.toArray(new ItemStack[0]);
+			if (inventoryContents == null)
+				Messenger.debug("warning", "Failed to grab player's inventory.");
 			return inventoryContents;
 		}
+		Messenger.debug("warning", "Failed to find player's inventory in YML.");
 		return null;
 	}
-	public static GameMode getGameMode(String stringUUID){
+	public GameMode getGameMode(String stringUUID){
 		if(isSection(stringUUID + ".gamemode")){
 			setHeader(stringUUID);
 			String gameMode = header.getString("gamemode");
+			if (gameMode == null)
+				Messenger.debug("warning", "Failed to grab player's gamemode.");
 			return GameMode.valueOf(gameMode);
 		}
+		Messenger.debug("warning", "Failed to find player's gamemode in YML.");
 		return null;
 	}
 	@SuppressWarnings("null")
-	public static double getHealth(String stringUUID){
+	public double getHealth(String stringUUID){
 		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
-			if(header.getKeys(false).isEmpty()){
-				setHeader(stringUUID);
-				header.set("wellbeing", null);
-				return -1;
-			}
+			if(header.getKeys(false).isEmpty())
+				getSection(stringUUID).set("wellbeing", null);
 			return header.getDouble("health");
 		}
+		Messenger.debug("warning", "Failed to find player's health in YML.");
 		return (Double) null;
 	}
 	@SuppressWarnings("null")
-	public static int getFoodLevel(String stringUUID){
+	public int getFoodLevel(String stringUUID){
 		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("food");
 		}
+		Messenger.debug("warning", "Failed to find player's food-level in YML.");
 		return (Integer) null;
 	}
 	@SuppressWarnings("null")
-	public static float getExp(String stringUUID) {
+	public float getExp(String stringUUID) {
 		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return (float) header.getDouble("exp");
 		}
+		Messenger.debug("warning", "Failed to find player's exp in YML.");
 		return (Float) null;
 	}
 	@SuppressWarnings("null")
-	public static int getLevel(String stringUUID){
+	public int getLevel(String stringUUID){
 		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("level");
 		}
+		Messenger.debug("warning", "Failed to find player's level in YML.");
 		return (Integer) null;
 	}
-	public static void deletePlayer(String stringUUID){
+	public void deletePlayer(String stringUUID){
 		getRootSection().set(stringUUID, null);
 		config.save();
 	}
-	public static void deletePlayer(String stringUUID, String type){
+	public void deletePlayer(String stringUUID, String type){
 		if(getSection(stringUUID) != null){
 			getSection(stringUUID).set(type, null);
 			if(getSection(stringUUID).getKeys(false).isEmpty())
@@ -181,7 +190,7 @@ public class PlayerDataYML extends BasicYML{
 			config.save();
 		}
 	}
-	public static void checkWellbeing(String stringUUID) {
+	public void checkWellbeing(String stringUUID) {
 		setHeader(stringUUID + ".wellbeing");
 		if(header.getKeys(false).isEmpty())
 			getSection(stringUUID).set("wellbeing", null);

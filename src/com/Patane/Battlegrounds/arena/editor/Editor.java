@@ -6,7 +6,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.initialize.Initialize;
 //import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 import com.Patane.Battlegrounds.arena.standby.Standby;
@@ -64,8 +63,7 @@ public class Editor extends Standby{
 		Messenger.send(creator, "&aArena &7" + newArena.getName() + "&a created in world &7" + newArena.getWorld().getName());
 		this.arena = newArena;
 		arena.setMode(this);
-		
-		if(ArenaYML.saveRegion(arenaName, region, "Ground"))
+		if(Arena.YML().saveRegion(arenaName, region, "Ground"))
 			newEditorType(new Initialize(plugin, arena, creator, this));
 	}
 	public EditorType getEditorType(){

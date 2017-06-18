@@ -1,5 +1,6 @@
 package com.Patane.Battlegrounds.arena.lobby;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -64,7 +65,7 @@ public class LobbyListeners extends ArenaListener{
 			if(!itemFrameItem.hasItemMeta() || !itemFrameItem.getItemMeta().hasDisplayName())
 				return false;
 			String itemName = itemFrameItem.getItemMeta().getDisplayName();
-			arena.equipClass(player, Classes.grab(itemName));
+			arena.equipClass(player, Classes.grab(ChatColor.stripColor(itemName)));
 			return true;
 		}
 		return false;

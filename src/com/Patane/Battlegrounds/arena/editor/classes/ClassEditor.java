@@ -5,8 +5,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
-import com.Patane.Battlegrounds.arena.classes.BGClassYML;
+import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
@@ -33,8 +32,8 @@ public class ClassEditor implements EditorType{
 	}
 	@Override
 	public void save() {
-		ArenaYML.saveClasses(arena.getName());
-		BGClassYML.saveAllClasses();
+		Arena.YML().saveClasses(arena.getName());
+		BGClass.YML().saveAllClasses();
 		Messenger.send(creator, "&aSaved &7all classes&a.");
 	}
 

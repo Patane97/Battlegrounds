@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
@@ -140,7 +139,7 @@ public class SpawnEditor implements EditorType{
 	}
 	@Override
 	public void save() {
-		ArenaYML.saveAllSpawns(arenaName);
+		Arena.YML().saveAllSpawns(arenaName);
 		arena.clearSpawnBlocks(true);
 		Inventories.restore(creator);
 		ArrayList<String> emptySpawns = arena.getEmptySpawnLists();

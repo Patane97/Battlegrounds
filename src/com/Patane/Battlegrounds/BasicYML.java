@@ -7,70 +7,81 @@ import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.util;
 
 public class BasicYML {
-	protected static Plugin plugin;
-
-	protected static Config config;
-	protected static String root;
-	protected static ConfigurationSection header;
+	protected Plugin plugin;
+	protected Config config;
+	protected String root;
+	protected ConfigurationSection header;
 	
-	public static void loadYML(Plugin plugin, String config, String root){
-		BasicYML.plugin = plugin;
-		BasicYML.config = new Config(plugin, config);
-		BasicYML.root = root;
+	public void loadYML(Plugin plugin, String config, String root){
+		this.plugin = plugin;
+		this.config = new Config(plugin, config);
+		this.root = root;
 		if(!isRootSection())
 			createRootSection();
-		BasicYML.header = getRootSection();
+		this.header = getRootSection();
 	}
 	
 	// DEFINE EACH OF THESE. You know what it does but will others? :)
 	
-	protected static ConfigurationSection createRootSection() {
+	protected ConfigurationSection createRootSection() {
 		return config.createSection(root);
 	}
-	protected static ConfigurationSection createSection(String...strings) {
+	protected ConfigurationSection createSection(String...strings) {
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
 		if(isSection(path))
 			return getSection(path);
 		return config.createSection(root + "." + path);
 	}
-	protected static ConfigurationSection clearCreateSection(String...strings) {
+	protected ConfigurationSection clearCreateSection(String...strings) {
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
 		clearSection(path);
 		return config.createSection(root + "." + path);
 	}
-	protected static void setHeader(String...strings) {
+	protected void setHeader(String...strings) {
 		header = createSection(strings);
 	}
-	protected static void setHeader(ConfigurationSection section) {
+	protected void setHeader(ConfigurationSection section) {
 		header = section;
 	}
-	public static boolean isRootSection() {
+	public boolean isRootSection() {
 		return config.isConfigurationSection(root);
 	}
-	public static boolean isSection(String...strings){
+	public boolean isSection(String...strings){
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
-		return config.isConfigurationSection(root + "." + path);
+		boolean section = config.isConfigurationSection(root + "." + path);
+		// If it isnt a configuration section, return whether it has a value set.
+		return (!section ? config.isSet(root + "." + path) : section);
 	}
-	public static ConfigurationSection getRootSection() {
+	public ConfigurationSection getRootSection() {
 		return config.getConfigurationSection(root);
 	}
-	public static ConfigurationSection getSection(String...strings) {
+	public ConfigurationSection getSection(String...strings) {
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
 		return config.getConfigurationSection(root + "." + path);
 	}
-	public static boolean isEmpty(String...strings) {
+	public boolean isEmpty(String...strings) {
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
-		if(isSection(path))
-			return getSection(path).getKeys(false).isEmpty();
-		return true;
+		boolean empty;
+		try{
+			empty = getSection(path).getKeys(false).isEmpty();
+		} catch (NullPointerException e){
+			empty = true;
+		}
+		// If it is empty (or holds a value instead of keys), return whether it has a value in its path.
+		return (empty ? !config.isSet(root + "." + path) : empty);
 	}
-	public static void clearSection(String...strings) {
+	public void clearSection(String...strings) {
 		String path = (strings.length > 1 ? util.stringJoiner(strings, ".") : strings[0]);
 		getRootSection().set(path, null);
 		config.save();
 	}
-	public static void checkEmptyClear(String...strings) {
+	public void checkEmptyClear(String...strings) {
 		if(isEmpty(strings))
 			clearSection(strings);
+	}
+	public void clearRoot(){
+		for(String paths : getRootSection().getKeys(true)){
+			getRootSection().set(paths, null);
+		}
 	}
 }

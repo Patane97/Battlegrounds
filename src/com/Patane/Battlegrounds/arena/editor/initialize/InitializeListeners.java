@@ -10,12 +10,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 import com.Patane.Battlegrounds.util.util;
-
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
 
@@ -36,7 +34,7 @@ public class InitializeListeners extends EditorListeners{
 			Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
 			if(region.contains(vector)){
 				arena.setLobby(region);
-				ArenaYML.saveRegion(arena.getName(), region, "Lobby");
+				Arena.YML().saveRegion(arena.getName(), region, "Lobby");
 				editor.newEditorType(new SpawnEditor(plugin, arena, creator, editor));
 			}
 		}

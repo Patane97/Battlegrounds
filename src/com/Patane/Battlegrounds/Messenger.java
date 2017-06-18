@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.arena.Arena;
 
 public class Messenger {
@@ -59,12 +58,16 @@ public class Messenger {
 		switch(type){
 		case "broadcast":
 			broadcast(msg);
+			break;
 		case "warning":
 			warning(msg);
+			break;
 		case "severe":
 			severe(msg);
+			break;
 		default:
 			info(msg);
+			break;
 		}
 	}
 	public static void debug(Arena arena, String msg) {

@@ -15,10 +15,10 @@ import com.Patane.Battlegrounds.util.util;
 import net.md_5.bungee.api.ChatColor;
 
 public class AllClassesPage extends Page{
-	ClassesGUI classesGui;
-	public AllClassesPage(ClassesGUI classesGui, String name, int invSize, Page back) {
-		super(classesGui, name, invSize, back);
-		this.classesGui = classesGui;
+	ClassesGUI gui;
+	public AllClassesPage(ClassesGUI gui, String name, int invSize, Page back) {
+		super(gui, name, invSize, back);
+		this.gui = gui;
 	}
 	@Override
 	public void update(){
@@ -27,8 +27,8 @@ public class AllClassesPage extends Page{
 		printMenuBar();
 		links.clear();
 		for(BGClass selectedClass : Classes.get()){
-			if(!classesGui.getArena().hasClass(selectedClass.getName()))
-				addLink(selectedClass.getIcon(), classesGui.getMainPage());
+			if(!gui.getArena().hasClass(selectedClass.getName()))
+				addLink(selectedClass.getIcon(), gui.getMainPage());
 		}
 	}
 	@Override
@@ -39,19 +39,18 @@ public class AllClassesPage extends Page{
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(!item.getItemMeta().hasDisplayName() || !Chat.hasAlpha(ChatColor.stripColor(item.getItemMeta().getDisplayName()))){
-				Messenger.send(gui.getPlayer(), "Item must have a non-empty custom name!");
+				Messenger.send(gui.getPlayer(), "&cItem must have a non-empty custom name!");
 				return true;
 			}
 			String name = (item.hasItemMeta() 
 					? ChatColor.stripColor(item.getItemMeta().getDisplayName()) 
 					: "");
-			if(Classes.contains(name)){
-				Messenger.send(classesGui.getPlayer(), "&cThis class already exists.");
+			if(gui.checkClassExisting(name))
 				return true;
-			}
-			BGClass newClass = Classes.add(new BGClass(classesGui.getPlugin(), name, item), true);
-			addLink(newClass.getIcon(), classesGui.getMainPage());
-			Messenger.send(classesGui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7all arenas&a.");
+			BGClass newClass = Classes.add(new BGClass(gui.getPlugin(), name, item));
+			BGClass.YML().saveClass(newClass);
+			addLink(newClass.getIcon(), gui.getMainPage());
+			Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7all arenas&a.");
 			
 		}
 		return false;
@@ -67,10 +66,10 @@ public class AllClassesPage extends Page{
 			if(isLink(item)){
 				BGClass newClass = Classes.grab(name);
 				if(newClass != null){
-					classesGui.getArena().addClass(newClass);
-					classesGui.getMainPage().addLink(item, new ClassPage(classesGui, classesGui.getMainPage(), newClass));
-					classesGui.switchPage(links.get(item));
-					Messenger.send(classesGui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7" + classesGui.getArena().getName() + "&a.");
+					gui.getArena().addClass(newClass);
+					gui.getMainPage().addLink(item, new ClassPage(gui, gui.getMainPage(), newClass));
+					gui.switchPage(links.get(item));
+					Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7" + gui.getArena().getName() + "&a.");
 				}
 			}
 			return true;
@@ -80,7 +79,9 @@ public class AllClassesPage extends Page{
 	@Override
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
 		if(topInv){
-			// need to have a confirmation message before deleting!!!
+			/*
+			 * MUST ADD CONFORMATION MESSAGE WHEN DELETING CLASSES!
+			 */
 			if(links.containsKey(item)){
 				String name = (item.hasItemMeta() 
 						? ChatColor.stripColor(item.getItemMeta().getDisplayName()) 
@@ -89,8 +90,8 @@ public class AllClassesPage extends Page{
 				Arenas.removeClass(name);
 				links.remove(item);
 				update();
-				classesGui.getPlayer().setItemOnCursor(item);
-				Messenger.send(classesGui.getPlayer(), "&cRemoved &7" + ChatColor.stripColor(name) + "&c from &7all arenas&c.");
+				gui.getPlayer().setItemOnCursor(item);
+				Messenger.send(gui.getPlayer(), "&cRemoved &7" + ChatColor.stripColor(name) + "&c from &7all arenas&c.");
 				return true;
 			}
 		}

@@ -19,21 +19,21 @@ public class Wellbeing {
 		String stringUUID = player.getUniqueId().toString();
 		if(!savedHealth.containsKey(stringUUID)){
 			savedHealth.put(stringUUID, player.getHealth());
-			PlayerDataYML.saveHealth(player, true);
+			PlayerData.YML().saveHealth(player, true);
 		}
 		if(!savedFoodLevel.containsKey(stringUUID)){
 			savedFoodLevel.put(stringUUID, player.getFoodLevel());
-			PlayerDataYML.saveFood(player, true);
+			PlayerData.YML().saveFood(player, true);
 		}
 		if(!savedExp.containsKey(stringUUID)){
 			savedExp.put(stringUUID, player.getExp());
-			PlayerDataYML.saveExp(player, true);
+			PlayerData.YML().saveExp(player, true);
 		}
 		if(!savedLevel.containsKey(stringUUID)){
 			savedLevel.put(stringUUID, player.getLevel());
-			PlayerDataYML.saveLevel(player, true);
+			PlayerData.YML().saveLevel(player, true);
 		}
-//		PlayerDataYML.saveWellbeing(stringUUID, true);
+//		PlayerData.YML().saveWellbeing(stringUUID, true);
 	}
 	public static void save(UUID playerUUID){
 		save(Bukkit.getPlayer(playerUUID));
@@ -45,15 +45,18 @@ public class Wellbeing {
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
 		Boolean fullSuccess = true;
-		if(!PlayerDataYML.isSection(stringUUID, "wellbeing") || PlayerDataYML.isEmpty(stringUUID, "wellbeing")){
-			PlayerDataYML.clearSection(stringUUID, "wellbeing");
+		if(!PlayerData.YML().isSection(stringUUID, "wellbeing") || PlayerData.YML().isEmpty(stringUUID, "wellbeing")){
+			Messenger.debug("info", "Wellbeing for " + playerName + " is empty. Removing from YML...");
+			PlayerData.YML().clearSection(stringUUID, "wellbeing");
 			return false;
 		}
 		try{
-			player.setHealth(getHealth(stringUUID, playerName));
-			PlayerDataYML.deletePlayer(stringUUID, "wellbeing.health");
+			double health = getHealth(stringUUID, playerName);
+			if(health <= 0) throw new IllegalArgumentException();
+			player.setHealth(health);
+			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.health");
 			Messenger.debug("info", "Successfully restored " + playerName + "'s health.");
-		} catch (Exception e){
+		} catch (NullPointerException|IllegalArgumentException e ){
 			Messenger.debug("warning", "Failed to restore " + playerName + "'s health. Setting to 20.");
 			player.setHealth(20);
 			e.printStackTrace();
@@ -61,9 +64,9 @@ public class Wellbeing {
 		}
 		try{
 			player.setFoodLevel(getFood(stringUUID, playerName));
-			PlayerDataYML.deletePlayer(stringUUID, "wellbeing.food");
+			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.food");
 			Messenger.debug("info", "Successfully restored " + playerName + "'s food level.");
-		} catch (Exception e){
+		} catch (NullPointerException e){
 			Messenger.debug("warning", "Failed to restore " + playerName + "'s food level. Setting to 20.");
 			player.setFoodLevel(20);
 			e.printStackTrace();
@@ -71,9 +74,9 @@ public class Wellbeing {
 		}
 		try{
 			player.setExp(getExp(stringUUID, playerName));
-			PlayerDataYML.deletePlayer(stringUUID, "wellbeing.exp");
+			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.exp");
 			Messenger.debug("info", "Successfully restored " + playerName + "'s exp.");
-		} catch (Exception e){
+		} catch (NullPointerException e){
 			Messenger.debug("warning", "Failed to restore " + playerName + "'s exp. Setting to 0.");
 			player.setExp(0);
 			e.printStackTrace();
@@ -81,35 +84,36 @@ public class Wellbeing {
 		}
 		try{
 			player.setLevel(getLevel(stringUUID, playerName));
-			PlayerDataYML.deletePlayer(stringUUID, "wellbeing.level");
+			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.level");
 			Messenger.debug("info", "Successfully restored " + playerName + "'s level.");
-		} catch (Exception e){
+		} catch (NullPointerException e){
 			Messenger.debug("warning", "Failed to restore " + playerName + "'s level. Setting to 0.");
 			player.setLevel(0);
 			e.printStackTrace();
 			fullSuccess = false;
 		}
-		
+		if(fullSuccess)
+			PlayerData.YML().deletePlayer(stringUUID, "wellbeing");
 		return fullSuccess;
 	}
 	public static double getHealth(String stringUUID, String playerName){
 		if(savedHealth.get(stringUUID) != null)
 			return savedHealth.remove(stringUUID);
-		return PlayerDataYML.getHealth(stringUUID);
+		return PlayerData.YML().getHealth(stringUUID);
 	}
 	public static int getFood(String stringUUID, String playerName){
 		if(savedFoodLevel.get(stringUUID) != null)
 			return savedFoodLevel.remove(stringUUID);
-		return PlayerDataYML.getFoodLevel(stringUUID);
+		return PlayerData.YML().getFoodLevel(stringUUID);
 	}
 	public static float getExp(String stringUUID, String playerName){
 		if(savedExp.get(stringUUID) != null)
 			return savedExp.remove(stringUUID);
-		return PlayerDataYML.getExp(stringUUID);
+		return PlayerData.YML().getExp(stringUUID);
 	}
 	public static int getLevel(String stringUUID, String playerName){
 		if(savedLevel.get(stringUUID) != null)
 			return savedLevel.remove(stringUUID);
-		return PlayerDataYML.getLevel(stringUUID);
+		return PlayerData.YML().getLevel(stringUUID);
 	}
 }

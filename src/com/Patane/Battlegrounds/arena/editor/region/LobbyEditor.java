@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
@@ -39,7 +38,7 @@ public class LobbyEditor implements EditorType{
 	public void save() {
 		AbstractRegion region = util.getAbstractRegion(plugin, creator);
 		arena.setLobby(region);
-		ArenaYML.saveRegion(arenaName, region, "Lobby");
+		Arena.YML().saveRegion(arenaName, region, "Lobby");
 		Messenger.send(creator, "&aSaved &7Lobby Region &afor Arena &7" + arenaName + "&a.");
 	}
 

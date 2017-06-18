@@ -16,7 +16,7 @@ public class Locations {
 		String stringUUID = player.getUniqueId().toString();
 		if(!savedLocations.containsKey(stringUUID)){
 			savedLocations.put(stringUUID, player.getLocation());
-			PlayerDataYML.saveLocation(player, true);
+			PlayerData.YML().saveLocation(player, true);
 		}
 	}
 	public static void save(UUID playerUUID){
@@ -28,13 +28,14 @@ public class Locations {
 	public static boolean restore (Player player){
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
-		if(!PlayerDataYML.isSection(stringUUID, "location") || PlayerDataYML.isEmpty(stringUUID, "location")){
-			PlayerDataYML.clearSection(stringUUID, "location");
+		if(!PlayerData.YML().isSection(stringUUID, "location") || PlayerData.YML().isEmpty(stringUUID, "location")){
+			Messenger.debug("info", "Location for " + playerName + " is empty. Removing from YML...");
+			PlayerData.YML().clearSection(stringUUID, "location");
 			return false;
 		}
 		if (!savedLocations.containsKey(stringUUID)){
 			Messenger.debug("info", "Failed to find " + playerName + "'s location in List. Checking yml...");
-			Location location = PlayerDataYML.getLocation(stringUUID);
+			Location location = PlayerData.YML().getLocation(stringUUID);
 			if(location == null){
 				Messenger.debug("warning", "Failed to find " + playerName + "'s location from yml. Location Lost.");
 				return false;
@@ -43,7 +44,7 @@ public class Locations {
 		}
 		try{
 			player.teleport(savedLocations.remove(stringUUID));
-			PlayerDataYML.deletePlayer(stringUUID, "location");
+			PlayerData.YML().deletePlayer(stringUUID, "location");
 			Messenger.debug("info", "Successfully restored " + playerName + "'s location.");
 		} catch (Exception e){
 			Messenger.debug("warning", "Failed to set " + playerName + "'s location.");

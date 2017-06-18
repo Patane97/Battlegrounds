@@ -1,13 +1,20 @@
 package com.Patane.Battlegrounds.custom;
 
 import java.lang.reflect.Field;
-
-import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.custom.creatures.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.custom.creatures.BGChaserSkeleton;
+import com.Patane.Battlegrounds.custom.creatures.BGChicken;
+import com.Patane.Battlegrounds.custom.creatures.BGCreeper;
+import com.Patane.Battlegrounds.custom.creatures.BGSkeleton;
+import com.Patane.Battlegrounds.custom.creatures.BGSpider;
+import com.Patane.Battlegrounds.custom.creatures.BGVindicator;
+import com.Patane.Battlegrounds.custom.creatures.BGZombie;
+import com.Patane.Battlegrounds.custom.creatures.BGZombieKnight;
+import com.Patane.Battlegrounds.custom.creatures.BGZombieServant;
 
 import net.minecraft.server.v1_11_R1.Entity;
 import net.minecraft.server.v1_11_R1.EntityTypes;

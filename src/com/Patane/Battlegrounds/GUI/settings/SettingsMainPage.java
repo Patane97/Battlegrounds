@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.editor.settings.SettingsGUI;
 import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.util.util;
@@ -37,7 +36,7 @@ public class SettingsMainPage extends MainPage{
 			createSettingIcon(setting);
 	}
 	private void createSettingIcon(Setting setting){
-		ItemStack icon = util.hideAttributes(setting.getItem(ArenaYML.getSetting(settingsGui.getArena().getName(), setting)));
+		ItemStack icon = util.hideAttributes(setting.getItem(Arena.YML().getSetting(settingsGui.getArena().getName(), setting)));
 		settingsLink.put(icon, setting);
 		addIcon(icon);
 	}
@@ -52,7 +51,7 @@ public class SettingsMainPage extends MainPage{
 		String ymlName = setting.getYmlName();
 		boolean current = (boolean) arena.getSetting(ymlName);
 		arena.putSetting(ymlName, !current);
-		return (boolean) ArenaYML.saveSetting(arena, ymlName, true);
+		return (boolean) Arena.YML().saveSetting(arena, ymlName, true);
 	}
 	private int changeInteger(Setting setting, ClickType click) {
 		Arena arena = settingsGui.getArena();
@@ -66,7 +65,7 @@ public class SettingsMainPage extends MainPage{
 			arena.putSetting(ymlName, current+5);
 		if(click == ClickType.SHIFT_RIGHT)
 			arena.putSetting(ymlName, current-5);
-		return (int) ArenaYML.saveSetting(arena, ymlName, true);
+		return (int) Arena.YML().saveSetting(arena, ymlName, true);
 	}
 	private float changeFloat(Setting setting, ClickType click) {
 		Arena arena = settingsGui.getArena();
@@ -80,41 +79,41 @@ public class SettingsMainPage extends MainPage{
 			arena.putSetting(ymlName, current+1f);
 		if(click == ClickType.SHIFT_RIGHT)
 			arena.putSetting(ymlName, current-1f);
-		return (float) ArenaYML.saveSetting(arena, ymlName, true);
+		return (float) Arena.YML().saveSetting(arena, ymlName, true);
 	}
 
 //	private boolean toggleBoolean(Setting setting){
 //		String arenaName = settingsGui.getArena().getName();
-//		boolean current = (boolean) ArenaYML.getSetting(arenaName, setting);
-//		ArenaYML.saveSetting(arenaName, setting, !current, true);
+//		boolean current = (boolean) Arena.YML().getSetting(arenaName, setting);
+//		Arena.YML().saveSetting(arenaName, setting, !current, true);
 //		return !current;
 //	}
 //	private int changeInteger(Setting setting, ClickType click) {
 //		String arenaName = settingsGui.getArena().getName();
 //		String ymlName = setting.getYmlName();
-//		int current = ((int) ArenaYML.getSetting(arenaName, setting));
+//		int current = ((int) Arena.YML().getSetting(arenaName, setting));
 //		if(click == ClickType.LEFT)
-//			ArenaYML.saveSetting(arenaName, setting, current+1, true);
+//			Arena.YML().saveSetting(arenaName, setting, current+1, true);
 //		if(click == ClickType.RIGHT)
-//			ArenaYML.saveSetting(arenaName, setting, current-1, true);
+//			Arena.YML().saveSetting(arenaName, setting, current-1, true);
 //		if(click == ClickType.SHIFT_LEFT)
-//			ArenaYML.saveSetting(arenaName, setting, current+5, true);
+//			Arena.YML().saveSetting(arenaName, setting, current+5, true);
 //		if(click == ClickType.SHIFT_RIGHT)
-//			ArenaYML.saveSetting(arenaName, setting, current-5, true);
-//		return (int) ArenaYML.getSetting(arenaName, setting);
+//			Arena.YML().saveSetting(arenaName, setting, current-5, true);
+//		return (int) Arena.YML().getSetting(arenaName, setting);
 //	}
 //	private float changeFloat(Setting setting, ClickType click) {
 //		String arenaName = settingsGui.getArena().getName();
-//		float current = (float) (ArenaYML.getSetting(arenaName, setting));
+//		float current = (float) (Arena.YML().getSetting(arenaName, setting));
 //		if(click == ClickType.LEFT)
-//			ArenaYML.saveSetting(arenaName, setting, current+0.5f, true);
+//			Arena.YML().saveSetting(arenaName, setting, current+0.5f, true);
 //		if(click == ClickType.RIGHT)
-//			ArenaYML.saveSetting(arenaName, setting, current-0.5f, true);
+//			Arena.YML().saveSetting(arenaName, setting, current-0.5f, true);
 //		if(click == ClickType.SHIFT_LEFT)
-//			ArenaYML.saveSetting(arenaName, setting, current+1f, true);
+//			Arena.YML().saveSetting(arenaName, setting, current+1f, true);
 //		if(click == ClickType.SHIFT_RIGHT)
-//			ArenaYML.saveSetting(arenaName, setting, current-1f, true);
-//		return (float) ArenaYML.getSetting(arenaName, setting);
+//			Arena.YML().saveSetting(arenaName, setting, current-1f, true);
+//		return (float) Arena.YML().getSetting(arenaName, setting);
 //	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){

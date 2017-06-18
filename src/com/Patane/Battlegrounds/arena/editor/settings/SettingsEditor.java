@@ -31,8 +31,8 @@ public class SettingsEditor implements EditorType{
 	}
 	@Override
 	public void save() {
-//		ArenaYML.saveClasses(arena.getName());
-//		BGClassYML.saveAllClasses();
+//		Arena.YML().saveClasses(arena.getName());
+//		BGClass.YML().saveAllClasses();
 		Messenger.send(creator, "&aSaved &7" + arena.getName() + "&a settings.");
 	}
 

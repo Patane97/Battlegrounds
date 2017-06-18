@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.Patane.Battlegrounds.collections.Arenas;
-import com.Patane.Battlegrounds.playerData.PlayerDataYML;
+import com.Patane.Battlegrounds.playerData.PlayerData;
 
 
 public class GlobalListeners implements Listener{
@@ -16,7 +16,7 @@ public class GlobalListeners implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		Arenas.removePlayer(player);
-		PlayerDataYML.loadAllData(player);
+		PlayerData.YML().loadAllData(player);
 	}
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event){

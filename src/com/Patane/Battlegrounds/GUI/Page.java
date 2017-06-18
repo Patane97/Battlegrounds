@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.util.util;
 
 public class Page {
 	protected String title;
@@ -22,6 +23,7 @@ public class Page {
 	protected HashMap<ItemStack, Page> links;
 	protected ItemStack[] menuBar;
 	protected int menuSize;
+	protected int invSize;
 	
 	protected GUI gui;
 
@@ -29,11 +31,11 @@ public class Page {
 		this(gui, name, invSize, null);
 	}
 	public Page (GUI gui, String name, int invSize, Page back){
-		name = Chat.translate(name);
-		this.title 		= name;
+		this.title 		= Chat.translate(name);
 		this.gui 		= gui;
 		this.menuSize	= 9;
-		this.inventory 	= gui.getPlugin().getServer().createInventory(null, invSize+menuSize, name);
+		this.invSize	= invSize + menuSize;
+		this.inventory 	= gui.getPlugin().getServer().createInventory(null, this.invSize, this.title);
 		this.back 		= (back == null? this : back);
 		this.links = new HashMap<ItemStack, Page>();
 		createBackIcon();
@@ -45,6 +47,12 @@ public class Page {
 	public Inventory inventory(){
 		return inventory;
 	}
+	public void setTitle(String title){
+		this.title = Chat.translate(title);
+		ItemStack[] temp = this.inventory.getContents();
+		this.inventory = gui.getPlugin().getServer().createInventory(null, invSize, this.title);
+		this.inventory.setContents(temp);
+	}
 	public String title(){
 		return title;
 	}
@@ -54,20 +62,22 @@ public class Page {
 	public int getMenuSize(){
 		return menuSize;
 	}
-	public void setGUI(GUI gui){
-		this.gui = gui;
-	}
 	public ArrayList<Page> getLinks() {
 		ArrayList<Page> tempLinks = new ArrayList<Page>();
 		tempLinks.addAll(links.values());
 		return tempLinks;
 	}
-	public void buildMenuBar() {
+	protected ItemStack addMenuIcon(int slot, ItemStack icon){
+		menuBar[slot] = icon;
+		inventory.setItem(slot, menuBar[slot]);
+		return icon;
+	}
+	protected void buildMenuBar() {
 		menuBar[0] = backIcon;
 		for(int i = 1 ; i < menuBar.length ; i++)
 			menuBar[i] = barIcon;
 	}
-	public void printMenuBar() {
+	protected void printMenuBar() {
 		int i = 0;
 		for(ItemStack menuItem : menuBar){
 			inventory.setItem(i, menuItem);
@@ -148,11 +158,27 @@ public class Page {
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
 		return false;
 	}
-	public void update() {
-	}
+	public void update() {}
 	public boolean isLink(ItemStack item){
 		if(links.keySet().contains(item))
 			return true;
 		return false;
+	}
+	public void replaceLink(ItemStack thisItem, ItemStack thatItem){
+		if(isLink(thisItem)){
+			Page page = links.get(thisItem);
+			links.remove(thisItem);
+			links.put(thatItem, page);
+		}
+	}
+	public boolean replaceIcon(ItemStack thisItem, ItemStack thatItem) {
+		int slot = util.getSlot(inventory, thisItem);
+		if(!ChatColor.stripColor(thisItem.getItemMeta().getDisplayName()).equalsIgnoreCase(ChatColor.stripColor(thatItem.getItemMeta().getDisplayName()))
+				&& alreadyIcon(thatItem)){
+			Messenger.send(gui.getPlayer(), "&cThis item is already an Icon");
+			return false;
+		}
+		inventory.setItem(slot, thatItem);
+		return true;
 	}
 }
