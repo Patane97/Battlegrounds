@@ -16,7 +16,7 @@ public class GameModes {
 		String stringUUID = player.getUniqueId().toString();
 		if(!savedGameModes.containsKey(stringUUID)){
 			savedGameModes.put(stringUUID, player.getGameMode());
-			PlayerDataYML.saveGameMode(stringUUID, true);
+			PlayerDataYML.saveGameMode(player, true);
 		}
 	}
 	public static void save(UUID playerUUID){
@@ -28,11 +28,15 @@ public class GameModes {
 	public static boolean restore (Player player){
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
+		if(!PlayerDataYML.isSection(stringUUID, "gamemode") || PlayerDataYML.isEmpty(stringUUID, "gamemode")){
+			PlayerDataYML.clearSection(stringUUID, "gamemode");
+			return false;
+		}
 		if (!savedGameModes.containsKey(stringUUID)){
-			Messenger.info("Failed to find " + playerName + "'s game mode in List. Checking yml...");
+			Messenger.debug("info", "Failed to find " + playerName + "'s game mode in List. Checking yml...");
 			GameMode gameMode = PlayerDataYML.getGameMode(stringUUID);
 			if(gameMode == null){
-				Messenger.warning("Failed to find " + playerName + "'s game mode from yml. Game mode Lost.");
+				Messenger.debug("warning", "Failed to find " + playerName + "'s game mode from yml. Game mode Lost.");
 				return false;
 			}
 			savedGameModes.put(stringUUID, gameMode);
@@ -40,9 +44,9 @@ public class GameModes {
 		try{
 			player.setGameMode(savedGameModes.remove(stringUUID));
 			PlayerDataYML.deletePlayer(stringUUID, "gamemode");
-			Messenger.warning("Successfully restored " + playerName + "'s game mode.");
+			Messenger.debug("info", "Successfully restored " + playerName + "'s game mode.");
 		} catch (Exception e){
-			Messenger.warning("Failed to set " + playerName + "'s game mode.");
+			Messenger.debug("warning", "Failed to set " + playerName + "'s game mode.");
 			e.printStackTrace();
 			return false;
 		}

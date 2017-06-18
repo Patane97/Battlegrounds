@@ -12,6 +12,8 @@ import com.Patane.Battlegrounds.playerData.PlayerDataYML;
 
 public class Battlegrounds extends JavaPlugin {
 	
+	private static boolean debugMode = true;
+	
 	public void onEnable() {
 		tasks();
 		loadFiles();
@@ -38,5 +40,8 @@ public class Battlegrounds extends JavaPlugin {
 	public void onDisable() {
 		Arenas.allSessionsOver();
 		ArenaYML.saveAllArenas();
+	}
+	public static boolean debugMode() {
+		return debugMode;
 	}
 }

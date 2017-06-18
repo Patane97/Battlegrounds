@@ -7,53 +7,26 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.YML;
 
-public class PlayerDataYML {
-	static Plugin plugin;
-
-	static Config playerDataConfig;
-	static ConfigurationSection header;
+public class PlayerDataYML extends BasicYML{
 	
-	public static void load(Plugin Battlegrounds){
-		plugin = Battlegrounds;
-		playerDataConfig = new Config(plugin, "playerData.yml");
-		
-		if(!isRootSection()){
-			createRootSection();
-		} else{
-			// checks and restores the data of all online players in the yml file
-			header = getRootSection();
-			Player player;
-			for(String s : header.getKeys(true)){
-				Messenger.warning(s);
-			}
-			for(String stringUUID : header.getKeys(false)){
-				player = Bukkit.getPlayer(UUID.fromString(stringUUID));
-				if(Bukkit.getOnlinePlayers().contains(player))
-					loadAllData(player);
-			}
+	public static void load(Plugin battlegrounds){
+		loadYML(battlegrounds, "playerData.yml", "playerUUID");
+		Player player;
+		for(String stringUUID : header.getKeys(false)){
+			checkEmptyClear(stringUUID);
+			player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+			if(Bukkit.getOnlinePlayers().contains(player))
+				loadAllData(player);
 		}
-		playerDataConfig.save();
-	}
-	/**
-	 * Checks if the player is in the playerData.yml and if not, creates them.
-	 * Then sets header to their section in yml.
-	 * 
-	 * @param stringUUID UUID of the player to create (in string format).
-	 */
-	public static void checkCreatePlayer(String stringUUID){
-		if(!checkSection(stringUUID)){
-			createSection(stringUUID);
-		}
-		setHeader(stringUUID);
+		config.save();
 	}
 	/**
 	 * Saves the players data into PlayerData.yml
@@ -61,110 +34,74 @@ public class PlayerDataYML {
 	 * @param player Player to save.
 	 */
 	public static void saveAllData(Player player){
-		String stringUUID = player.getUniqueId().toString();
-		checkCreatePlayer(stringUUID);
-		saveWellbeing(stringUUID, false);
-		saveGameMode(stringUUID, false);
-		saveLocation(stringUUID, false);
-		saveInventory(stringUUID, false);
-		playerDataConfig.save();
+		setHeader(player.getUniqueId().toString());
+		saveWellbeing(player, false);
+		saveGameMode(player, false);
+		saveLocation(player, false);
+		saveInventory(player, false);
+		config.save();
 	}
 	/**
-	 * Load the players data from PlayerData.yml
+	 * Load the players data that is saved either within the plugin or within PlayerData.yml
 	 *  
 	 * @param player Player to load.
 	 */
 	public static void loadAllData(Player player){
 		String stringUUID = player.getUniqueId().toString();
-		if(checkSection(stringUUID)){
-			Messenger.info("Found '" + stringUUID + "' in YML");
+		if(isSection(stringUUID)){				
+			Messenger.debug("info", "Found " + stringUUID + ".");
 			Wellbeing.restore(player);
 			GameModes.restore(player);
 			Locations.restore(player);
 			Inventories.restore(player);
-//			if(checkSection(stringUUID + ".wellbeing.health")){
-//				Messenger.info("Found Health!");
-//				double health = (getHealth(stringUUID) > 0 ? getHealth(stringUUID) : 20);
-//				player.setHealth(health);
-//			}
-//			if(checkSection(stringUUID + ".wellbeing.food")){
-//				Messenger.info("Found Food!");
-//				int food = (getFoodLevel(stringUUID) > 0 ? getFoodLevel(stringUUID) : 20);
-//				player.setFoodLevel(food);
-//			}
-//			if(checkSection(stringUUID + ".gamemode"))
-//				player.setGameMode(getGameMode(stringUUID));
-//			if(checkSection(stringUUID + ".location"))
-//				player.teleport(getLocation(stringUUID));
-//			if(checkSection(stringUUID + ".inventory")){
-//				player.getInventory().clear();
-//				player.getInventory().setContents(getInventory(stringUUID));
-//			}
-//			deletePlayer(player.getUniqueId().toString());
 		}
 	}
-	public static void saveWellbeing(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	 static void saveWellbeing(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.health", player.getHealth());
 		header.set("wellbeing.food", player.getFoodLevel());
 		header.set("wellbeing.exp", player.getExp());
 		header.set("wellbeing.level", player.getLevel());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveHealth(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveHealth(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.health", player.getHealth());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveFood(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveFood(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.food", player.getFoodLevel());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveExp(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveExp(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.exp", player.getExp());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveLevel(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveLevel(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("wellbeing.level", player.getLevel());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveLocation(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveLocation(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("location", YML.locationFormat(player.getLocation()));
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveInventory(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveInventory(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		List<ItemStack> itemList = Arrays.asList(player.getInventory().getContents());
 		header.set("inventory", itemList);
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
-	public static void saveGameMode(String stringUUID, boolean save){
-		checkCreatePlayer(stringUUID);
-		Player player = Bukkit.getPlayer(UUID.fromString(stringUUID));
+	public static void saveGameMode(Player player, boolean save){
+		if(save) setHeader(player.getUniqueId().toString());
 		header.set("gamemode", player.getGameMode().toString());
-		if(save)
-			playerDataConfig.save();
+		if(save) config.save();
 	}
 	public static Location getLocation(String stringUUID){
-		if(checkSection(stringUUID + ".location")){
+		if(isSection(stringUUID + ".location")){
 			setHeader(stringUUID);
 			Location location = YML.getLocation(header.getString("location"));
 			return location;
@@ -172,7 +109,7 @@ public class PlayerDataYML {
 		return null;
 	}
 	public static ItemStack[] getInventory(String stringUUID){
-		if(checkSection(stringUUID + ".inventory")){
+		if(isSection(stringUUID + ".inventory")){
 			setHeader(stringUUID);
 			@SuppressWarnings("unchecked")
 			List<ItemStack> itemList = (List<ItemStack>) header.get("inventory");
@@ -182,15 +119,16 @@ public class PlayerDataYML {
 		return null;
 	}
 	public static GameMode getGameMode(String stringUUID){
-		if(checkSection(stringUUID + ".gamemode")){
+		if(isSection(stringUUID + ".gamemode")){
 			setHeader(stringUUID);
 			String gameMode = header.getString("gamemode");
 			return GameMode.valueOf(gameMode);
 		}
 		return null;
 	}
+	@SuppressWarnings("null")
 	public static double getHealth(String stringUUID){
-		if(checkSection(stringUUID + ".wellbeing")){
+		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty()){
 				setHeader(stringUUID);
@@ -199,76 +137,54 @@ public class PlayerDataYML {
 			}
 			return header.getDouble("health");
 		}
-		Messenger.warning("Returning -1 for Health");
-		return -1;
+		return (Double) null;
 	}
+	@SuppressWarnings("null")
 	public static int getFoodLevel(String stringUUID){
-		if(checkSection(stringUUID + ".wellbeing")){
+		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("food");
 		}
-		return -1;
+		return (Integer) null;
 	}
+	@SuppressWarnings("null")
 	public static float getExp(String stringUUID) {
-		if(checkSection(stringUUID + ".wellbeing")){
+		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return (float) header.getDouble("exp");
 		}
-		return -1;
+		return (Float) null;
 	}
+	@SuppressWarnings("null")
 	public static int getLevel(String stringUUID){
-		if(checkSection(stringUUID + ".wellbeing")){
+		if(isSection(stringUUID + ".wellbeing")){
 			setHeader(stringUUID + ".wellbeing");
 			if(header.getKeys(false).isEmpty())
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("level");
 		}
-		return -1;
+		return (Integer) null;
 	}
 	public static void deletePlayer(String stringUUID){
-		Messenger.warning("DELETING UUID: " + stringUUID);
 		getRootSection().set(stringUUID, null);
-		playerDataConfig.save();
+		config.save();
 	}
 	public static void deletePlayer(String stringUUID, String type){
 		if(getSection(stringUUID) != null){
-			Messenger.warning("DELETING UUID + TYPE: " + stringUUID + " : " + type);
 			getSection(stringUUID).set(type, null);
 			if(getSection(stringUUID).getKeys(false).isEmpty())
 				getRootSection().set(stringUUID, null);
-			playerDataConfig.save();
+			config.save();
 		}
 	}
 	public static void checkWellbeing(String stringUUID) {
 		setHeader(stringUUID + ".wellbeing");
 		if(header.getKeys(false).isEmpty())
 			getSection(stringUUID).set("wellbeing", null);
-	}
-
-	private static void createRootSection() {
-		playerDataConfig.createSection("playerUUID");
-	}
-	private static void createSection(String section) {
-		playerDataConfig.createSection("playerUUID." + section);
-	}
-	private static void setHeader(String newHeader) {
-		header = getSection(newHeader);
-	}
-	private static boolean isRootSection() {
-		return playerDataConfig.isConfigurationSection("playerUUID");
-	}
-	private static boolean checkSection(String section) {
-		return playerDataConfig.isConfigurationSection("playerUUID." + section);
-	}
-	private static ConfigurationSection getRootSection() {
-		return playerDataConfig.getConfigurationSection("playerUUID");
-	}
-	private static ConfigurationSection getSection(String section) {
-		return playerDataConfig.getConfigurationSection("playerUUID." + section);
 	}
 }
 

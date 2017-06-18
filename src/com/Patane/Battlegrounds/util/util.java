@@ -2,7 +2,9 @@ package com.Patane.Battlegrounds.util;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.collections.Arenas;
@@ -47,20 +50,24 @@ public class util {
 		item.setItemMeta(iM);
 		return item;
 	}
-
+	public static ItemStack createItem(Material material, int amount, short data, String name, String...lore){
+		ItemStack item = new ItemStack(material, amount, data);
+		ItemMeta itemMeta = item.getItemMeta();
+		itemMeta.setDisplayName(Chat.translate(name));
+		List<String> finalLore = new ArrayList<String>(Arrays.asList(lore));
+		finalLore = Chat.translate(finalLore);
+		itemMeta.setLore(finalLore);
+		
+		item.setItemMeta(itemMeta);
+		
+		return item;
+	}
 	public static String formaliseString(String s) {
 		s = s.toLowerCase();
 		s = s.substring(0, 1).toUpperCase() + s.substring(1);
 		return s;
 	}
 
-	// public static boolean checkRegionIntersecting(AbstractRegion region){
-	// for(Arena arena : Arenas.get()){
-	// AbstractRegion ground = arena.getGround();
-	// AbstractRegion lobby = arena.getLobby();
-	// for(region.)
-	// }
-	// }
 	@SuppressWarnings("deprecation")
 	public static AbstractRegion getAbstractRegion(Plugin plugin, Player creator) {
 		WorldEditPlugin worldEditPlugin = (WorldEditPlugin) plugin.getServer().getPluginManager()
@@ -171,5 +178,18 @@ public class util {
 		changes.add(new Vector(0, 0, 1).multiply(amount));
 		changes.add(new Vector(0, 0, -1).multiply(amount));
 		return (Vector[]) changes.toArray(new Vector[0]);
+	}
+
+	public static String stringJoiner(String[] strings, String delimiter) {
+		return stringJoiner(strings, new StringJoiner(delimiter));
+	}
+	public static String stringJoiner(String[] strings, String delimiter, String prefix, String suffix) {
+		return stringJoiner(strings, new StringJoiner(delimiter, prefix, suffix));
+	}
+	private static String stringJoiner(String[] strings, StringJoiner stringJoiner){
+		for(String string : strings){
+			stringJoiner.add(string);
+		}
+		return stringJoiner.toString();
 	}
 }

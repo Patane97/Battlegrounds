@@ -17,7 +17,7 @@ public class Inventories {
 		String stringUUID = player.getUniqueId().toString();
 		if(!savedInventories.containsKey(stringUUID)){
 			savedInventories.put(stringUUID, player.getInventory().getContents());
-			PlayerDataYML.saveInventory(stringUUID, true);
+			PlayerDataYML.saveInventory(player, true);
 		}
 	}
 	public static void save(UUID playerUUID){
@@ -35,11 +35,15 @@ public class Inventories {
 		Inventory playerInventory = player.getInventory();
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
+		if(!PlayerDataYML.isSection(stringUUID, "inventory") || PlayerDataYML.isEmpty(stringUUID, "inventory")){
+			PlayerDataYML.clearSection(stringUUID, "inventory");
+			return false;
+		}
 		playerInventory.clear();
 		if (!savedInventories.containsKey(stringUUID)){
 			ItemStack[] inventoryContents = PlayerDataYML.getInventory(stringUUID);
 			if(inventoryContents == null){
-				Messenger.warning("Failed to find " + playerName + "'s inventory from yml. Inventory Lost.");
+				Messenger.debug("warning", "Failed to find " + playerName + "'s inventory from yml. Inventory Lost.");
 				return false;
 			}
 			savedInventories.put(stringUUID, inventoryContents);
@@ -47,8 +51,9 @@ public class Inventories {
 		try{
 			playerInventory.setContents(savedInventories.remove(stringUUID));
 			PlayerDataYML.deletePlayer(stringUUID, "inventory");
+			Messenger.debug("info", "Successfully restored " + playerName + "'s location.");
 		} catch (Exception e){
-			Messenger.warning("Failed to restore " + playerName + "'s inventory.");
+			Messenger.debug("warning", "Failed to restore " + playerName + "'s inventory.");
 			e.printStackTrace();
 			return false;
 		}

@@ -69,8 +69,10 @@ public class ArenaListener extends BGListener{
 		if (point == RelativePoint.OUTSIDE) {
 			Iterator<Block> blockIterator = event.blockList().iterator();
 			while(blockIterator.hasNext())
-				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE)
+				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE){
 						blockIterator.remove();
+						Messenger.info("removing block from explosion");
+				}
 		} else {
 			event.blockList().clear();
 		}

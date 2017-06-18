@@ -35,15 +35,15 @@ public class Messenger {
 		Bukkit.broadcastMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
 	}
 	public static void info(String msg) {
-		logger.info(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
+		logger.info(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg)));
 	}
 
 	public static void warning(String msg) {
-		logger.warning(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
+		logger.warning(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg)));
 	}
 
 	public static void severe(String msg) {
-		logger.severe(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.translateAlternateColorCodes('&', msg));
+		logger.severe(Chat.STRIPPED_PLUGIN_PREFIX + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg)));
 	}
 	// sends only to people in specific game
 	public static void arenaCast(Arena arena, String string) {
@@ -51,5 +51,32 @@ public class Messenger {
 			send(Bukkit.getPlayerExact(ChatColor.stripColor(selectedPlayer)), string);
 		}
 		
+	}
+	public static void debug(String type, String msg) {
+		if(!Battlegrounds.debugMode())
+			return;
+		msg = ">> " + msg;
+		switch(type){
+		case "broadcast":
+			broadcast(msg);
+		case "warning":
+			warning(msg);
+		case "severe":
+			severe(msg);
+		default:
+			info(msg);
+		}
+	}
+	public static void debug(Arena arena, String msg) {
+		if(Battlegrounds.debugMode()){
+			msg = ">> &c" + msg;
+			arenaCast(arena, msg);
+		}
+	}
+	public static void debug(CommandSender sender, String msg) {
+		if(Battlegrounds.debugMode()){
+			msg = ">> &c" + msg;
+			send(sender, msg);
+		}
 	}
 }

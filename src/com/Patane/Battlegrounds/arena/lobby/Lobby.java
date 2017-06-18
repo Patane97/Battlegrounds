@@ -64,8 +64,8 @@ public class Lobby extends Standby{
 	public boolean addPlayer(Player player){
 		int playerCount = arena.getPlayers().size();
 		int maxPlayers = arena.getSettings().MAX_PLAYERS;
-		if(maxPlayers != -1
-				&& !player.equals(creator) 
+		if(!player.equals(creator)
+				&& maxPlayers != 0
 				&& maxPlayers >= playerCount){
 			Messenger.send(player, "&cUnable to join. &7" + arena.getName() + "&c is currently full &7[" + playerCount + "/" + maxPlayers + "]&c.");
 			return false;

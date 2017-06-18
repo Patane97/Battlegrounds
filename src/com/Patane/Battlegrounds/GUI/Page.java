@@ -115,6 +115,7 @@ public class Page {
 		}
 		return false;
 	}
+	// change this to loop through and check if each item is same to 'item'
 	protected boolean alreadyIcon(ItemStack item){
 		for(ItemStack selectedItem : links.keySet()){
 			if(selectedItem.getType() == item.getType() 

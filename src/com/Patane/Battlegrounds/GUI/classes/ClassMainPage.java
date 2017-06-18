@@ -23,7 +23,8 @@ public class ClassMainPage extends MainPage{
 	
 	public ClassMainPage(ClassesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
-		classesGui = gui;
+		this.gui = gui;
+		this.classesGui = gui;
 		links.put(menuBar[allClassesSlot], new AllClassesPage(classesGui, "&6&lOther classes", 45, this));
 	}
 	@Override

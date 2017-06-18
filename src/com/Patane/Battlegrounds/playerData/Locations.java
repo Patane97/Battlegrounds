@@ -16,7 +16,7 @@ public class Locations {
 		String stringUUID = player.getUniqueId().toString();
 		if(!savedLocations.containsKey(stringUUID)){
 			savedLocations.put(stringUUID, player.getLocation());
-			PlayerDataYML.saveLocation(stringUUID, true);
+			PlayerDataYML.saveLocation(player, true);
 		}
 	}
 	public static void save(UUID playerUUID){
@@ -28,11 +28,15 @@ public class Locations {
 	public static boolean restore (Player player){
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
+		if(!PlayerDataYML.isSection(stringUUID, "location") || PlayerDataYML.isEmpty(stringUUID, "location")){
+			PlayerDataYML.clearSection(stringUUID, "location");
+			return false;
+		}
 		if (!savedLocations.containsKey(stringUUID)){
-			Messenger.info("Failed to find " + playerName + "'s location in List. Checking yml...");
+			Messenger.debug("info", "Failed to find " + playerName + "'s location in List. Checking yml...");
 			Location location = PlayerDataYML.getLocation(stringUUID);
 			if(location == null){
-				Messenger.warning("Failed to find " + playerName + "'s location from yml. Location Lost.");
+				Messenger.debug("warning", "Failed to find " + playerName + "'s location from yml. Location Lost.");
 				return false;
 			}
 			savedLocations.put(stringUUID, location);
@@ -40,9 +44,9 @@ public class Locations {
 		try{
 			player.teleport(savedLocations.remove(stringUUID));
 			PlayerDataYML.deletePlayer(stringUUID, "location");
-			Messenger.warning("Successfully restored " + playerName + "'s location.");
+			Messenger.debug("info", "Successfully restored " + playerName + "'s location.");
 		} catch (Exception e){
-			Messenger.warning("Failed to set " + playerName + "'s location.");
+			Messenger.debug("warning", "Failed to set " + playerName + "'s location.");
 			e.printStackTrace();
 			return false;
 		}

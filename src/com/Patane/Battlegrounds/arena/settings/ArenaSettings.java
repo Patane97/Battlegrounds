@@ -1,5 +1,8 @@
 package com.Patane.Battlegrounds.arena.settings;
 
+import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.ArenaYML;
+
 public class ArenaSettings {
 	// blocks can be placed/broken whilst in-game || COMPLETE || ||| Icon: TNT
 	public final boolean DESTRUCTABLE;
@@ -28,17 +31,17 @@ public class ArenaSettings {
 	 * Itegrate Entry-fee's and money rewards with vault
 	 */
 	
-	public ArenaSettings(){
-		this.DESTRUCTABLE 			= false;
-		this.PVP_ENABLED 			= false;
-		this.SPECTATE_DEATH 		= true;
-		this.GLOBAL_NEW_ANNOUNCE 	= true;
-		this.GLOBAL_END_ANNOUNCE 	= true;
-		this.FINAL_WAVE 			= -1;
-		this.MIN_PLAYERS 			= 1;
-		this.MAX_PLAYERS 			= -1;
-		this.WAVE_DELAY 			= 5;
-		this.FIRST_DELAY 			= 10;
-		this.FOOD_REGEN 			= -1;
+	public ArenaSettings(Arena arena){
+		this.DESTRUCTABLE 			= (boolean) ArenaYML.getSetting(arena.getName(), Setting.DESTRUCTABLE);
+		this.PVP_ENABLED 			= (boolean) ArenaYML.getSetting(arena.getName(), Setting.PVP_ENABLED);
+		this.SPECTATE_DEATH 		= (boolean) ArenaYML.getSetting(arena.getName(), Setting.SPECTATE_DEATH);
+		this.GLOBAL_NEW_ANNOUNCE 	= (boolean) ArenaYML.getSetting(arena.getName(), Setting.GLOBAL_NEW_ANNOUNCE);
+		this.GLOBAL_END_ANNOUNCE 	= (boolean) ArenaYML.getSetting(arena.getName(), Setting.GLOBAL_END_ANNOUNCE);
+		this.WAVE_DELAY 			= (float) ArenaYML.getSetting(arena.getName(), Setting.WAVE_DELAY);
+		this.FIRST_DELAY 			= (float) ArenaYML.getSetting(arena.getName(), Setting.FIRST_DELAY);
+		this.FINAL_WAVE 			= (int) ArenaYML.getSetting(arena.getName(), Setting.FINAL_WAVE);
+		this.FOOD_REGEN 			= (int) ArenaYML.getSetting(arena.getName(), Setting.FOOD_REGEN);
+		this.MIN_PLAYERS 			= (int) ArenaYML.getSetting(arena.getName(), Setting.MIN_PLAYERS);
+		this.MAX_PLAYERS 			= (int) ArenaYML.getSetting(arena.getName(), Setting.MAX_PLAYERS);
 	}
 }

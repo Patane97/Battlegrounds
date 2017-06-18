@@ -1,18 +1,15 @@
 package com.Patane.Battlegrounds.GUI.settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import com.Patane.Battlegrounds.Chat;
-import com.Patane.Battlegrounds.GUI.GUI;
 import com.Patane.Battlegrounds.GUI.MainPage;
+import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.ArenaYML;
+import com.Patane.Battlegrounds.arena.editor.settings.SettingsGUI;
+import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.util.util;
 
 public class SettingsMainPage extends MainPage{
@@ -22,114 +19,128 @@ public class SettingsMainPage extends MainPage{
 						   "&7 Shift click to add/remove 5"};
 	String[] FLOAT 		= {"FLOAT","&7 Left/Right click to add/remove 0.5",
 						   "&7 Shift click to add/remove 5"};
+	SettingsGUI settingsGui;
 	
-	HashMap<ItemStack, String> settingsLink = new HashMap<ItemStack, String>();
-	HashMap<ItemStack, String> settingsType = new HashMap<ItemStack, String>();
+	HashMap<ItemStack, Setting> settingsLink = new HashMap<ItemStack, Setting>();
 	
-	public SettingsMainPage(GUI gui, String name, int invSize) {
+	public SettingsMainPage(SettingsGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
+		this.gui = gui;
+		this.settingsGui = gui;
 		initilizeIcons();
 	}
 	private void initilizeIcons(){
-		addIcon(createSettingItem("Destructable", Material.TNT, "destructable", BOOLEAN , 
-				"&fCan players break/place",
-				"&farena blocks during a game?"));
-		addIcon(createSettingItem("PvP Damage", Material.WOOD_SWORD, "pvp", BOOLEAN , 
-				"&fCan players damage other",
-				"&fplayers?"));
-		addIcon(createSettingItem("Spectate on Elimination", Material.EYE_OF_ENDER, "spectate-death", BOOLEAN , 
-				"&fDo players become spectators",
-				"&fonce eliminated?"));
-		addIcon(createSettingItem("Global New Lobby Announcement", Material.SNOW_BALL, "global-new-announce", BOOLEAN , 
-				"&fShould the start of a new",
-				"&flobby be broadcast to the",
-				"&fwhole server?"));
-		addIcon(createSettingItem("Global End Game Announcement", Material.SLIME_BALL, "global-end-announce", BOOLEAN , 
-				"&fShould the end of a game",
-				"&fbe broadcast to the whole",
-				"&fserver?"));
-		addIcon(createSettingItem("First Wave Delay", Material.BLAZE_POWDER, "first-wave-delay", FLOAT , 
-				"&fHow many seconds will",
-				"&fit wait for the first",
-				"&fround to start?"));
-		addIcon(createSettingItem("Default Wave Delay", Material.MAGMA_CREAM, "wave-delay", FLOAT , 
-				"&fHow many seconds will",
-				"&fit wait between ending",
-				"&fone round and starting",
-				"&fthe next?"));
-		addIcon(createSettingItem("Final Wave No.", Material.SKULL_ITEM, "final-wave", INTEGER , 
-				"&fWhat is the final wave",
-				"&fthat can be played?",
-				"&f(-1 for no final wave)"));
-		addIcon(createSettingItem("Food Regeneration", Material.APPLE, "food-regen", INTEGER , 
-				"&fHow many points of food",
-				"&fwill players regenerate",
-				"&fper 5 seconds?",
-				"&f(-1 for no regeneration)"));
-		addIcon(createSettingItem("Minimum Players", Material.BUCKET, "min-players", INTEGER , 
-				"&fWhat are the minimum",
-				"&famount of players needed",
-				"&fto start a match?"));
-		addIcon(createSettingItem("Maximum Players", Material.WATER_BUCKET, "max-players", INTEGER , 
-				"&fWhat are the maximum",
-				"&famount of players allowed",
-				"&fin a match?"));
-		
+		// Loops through each of the enum values from settings class. 
+		// Ensures that we only need to add a new setting in that class
+		// for it to be automatically added #nohardcoding
+		for(Setting setting : Setting.values())
+			createSettingIcon(setting);
 	}
-	private ItemStack createSettingItem(String settingName, Material settingItem, String YML, String[] footer, String ... lore){
-		settingItem = (settingItem == null ? Material.PAPER : settingItem);
-		ItemStack item = new ItemStack(settingItem);
-		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setDisplayName(Chat.translate("&c&l" + settingName));
-		
-		List<String> finalLore = new ArrayList<String>(Arrays.asList(lore));
-		String type = footer[0];
-		finalLore.addAll(Arrays.asList(Arrays.copyOfRange(footer, 1, footer.length)));
-		finalLore = Chat.translate(finalLore);
-		itemMeta.setLore(finalLore);
-		
-		item.setItemMeta(itemMeta);
-		
-		settingsLink.put(item, YML);
-		settingsType.put(item, type);
-		return util.hideAttributes(item);
+	private void createSettingIcon(Setting setting){
+		ItemStack icon = util.hideAttributes(setting.getItem(ArenaYML.getSetting(settingsGui.getArena().getName(), setting)));
+		settingsLink.put(icon, setting);
+		addIcon(icon);
 	}
-	private void updateSettingItem(ItemStack item, String link, int slot) {
-		ItemMeta itemMeta = item.getItemMeta();
-		String value = "PLACEHOLDER"; //use link to find value
-		List<String> tempLore = itemMeta.getLore();
-		tempLore.set(0, value);
-		itemMeta.setLore(tempLore);
-		
-		item.setItemMeta(itemMeta);
-		addIcon(slot, item);
+	private void updateSettingItem(Setting setting, Object value, int slot) {
+		ItemStack newItem = setting.getItem(value);
+		settingsLink.put(newItem, setting);
+		addIcon(slot, newItem);
 	}
-	private Boolean toggleBoolean(String YML){
-		return true;
+
+	private boolean toggleBoolean(Setting setting){
+		Arena arena = settingsGui.getArena();
+		String ymlName = setting.getYmlName();
+		boolean current = (boolean) arena.getSetting(ymlName);
+		arena.putSetting(ymlName, !current);
+		return (boolean) ArenaYML.saveSetting(arena, ymlName, true);
 	}
-	private int changeInteger(String string, ClickType click) {
-		return 0;
+	private int changeInteger(Setting setting, ClickType click) {
+		Arena arena = settingsGui.getArena();
+		String ymlName = setting.getYmlName();
+		int current = (int) arena.getSetting(ymlName);
+		if(click == ClickType.LEFT)
+			arena.putSetting(ymlName, current+1);
+		if(click == ClickType.RIGHT)
+			arena.putSetting(ymlName, current-1);
+		if(click == ClickType.SHIFT_LEFT)
+			arena.putSetting(ymlName, current+5);
+		if(click == ClickType.SHIFT_RIGHT)
+			arena.putSetting(ymlName, current-5);
+		return (int) ArenaYML.saveSetting(arena, ymlName, true);
 	}
-	private float changeFloat(String string, ClickType click) {
-		return 0;
+	private float changeFloat(Setting setting, ClickType click) {
+		Arena arena = settingsGui.getArena();
+		String ymlName = setting.getYmlName();
+		float current = (float) arena.getSetting(ymlName);
+		if(click == ClickType.LEFT)
+			arena.putSetting(ymlName, current+0.5f);
+		if(click == ClickType.RIGHT)
+			arena.putSetting(ymlName, current-0.5f);
+		if(click == ClickType.SHIFT_LEFT)
+			arena.putSetting(ymlName, current+1f);
+		if(click == ClickType.SHIFT_RIGHT)
+			arena.putSetting(ymlName, current-1f);
+		return (float) ArenaYML.saveSetting(arena, ymlName, true);
 	}
+
+//	private boolean toggleBoolean(Setting setting){
+//		String arenaName = settingsGui.getArena().getName();
+//		boolean current = (boolean) ArenaYML.getSetting(arenaName, setting);
+//		ArenaYML.saveSetting(arenaName, setting, !current, true);
+//		return !current;
+//	}
+//	private int changeInteger(Setting setting, ClickType click) {
+//		String arenaName = settingsGui.getArena().getName();
+//		String ymlName = setting.getYmlName();
+//		int current = ((int) ArenaYML.getSetting(arenaName, setting));
+//		if(click == ClickType.LEFT)
+//			ArenaYML.saveSetting(arenaName, setting, current+1, true);
+//		if(click == ClickType.RIGHT)
+//			ArenaYML.saveSetting(arenaName, setting, current-1, true);
+//		if(click == ClickType.SHIFT_LEFT)
+//			ArenaYML.saveSetting(arenaName, setting, current+5, true);
+//		if(click == ClickType.SHIFT_RIGHT)
+//			ArenaYML.saveSetting(arenaName, setting, current-5, true);
+//		return (int) ArenaYML.getSetting(arenaName, setting);
+//	}
+//	private float changeFloat(Setting setting, ClickType click) {
+//		String arenaName = settingsGui.getArena().getName();
+//		float current = (float) (ArenaYML.getSetting(arenaName, setting));
+//		if(click == ClickType.LEFT)
+//			ArenaYML.saveSetting(arenaName, setting, current+0.5f, true);
+//		if(click == ClickType.RIGHT)
+//			ArenaYML.saveSetting(arenaName, setting, current-0.5f, true);
+//		if(click == ClickType.SHIFT_LEFT)
+//			ArenaYML.saveSetting(arenaName, setting, current+1f, true);
+//		if(click == ClickType.SHIFT_RIGHT)
+//			ArenaYML.saveSetting(arenaName, setting, current-1f, true);
+//		return (float) ArenaYML.getSetting(arenaName, setting);
+//	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(super.pickupItem(topInv, click, item, slot))
 			return true;
 		if(topInv){
-			if(settingsType.containsKey(item)){
-				String type = settingsType.get(item);
-				String link = settingsType.get(item);
-				switch(type){
-				case "BOOLEAN": toggleBoolean(link);
-				case "INTEGER": changeInteger(link, click);
-				case "FLOAT": changeFloat(link, click);
+			if(settingsLink.containsKey(item)){
+				Setting setting = settingsLink.get(item);
+				settingsLink.remove(item);
+				switch(setting.getType()){
+					case BOOLEAN: updateSettingItem(setting, toggleBoolean(setting), slot); break;
+					case INTEGER: updateSettingItem(setting, changeInteger(setting, click), slot); break;
+					case FLOAT: updateSettingItem(setting, changeFloat(setting, click), slot); break;
 				}
-				updateSettingItem(item, link, slot);
 			}
 		}
 		return false;
 	}
+	@Override
+	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
+		return pickupItem(topInv, click, item, slot);
+	}
+	@Override
+	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot) {
+		return pickupItem(topInv, click, thatItem, slot);
+	}
+	
 
 }

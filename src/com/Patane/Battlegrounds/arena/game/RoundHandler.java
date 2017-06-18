@@ -23,8 +23,6 @@ public class RoundHandler {
 	ArrayList<Location> creatureSpawns;
 	ArrayList<Creature> activeCreatures = new ArrayList<Creature>();
 	private int spawnTaskID;
-
-	int count = 0;
 	
 	RoundHandler(Plugin plugin, Game game){
 		this.game 			= game;
@@ -49,7 +47,7 @@ public class RoundHandler {
 	// removes a mob when they have been killed
 	public boolean creatureKilled(Creature creature){
 		if(activeCreatures.remove(creature)){
-//			Messenger.arenaCast(game.getArena(), "&6Creature &7" + creature.getName() + "&6 killed.");
+			Messenger.debug(game.getArena(), "Creature " + creature.getName() + " killed.");
 			return true;
 		}
 		return false;
@@ -69,8 +67,9 @@ public class RoundHandler {
 		}
 	}
 	public void nextRound(){
+		Messenger.debug(game.getArena(), "Next Round");
 		int finalWave = game.getArena().getSettings().FINAL_WAVE;
-		if(finalWave != -1 && roundNo >= finalWave){
+		if(finalWave != 0 && roundNo >= finalWave){
 			game.finalRoundEnd();
 			Messenger.arenaCast(game.getArena(), "&2Congradulations! You passed the final round.");
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
+import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.arena.standby.ArenaMode;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
@@ -49,6 +51,9 @@ public class Arena {
 	protected ArenaListener arenaListener;
 	
 	protected ArenaSettings arenaSettings;
+
+	protected HashMap<String, Object> customSettings;
+	// regions must be SAVED in some way for when it is destroyed
 	
 	
 	// <PlayerName, ClassName>
@@ -68,7 +73,7 @@ public class Arena {
 	 * Mostly used for creating new arenas in-game (before spawns have been saved)
 	 */
 	public Arena(Plugin plugin, String name, World world, AbstractRegion region){
-		this(plugin, name, world, region, null, null, null, null, null, null);
+		this(plugin, name, world, region, null, null, null, null, null, null, null);
 	}
 	/**
 	 * Mostly used with loading arenas from arenas.yml
@@ -76,7 +81,7 @@ public class Arena {
 	public Arena(Plugin plugin, String name, World world, AbstractRegion ground, 
 			AbstractRegion lobby, ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, 
 			ArrayList<Location> creatureSpawns, ArrayList<Location> spectatorSpawns,
-			ArrayList<String> classes){
+			ArrayList<String> classes, HashMap<String, Object> customSettings){
 		if(Arenas.contains(name)){
 			throw new NullPointerException("Tried to create an arena that already exists! (" + name + ")");
 		}
@@ -85,15 +90,19 @@ public class Arena {
 		this.world 				= world;
 		this.ground 			= ground;
 		this.lobby 				= lobby;
-		this.gameSpawns 		= (gameSpawns 		== null ? new ArrayList<Location>() : gameSpawns);
-		this.lobbySpawns 		= (lobbySpawns 		== null ? new ArrayList<Location>() : lobbySpawns);
-		this.creatureSpawns		= (creatureSpawns 	== null ? new ArrayList<Location>() : creatureSpawns);
-		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>() : spectatorSpawns);
-		this.classes 			= (classes 			== null ? new ArrayList<String>() : classes);
+		this.gameSpawns 		= (gameSpawns 		== null ? new ArrayList<Location>() 	: gameSpawns);
+		this.lobbySpawns 		= (lobbySpawns 		== null ? new ArrayList<Location>() 	: lobbySpawns);
+		this.creatureSpawns		= (creatureSpawns 	== null ? new ArrayList<Location>() 	: creatureSpawns);
+		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>() 	: spectatorSpawns);
+		this.classes 			= (classes 			== null ? new ArrayList<String>() 		: classes);
+		this.customSettings		= (customSettings 	== null ? new HashMap<String, Object>() : customSettings);
 		syncClasses();
 		this.mode 				= new Standby(plugin, this);
-		this.arenaSettings		= new ArenaSettings();
+		this.arenaSettings		= new ArenaSettings(this);
 		Arenas.add(this);
+		for(String ymlName : customSettings.keySet()){
+			Messenger.broadcast("Found in customSettings: <"+ymlName+", "+customSettings.get(ymlName)+">");
+		}
 	}
 	
 	public String getName(){
@@ -107,6 +116,9 @@ public class Arena {
 	}
 	public AbstractRegion getLobby(){
 		return lobby;
+	}
+	public void setSettings(ArenaSettings settings){
+		this.arenaSettings = settings;
 	}
 	public ArenaSettings getSettings(){
 		return arenaSettings;
@@ -428,5 +440,24 @@ public class Arena {
 			return true;
 		}
 		return false;
+	}
+	public Set<String> getCustomSettingsKeySet(){
+		return customSettings.keySet();
+	}
+	public Object getSetting(String ymlName) {
+		if(!customSettings.containsKey(ymlName))
+			return Setting.getFromName(ymlName).getDefault();
+		return customSettings.get(ymlName);
+	}
+	public Object putSetting(String ymlName, Object value) {
+		if(value.equals(Setting.getFromName(ymlName).getDefault())){
+			Messenger.broadcast("Removing: <"+ymlName+", "+value+">");
+			return customSettings.remove(ymlName);
+		}
+		Messenger.broadcast("Putting: <"+ymlName+", "+value+">");
+		return customSettings.put(ymlName, value);
+	}
+	public Object removeSetting(String ymlName) {
+		return customSettings.remove(ymlName);
 	}
 }
