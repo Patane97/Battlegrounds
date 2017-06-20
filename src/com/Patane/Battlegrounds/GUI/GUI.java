@@ -1,8 +1,12 @@
 package com.Patane.Battlegrounds.GUI;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -91,5 +95,8 @@ public class GUI {
 	}
 	public boolean shiftClick(boolean topInv, ClickType click, ItemStack clickedItem, int slot) {
 		return currentPage.moveItem(topInv, click, clickedItem, slot);
+	}
+	public boolean dragClick(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, ArrayList<Integer> arrayList) {
+		return currentPage.dragItem(topInv, drag, newItems, cursor, arrayList);
 	}
 }

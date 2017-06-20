@@ -71,7 +71,7 @@ public class Arena {
 	
 	
 	// <PlayerName, ClassName>
-	public HashMap<String, String> playerClasses = new HashMap<String, String>();
+	private HashMap<String, String> playerClasses = new HashMap<String, String>();
 	
 	ArenaMode mode;
 	// map of players <String name, Boolean value>
@@ -481,10 +481,8 @@ public class Arena {
 	}
 	public Object putSetting(String ymlName, Object value) {
 		if(value.equals(Setting.getFromName(ymlName).getDefault())){
-			Messenger.broadcast("Removing: <"+ymlName+", "+value+">");
 			return customSettings.remove(ymlName);
 		}
-		Messenger.broadcast("Putting: <"+ymlName+", "+value+">");
 		return customSettings.put(ymlName, value);
 	}
 	public Object removeSetting(String ymlName) {

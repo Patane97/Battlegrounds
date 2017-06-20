@@ -15,6 +15,7 @@ import com.Patane.Battlegrounds.commands.all.editCommand;
 import com.Patane.Battlegrounds.commands.all.joinCommand;
 import com.Patane.Battlegrounds.commands.all.leaveCommand;
 import com.Patane.Battlegrounds.commands.all.listCommand;
+import com.Patane.Battlegrounds.commands.all.reloadCommand;
 import com.Patane.Battlegrounds.commands.all.removeCommand;
 import com.Patane.Battlegrounds.commands.all.saveCommand;
 import com.Patane.Battlegrounds.commands.all.spectateCommand;
@@ -66,6 +67,7 @@ public class CommandHandler implements CommandExecutor{
 		register(classCommand.class);
 		register(spectateCommand.class);
 		register(statusCommand.class);
+		register(reloadCommand.class);
 	}
 	public void register(Class< ? extends BGCommand> command){
 		CommandInfo cmdInfo = command.getAnnotation(CommandInfo.class);

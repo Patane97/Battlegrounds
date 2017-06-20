@@ -1,8 +1,11 @@
 package com.Patane.Battlegrounds.GUI.classes;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
@@ -43,7 +46,9 @@ public class ClassPage extends Page{
 			linkedClass.setName(thatItemName);
 			gui.getArena().replaceClass(temp, linkedClass);
 			Classes.replace(temp, linkedClass);
-			// MAKE A WAY TO REPLACE ITEM IN ALL ITEMFRAMES IN ALL LOBBIES
+			/*
+			 * IMPLEMENT WAY TO REPLACE CLASSFRAMES IN ALL LOBBIES!
+			 */
 			addMenuIcon(iconSlot, linkedClass.getIcon());
 			setTitle("&l" + thatItemName);
 			gui.getMainPage().replaceIcon(thisItem, thatItem);
@@ -78,18 +83,21 @@ public class ClassPage extends Page{
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
 		return pickupItem(topInv, click, item, slot);
 	}
+	@Override
+	public boolean dragItem(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack oldItem, List<Integer> slots) {
+		if(drag == DragType.EVEN)
+			return placeItem(topInv, ClickType.LEFT, oldItem, slots.get(0));
+		return placeItem(topInv, ClickType.RIGHT, oldItem, slots.get(0));
+	}
 	public void saveToClass(){
-		ItemStack icon = inventory.getItem(iconSlot);
-		String iconName = ChatColor.stripColor(icon.getItemMeta().getDisplayName());
-		linkedClass.setIcon(icon);
-		linkedClass.setName(iconName);
+		Messenger.debug("info", "Saving inventory to Class: " + linkedClass.getName() + ".");
 		ItemStack[] inv = inventory.getContents();
-		Messenger.info("Saving " + linkedClass.getName() + " to class.");
 		ItemStack[] convertedInv = new ItemStack[45];
 		convertedInv = Arrays.copyOfRange(inv, menuSize, inv.length);
 		linkedClass.setContents(convertedInv);
 	}
 	public void loadFromClass(){
+		Messenger.debug("info", "Loading inventory from Class: " + linkedClass.getName() + ".");
 		int count = menuSize;
 		for(ItemStack selectedItem : linkedClass.getInventory().getContents()){
 			inventory.setItem(count, selectedItem);

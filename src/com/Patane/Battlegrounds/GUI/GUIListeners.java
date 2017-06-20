@@ -1,5 +1,7 @@
 package com.Patane.Battlegrounds.GUI;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,8 +36,17 @@ public class GUIListeners extends BGListener{
 				|| inv == null
 				|| !ChatColor.stripColor(top.getName()).equalsIgnoreCase(ChatColor.stripColor(gui.inventory().getTitle())))
 			return;
-		// IMPLEMENT THIS PROPERLY!! (ALLOW A DRAG TO SAVE THE ITEM ON THE ORIGINAL SLOT)
-		event.setCancelled(true);
+		boolean topInv = false;
+		// Need to determine if any slots are in top inventory since we cant get "clickedInventory".
+		if(top != null){
+			for(int slot : event.getRawSlots()){
+				if(slot < top.getSize()){
+					topInv = true;
+					break;
+				}
+			}
+		}
+		event.setCancelled(gui.dragClick(topInv, event.getType(), event.getNewItems(), event.getOldCursor(), new ArrayList<Integer>(event.getInventorySlots())));
 	}
 	@EventHandler
 	public void onItemClick(InventoryClickEvent event){

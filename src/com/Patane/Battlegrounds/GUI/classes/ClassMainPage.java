@@ -1,8 +1,12 @@
 package com.Patane.Battlegrounds.GUI.classes;
 
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
@@ -82,6 +86,15 @@ public class ClassMainPage extends MainPage{
 			}
 		}
 		return placeItem(true, click, item, slot);
+	}
+	@Override
+	public boolean dragItem(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack oldItem, List<Integer> slots) {
+		if(topInv){
+			if(drag == DragType.EVEN)
+				return placeItem(topInv, ClickType.LEFT, oldItem, slots.get(0));
+			return placeItem(topInv, ClickType.RIGHT, oldItem, slots.get(0));
+		}
+		return false;
 	}
 	public void allClassesAddAnimation(ItemStack item){
 		// changes allClassesSlot to moved item

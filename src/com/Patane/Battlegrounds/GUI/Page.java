@@ -2,9 +2,12 @@ package com.Patane.Battlegrounds.GUI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -156,6 +159,9 @@ public class Page {
 		return false;
 	}
 	public boolean moveItem(boolean topInv, ClickType click, ItemStack item, int slot) {
+		return false;
+	}
+	public boolean dragItem(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, List<Integer> slots) {
 		return false;
 	}
 	public void update() {}

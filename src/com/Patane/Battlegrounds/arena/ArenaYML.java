@@ -247,7 +247,7 @@ public class ArenaYML extends BasicYML{
 		return (float) header.getDouble(setting.getYmlName(), (float) setting.getDefault());
 	}
 
-	public Object saveSetting(Arena arena, String ymlName, boolean check) {
+	public Object saveSetting(Arena arena, String ymlName) {
 		return saveSetting(arena.getName(), Setting.getFromName(ymlName), arena.getSetting(ymlName));
 	}
 	public Object saveSetting(String arenaName, Setting setting, Object value) {
@@ -258,6 +258,7 @@ public class ArenaYML extends BasicYML{
 			saveIntSetting(arenaName, setting, (int) value);
 		if(setting.getType() == SettingType.FLOAT)
 			saveFloatSetting(arenaName, setting, (float) value);
+		Messenger.debug("info", "Successfully saved Setting: "+setting.getYmlName()+" as '"+value+"'.");
 		return getSetting(arenaName, setting);
 	}
 	public Object getSetting(String arenaName, Setting setting) {
