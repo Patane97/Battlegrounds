@@ -36,7 +36,6 @@ public class removeCommand implements BGCommand{
 		if(arena != null && Arenas.remove(arena)){
 			Messenger.arenaCast(arena, "&cYou have been kicked because this arena is being removed.");
 			arena.getMode().sessionOver();
-			Arena.YML().clearSection(arena.getName());
 			Messenger.send(sender, "&aRemoved Arena &7" + arena.getName() + "&a.");
 		}
 		return true;

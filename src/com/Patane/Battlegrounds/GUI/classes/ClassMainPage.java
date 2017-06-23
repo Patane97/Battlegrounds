@@ -42,7 +42,7 @@ public class ClassMainPage extends MainPage{
 			if(gui.checkClassExisting(itemName))
 				return true;
 			BGClass newClass = Classes.add(new BGClass(gui.getPlugin(), itemName, item));
-			BGClass.YML().saveClass(newClass);
+			BGClass.YML().save(newClass);
 			gui.getArena().addClass(newClass);
 			ClassPage classPage = new ClassPage(gui, gui.getMainPage(), newClass);
 			if(addLink(newClass.getIcon(), classPage)){

@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
+import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.arena.standby.ArenaMode;
@@ -81,6 +82,8 @@ public class Arena {
 	// UPDATE THIS!! (CHANGE String name TO UUID).. big task :(
 	private HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	private ArrayList<String> spectators = new ArrayList<String>();
+	
+	private List<Wave> waves;
 	
 	public Arena(){}
 	/**
@@ -411,7 +414,7 @@ public class Arena {
 		classes.add(newClass.getName());
 		if(!Classes.contains(newClass.getName())){
 			Classes.add(newClass);
-			BGClass.YML().saveClass(newClass);
+			BGClass.YML().save(newClass);
 		}
 		
 	}
@@ -487,5 +490,8 @@ public class Arena {
 	}
 	public Object removeSetting(String ymlName) {
 		return customSettings.remove(ymlName);
+	}
+	public List<Wave> getWaves() {
+		return waves;
 	}
 }

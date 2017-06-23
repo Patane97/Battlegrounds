@@ -3,8 +3,6 @@ package com.Patane.Battlegrounds.collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Material;
-
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 
 public class Classes {
@@ -12,15 +10,6 @@ public class Classes {
 
 	public static BGClass add(BGClass bgClass){
 		return classes.put(bgClass.getName(), bgClass);
-	}
-	public static void addAll(ArrayList<BGClass> classList){
-		for(BGClass selectedClass : classList){
-			if(selectedClass.getIcon().getType() == Material.AIR){
-				BGClass.YML().clearSection(selectedClass.getName());
-				continue;
-			}
-			add(selectedClass);
-		}
 	}
 	public static boolean remove(String className){
 		if(classes.remove(className) != null){

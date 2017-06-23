@@ -15,8 +15,8 @@ public class GlobalListeners implements Listener{
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
-		Arenas.removePlayer(player);
-		PlayerData.YML().loadAllData(player);
+		if(!Arenas.removePlayer(player))
+			PlayerData.YML().load(player);
 	}
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event){

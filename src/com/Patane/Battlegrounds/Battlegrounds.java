@@ -6,6 +6,8 @@ import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.classes.BGClassYML;
+import com.Patane.Battlegrounds.arena.game.waves.Wave;
+import com.Patane.Battlegrounds.arena.game.waves.WavesYML;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.EditorTypes;
 import com.Patane.Battlegrounds.commands.CommandHandler;
@@ -24,8 +26,8 @@ public class Battlegrounds extends JavaPlugin {
 	}
 	public void onDisable() {
 		Arenas.allSessionsOver();
-		Arena.YML().saveAllArenas();
-		BGClass.YML().saveAllClasses();
+		Arena.YML().save();
+		BGClass.YML().save();
 	}
 	private void runEnableTasks() {
 		// registering the listeners class
@@ -38,15 +40,14 @@ public class Battlegrounds extends JavaPlugin {
 		cleanArenas();
 	}
 	private void loadFiles(){
-//		BGClass.YML().load(this);
-		BGClass.setYML(new BGClassYML());
-		BGClass.YML().load(this);
-//		PlayerData.YML().load(this);
-		PlayerData.setYML(new PlayerDataYML());
-		PlayerData.YML().load(this);
-//		Arena.YML().load(this);
-		Arena.setYML(new ArenaYML());
-		Arena.YML().load(this);
+		BGClass.setYML(new BGClassYML(this));
+		BGClass.YML().load();
+		PlayerData.setYML(new PlayerDataYML(this));
+		PlayerData.YML().load();
+		Arena.setYML(new ArenaYML(this));
+		Arena.YML().load();
+		Wave.setYML(new WavesYML(this));
+		Wave.YML().load();
 	}
 	private void cleanArenas(){
 		Arenas.cleanAll();

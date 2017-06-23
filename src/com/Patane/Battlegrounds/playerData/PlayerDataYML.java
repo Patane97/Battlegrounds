@@ -13,39 +13,61 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.util.YML;
 
 public class PlayerDataYML extends BasicYML{
 	
-	public void load(Plugin plugin){
-		loadYML(plugin, "playerData.yml", "playerUUID");
+	public PlayerDataYML(Plugin plugin) {
+		super(plugin, "playerData.yml", "playerUUID");
+	}
+	
+	@Override
+	public void load(){
 		Player player;
 		for(String stringUUID : header.getKeys(false)){
 			checkEmptyClear(stringUUID);
 			player = Bukkit.getPlayer(UUID.fromString(stringUUID));
 			if(Bukkit.getOnlinePlayers().contains(player))
-				loadAllData(player);
+				load(player);
 		}
+	}
+	
+	@Override
+	public void save(){
+		for(Arena selectedArena : Arenas.get()){
+			for(String playerName : selectedArena.getPlayers()){
+				try{
+					save(Bukkit.getPlayerExact(playerName), false);
+				} catch (NullPointerException e){
+					Messenger.warning("Failed to find and save Player: " + playerName);
+					e.printStackTrace();
+				}
+			}
+		}
+		config.save();
 	}
 	/**
 	 * Saves the players data into PlayerData.yml
 	 * 
 	 * @param player Player to save.
 	 */
-	public void saveAllData(Player player){
+	public void save(Player player, boolean save){
 		setHeader(player.getUniqueId().toString());
 		saveWellbeing(player, false);
 		saveGameMode(player, false);
 		saveLocation(player, false);
 		saveInventory(player, false);
-		config.save();
+		if(save)
+			config.save();
 	}
 	/**
 	 * Load the players data that is saved either within the plugin or within PlayerData.yml
 	 *  
 	 * @param player Player to load.
 	 */
-	public void loadAllData(Player player){
+	public void load(Player player){
 		String stringUUID = player.getUniqueId().toString();
 		if(isSection(stringUUID)){				
 			Messenger.debug("info", "Found " + stringUUID + ".");

@@ -6,24 +6,29 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.util;
 
-public class BasicYML {
+public abstract class BasicYML {
 	protected Plugin plugin;
 	protected Config config;
 	protected String root;
 	protected ConfigurationSection header;
 	
-	public void loadYML(Plugin plugin, String config, String root){
+	public BasicYML(Plugin plugin, String config, String root){
 		this.plugin = plugin;
 		this.config = new Config(plugin, config);
 		this.root = root;
 		if(!isRootSection())
 			createRootSection();
+		this.config.save();
 		this.header = getRootSection();
 	}
+	
+	public abstract void save();
+	public abstract void load();
 	
 	// DEFINE EACH OF THESE. You know what it does but will others? :)
 	
 	protected ConfigurationSection createRootSection() {
+		Messenger.debug("broadcast", "Root");
 		return config.createSection(root);
 	}
 	protected ConfigurationSection createSection(String...strings) {

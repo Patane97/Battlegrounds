@@ -13,13 +13,11 @@ public class Arenas {
 	public static Arena add(Arena arena){
 		return arenas.put(arena.getName(), arena);
 	}
-	public static void addAll(ArrayList<Arena> arenaList){
-		for(Arena selectedArena : arenaList)
-			arenas.put(selectedArena.getName(), selectedArena);
-	}
 	public static boolean remove(Arena arena){
-		if(arenas.remove(arena.getName()) != null)
+		if(arenas.remove(arena.getName()) != null){
+			Arena.YML().clearSection(arena.getName());
 			return true;
+		}
 		return false;
 	}
 	public static Arena grab(String name){
@@ -51,10 +49,7 @@ public class Arenas {
 		return arenas.containsKey(arenaName);
 	}
 	public static ArrayList<Arena> get(){
-		ArrayList<Arena> tempArenas = new ArrayList<Arena>();
-		for(Arena arena : arenas.values())
-			tempArenas.add(arena);
-		return tempArenas;
+		return new ArrayList<Arena>(arenas.values());
 	}
 	public static ArrayList<String> getNames(boolean colour){
 		ArrayList<String> tempArenas = new ArrayList<String>();
@@ -69,10 +64,11 @@ public class Arenas {
 		for(Arena selectedArena : arenas.values())
 			selectedArena.clean();
 	}
-	public static void removePlayer(Player player) {
+	public static boolean removePlayer(Player player) {
 		Arena arena = grab(player);
 		if(arena != null)
-			arena.getMode().removePlayer(player.getDisplayName(), true);
+			return arena.getMode().removePlayer(player.getDisplayName(), true);
+		return false;
 	}
 	public static void removeClass(String className) {
 		for(Arena arena : arenas.values())

@@ -16,14 +16,21 @@ import com.Patane.Battlegrounds.util.util;
 
 public class BGClassYML extends BasicYML{
 	
-	public void load(Plugin plugin) {
-		loadYML(plugin, "classes.yml", "classes");
-		loadAllClasses();
+	public BGClassYML(Plugin plugin){
+		super(plugin, "classes.yml", "classes");
 	}
 	
-	public  void loadAllClasses(){
+	@Override
+	public  void save(){
+		for(BGClass selectedClass : Classes.get())
+			save(selectedClass);
+		Messenger.info("Successfully saved Classes: " + util.stringJoiner(Classes.getNames(), ", "));
+	}
+	
+	@Override
+	public  void load(){
 		for(String className : header.getKeys(false)){
-			BGClass bgClass = loadClass(className);
+			BGClass bgClass = load(className);
 			if(bgClass == null){
 				// CHANGE THIS TO BE SIMILAR TO ARENAS. CLASSES SHOULD STILL RENDER IF CERTAIN PARTS ARE MISSING (eg missing Icon turns into default icon)
 				Messenger.warning("Class '" + className + "' not recognised in classes.yml!");
@@ -32,13 +39,8 @@ public class BGClassYML extends BasicYML{
 		}
 		Messenger.info("Successfully loaded Classes: " + util.stringJoiner(Classes.getNames(), ", "));
 	}
-	public  void saveAllClasses(){
-		clearRoot();
-		for(BGClass selectedClass : Classes.get())
-			saveClass(selectedClass);
-		Messenger.info("Successfully saved Classes: " + util.stringJoiner(Classes.getNames(), ", "));
-	}
-	public  boolean saveClass(BGClass bgClass){
+	
+	public  boolean save(BGClass bgClass){
 		try{
 			String className = bgClass.getName();
 			setHeader(clearCreateSection(className));
@@ -64,7 +66,7 @@ public class BGClassYML extends BasicYML{
 			return false;
 		}
 	}
-	public  BGClass loadClass(String className){
+	public  BGClass load(String className){
 		try{
 			setHeader(className);
 			

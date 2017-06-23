@@ -6,7 +6,6 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.GUI.GUI;
 import com.Patane.Battlegrounds.GUI.settings.SettingsMainPage;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 
 public class SettingsGUI extends GUI{
 	Arena arena;
@@ -25,7 +24,6 @@ public class SettingsGUI extends GUI{
 	@Override
 	public void exit(){
 		super.exit();
-		arena.setSettings(new ArenaSettings(arena));
 		arena.getMode().sessionOver();
 	}
 

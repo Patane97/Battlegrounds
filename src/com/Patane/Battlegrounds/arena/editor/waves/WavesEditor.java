@@ -1,26 +1,26 @@
-package com.Patane.Battlegrounds.arena.editor.classes;
+package com.Patane.Battlegrounds.arena.editor.waves;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
+import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 
 @EditorInfo(
-		name = "class", permission = ""
+		name = "settings", permission = ""
 	)
-public class ClassEditor implements EditorType{
+public class WavesEditor implements EditorType{
 	Plugin plugin;
 	Arena arena;
 	String arenaName;
 	Player creator;
 	
-	public ClassEditor(Plugin plugin, Arena arena, Player creator, Editor editor){
+	public WavesEditor(Plugin plugin, Arena arena, Player creator, Editor editor){
 		this.plugin 	= plugin;
 		this.arena 		= arena;
 		this.arenaName 	= arena.getName();
@@ -28,13 +28,13 @@ public class ClassEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		new ClassesGUI(plugin, arena, "&8&l&o" + arenaName + " &2&lClasses", creator, this);
+		new WavesGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Settings", creator, this);
 	}
 	@Override
 	public void save() {
-		Arena.YML().saveClasses(arena.getName());
-		BGClass.YML().save();
-		Messenger.send(creator, "&aSaved &7all classes&a.");
+//		arena.setSettings(new ArenaSettings(arena));
+//		Arena.YML().saveSettings(arenaName);
+		Messenger.send(creator, "&aSaved &7" + arena.getName() + "&a waves.");
 	}
 
 	@Override

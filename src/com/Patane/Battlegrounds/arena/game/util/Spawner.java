@@ -10,8 +10,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Creature;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.game.Game;
 import com.Patane.Battlegrounds.arena.game.RoundHandler;
+import com.Patane.Battlegrounds.arena.game.waves.Wave;
+import com.Patane.Battlegrounds.arena.game.waves.WaveType;
 import com.Patane.Battlegrounds.custom.BGCreatureInfo;
 import com.Patane.Battlegrounds.custom.BGEntityType;
 import com.Patane.Battlegrounds.custom.Spawning;
@@ -22,6 +25,26 @@ public class Spawner implements Runnable{
 	RoundHandler roundHandler;
 	public Spawner(RoundHandler roundHandler){
 		this.roundHandler = roundHandler;
+	}
+	private Wave getWave(int roundNo){
+		Arena arena = roundHandler.getGame().getArena();
+		List<Wave> waves = new ArrayList<Wave>();
+		int currentPriority = 0;
+		for(Wave currentWave : arena.getWaves()){
+			// See if you can have all this logic within WaveType (as seperate methods for each waveType)
+			if((currentWave.getType() != WaveType.RECURRING && currentWave.getIncrement() == roundNo)
+			|| (currentWave.getType() == WaveType.RECURRING && currentWave.getIncrement()%roundNo == 0)){
+				if(currentWave.getPriority() > currentPriority){
+					waves.clear();
+					waves.add(currentWave);
+					currentPriority = currentWave.getPriority();
+				} else if(currentWave.getPriority() == currentPriority)
+					waves.add(currentWave);
+			}
+		}
+		if(waves.size() > 1)
+			Collections.shuffle(waves);
+		return waves.get(0);
 	}
 	/**
 	 * Generates a random weighted list of creatures that will be spawned in the roundHandler's current round

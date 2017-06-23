@@ -48,7 +48,7 @@ public class AllClassesPage extends Page{
 			if(gui.checkClassExisting(name))
 				return true;
 			BGClass newClass = Classes.add(new BGClass(gui.getPlugin(), name, item));
-			BGClass.YML().saveClass(newClass);
+			BGClass.YML().save(newClass);
 			addLink(newClass.getIcon(), gui.getMainPage());
 			Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7all arenas&a.");
 			

@@ -26,24 +26,25 @@ import com.sk89q.worldedit.regions.Polygonal2DRegion;
 
 public class ArenaYML extends BasicYML{
 	
-	public void load(Plugin plugin) {
-		loadYML(plugin, "arenas.yml", "arenas");
-		loadAllArenas();
+	public ArenaYML(Plugin plugin){
+		super(plugin, "arenas.yml", "arenas");
 	}
 	
-	public void loadAllArenas(){
+	@Override
+	public void save(){
+		for(Arena selectedArena : Arenas.get())
+			save(selectedArena);
+		Messenger.info("Successfully saved Arenas: " + util.stringJoiner(Arenas.getNames(false), ", "));
+	}
+	
+	@Override
+	public void load(){
 		for(String arenaName : header.getKeys(false))
-			loadArena(arenaName);
+			load(arenaName);
 		Messenger.info("Successfully loaded Arenas: " + util.stringJoiner(Arenas.getNames(false), ", "));
 	}
 
-	public void saveAllArenas() {
-		clearRoot();
-		for(Arena selectedArena : Arenas.get())
-			saveArena(selectedArena);
-		Messenger.info("Successfully saved Arenas: " + util.stringJoiner(Arenas.getNames(false), ", "));
-	}
-	private void saveArena(Arena arena) {
+	private void save(Arena arena) {
 		String arenaName = arena.getName();
 		setHeader(clearCreateSection(arenaName));
 		saveWorld(arenaName, arena.getWorld());
@@ -54,7 +55,8 @@ public class ArenaYML extends BasicYML{
 		saveSettings(arenaName);
 		Messenger.debug("info", "Successfully saved Arena: " + arenaName + ".");
 	}
-	private Arena loadArena (String arenaName){
+	
+	private Arena load(String arenaName){
 		try{
 			setHeader(arenaName);
 			World world;
@@ -83,7 +85,7 @@ public class ArenaYML extends BasicYML{
 		}
 	}
 	public boolean saveWorld(String arenaName, World world){
-		header.set("world", world.getName());
+		header.set("World", world.getName());
 		return true;
 	}
 	public boolean saveRegion(String arenaName, AbstractRegion selectedRegion, String type) {
@@ -121,7 +123,6 @@ public class ArenaYML extends BasicYML{
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTANT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			Messenger.severe("[OUTDATED ACTION] Failed to save arena region. Deleting " + arenaName + ".");
 			Arenas.remove(Arenas.grab(arenaName));
-			clearSection(arenaName);
 			e.printStackTrace();
 			return false;
 		}

@@ -9,6 +9,7 @@ import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
+import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 
 @EditorInfo(
 		name = "settings", permission = ""
@@ -31,8 +32,8 @@ public class SettingsEditor implements EditorType{
 	}
 	@Override
 	public void save() {
-//		Arena.YML().saveClasses(arena.getName());
-//		BGClass.YML().saveAllClasses();
+		arena.setSettings(new ArenaSettings(arena));
+		Arena.YML().saveSettings(arenaName);
 		Messenger.send(creator, "&aSaved &7" + arena.getName() + "&a settings.");
 	}
 

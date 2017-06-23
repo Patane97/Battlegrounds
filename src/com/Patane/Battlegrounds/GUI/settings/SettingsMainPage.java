@@ -18,14 +18,13 @@ public class SettingsMainPage extends MainPage{
 						   "&7 Shift click to add/remove 5"};
 	String[] FLOAT 		= {"FLOAT","&7 Left/Right click to add/remove 0.5",
 						   "&7 Shift click to add/remove 5"};
-	SettingsGUI settingsGui;
+	SettingsGUI gui;
 	
 	HashMap<ItemStack, Setting> settingsLink = new HashMap<ItemStack, Setting>();
 	
 	public SettingsMainPage(SettingsGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
-		this.settingsGui = gui;
 		initilizeIcons();
 	}
 	private void initilizeIcons(){
@@ -36,7 +35,7 @@ public class SettingsMainPage extends MainPage{
 			createSettingIcon(setting);
 	}
 	private void createSettingIcon(Setting setting){
-		ItemStack icon = util.hideAttributes(setting.getItem(Arena.YML().getSetting(settingsGui.getArena().getName(), setting)));
+		ItemStack icon = util.hideAttributes(setting.getItem(Arena.YML().getSetting(gui.getArena().getName(), setting)));
 		settingsLink.put(icon, setting);
 		addIcon(icon);
 	}
@@ -47,14 +46,14 @@ public class SettingsMainPage extends MainPage{
 	}
 
 	private boolean toggleBoolean(Setting setting){
-		Arena arena = settingsGui.getArena();
+		Arena arena = gui.getArena();
 		String ymlName = setting.getYmlName();
 		boolean current = (boolean) arena.getSetting(ymlName);
 		arena.putSetting(ymlName, !current);
 		return (boolean) Arena.YML().saveSetting(arena, ymlName);
 	}
 	private int changeInteger(Setting setting, ClickType click) {
-		Arena arena = settingsGui.getArena();
+		Arena arena = gui.getArena();
 		String ymlName = setting.getYmlName();
 		int current = (int) arena.getSetting(ymlName);
 		if(click == ClickType.LEFT)
@@ -68,7 +67,7 @@ public class SettingsMainPage extends MainPage{
 		return (int) Arena.YML().saveSetting(arena, ymlName);
 	}
 	private float changeFloat(Setting setting, ClickType click) {
-		Arena arena = settingsGui.getArena();
+		Arena arena = gui.getArena();
 		String ymlName = setting.getYmlName();
 		float current = (float) arena.getSetting(ymlName);
 		if(click == ClickType.LEFT)
