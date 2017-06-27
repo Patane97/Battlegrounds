@@ -61,9 +61,10 @@ public class ArenaYML extends BasicYML{
 			setHeader(arenaName);
 			World world;
 			try{ 
-				world= Bukkit.getWorld(header.getString("world"));
+				world = Bukkit.getWorld(header.getString("World"));
 			} catch (IllegalArgumentException e){
-				Messenger.warning("Failed to load Arena: " + arenaName +". 'world' is missing in YML.");
+				Messenger.warning("Failed to load Arena: " + arenaName +". Failed to grab world from 'World' in YML.");
+				e.printStackTrace();
 				return null;
 			}
 			AbstractRegion ground = grabRegion(world, arenaName, "Ground");

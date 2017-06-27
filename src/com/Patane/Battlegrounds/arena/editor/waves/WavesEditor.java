@@ -9,7 +9,6 @@ import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
-import com.Patane.Battlegrounds.arena.settings.ArenaSettings;
 
 @EditorInfo(
 		name = "settings", permission = ""

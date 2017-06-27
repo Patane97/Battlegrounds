@@ -55,12 +55,12 @@ public class ClassMainPage extends MainPage{
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
-			if(super.pickupItem(topInv, click, item, slot))
-				return true;
-			if(slot == allClassesSlot){
+			if(item.equals(allClassesIcon)){
 				gui.switchPage(links.get(allClassesIcon));
 				return true;
 				}
+			if(super.pickupItem(topInv, click, item, slot))
+				return true;
 			if(isLink(item))
 				gui.switchPage(links.get(item));
 			return true;
@@ -125,7 +125,7 @@ public class ClassMainPage extends MainPage{
 	}
 	@Override
 	public void clean() {
-		for(int i = menuSize + links.size() ; i < inventory.getSize() ; i++)
-			inventory.setItem(i, null);
+//		for(int i = menuSize + links.size() ; i < inventory.getSize() ; i++)
+//			inventory.setItem(i, null);
 	}
 }

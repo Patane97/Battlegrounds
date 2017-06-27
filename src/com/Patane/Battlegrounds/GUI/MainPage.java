@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.ItemStack;
 
 public class MainPage extends Page{
-
 	public MainPage(GUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 	}
@@ -22,6 +21,7 @@ public class MainPage extends Page{
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(isMenu(slot)){
+				
 				if(item.equals(backIcon)){
 					gui.getPlayer().closeInventory();
 					gui.exit();
