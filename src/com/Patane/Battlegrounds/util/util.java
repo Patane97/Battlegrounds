@@ -63,6 +63,14 @@ public class util {
 		
 		return item;
 	}
+	public static ItemStack setItemNameLore(ItemStack item, String name, String... lore) {
+		ItemMeta itemMeta = item.getItemMeta();
+		itemMeta.setDisplayName(Chat.translate(name));
+		if(lore.length > 0)
+			itemMeta.setLore(Chat.translate(Arrays.asList(lore)));
+		item.setItemMeta(itemMeta);
+		return item;
+	}
 	public static String formaliseString(String s) {
 		s = s.toLowerCase();
 		s = s.substring(0, 1).toUpperCase() + s.substring(1);
@@ -208,5 +216,6 @@ public class util {
 		}
 		return (Integer) null;
 	}
+
 
 }

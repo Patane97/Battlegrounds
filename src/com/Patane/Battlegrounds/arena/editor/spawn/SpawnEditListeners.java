@@ -58,7 +58,7 @@ public class SpawnEditListeners extends EditorListeners{
 				}
 				RelativePoint relativePoint = arena.isWithin(block);
 				if(itemInHandName.contains("Game") || itemInHandName.contains("Creature")){
-					if(relativePoint != RelativePoint.GROUNDS_BORDER || relativePoint != RelativePoint.GROUNDS_BORDER){
+					if(relativePoint != RelativePoint.GROUNDS_INNER && relativePoint != RelativePoint.GROUNDS_BORDER){
 						event.setCancelled(true);
 						Messenger.send(player, itemInHandName + "s &cmust be placed within the battleground.");
 						return;
@@ -69,7 +69,7 @@ public class SpawnEditListeners extends EditorListeners{
 						spawnEditor.addCreatureSpawn(location);
 				}
 				else if(itemInHandName.contains("Lobby")){
-					if(relativePoint != RelativePoint.LOBBY_BORDER || relativePoint != RelativePoint.LOBBY_BORDER){
+					if(relativePoint != RelativePoint.LOBBY_INNER && relativePoint != RelativePoint.LOBBY_BORDER){
 						event.setCancelled(true);
 						Messenger.send(player, itemInHandName + "s &cmust be placed within the lobby.");
 						return;

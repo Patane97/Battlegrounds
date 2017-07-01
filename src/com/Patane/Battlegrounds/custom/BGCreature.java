@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public enum BGCreatureInfo {
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import com.Patane.Battlegrounds.util.util;
+
+public enum BGCreature {
 	ZOMBIE(BGEntityType.ZOMBIE, 5, 8),
 	SKELETON(BGEntityType.SKELETON, 7, 4),
 	SPIDER(BGEntityType.SPIDER, 6, 3),
@@ -15,9 +20,10 @@ public enum BGCreatureInfo {
 	String name;
 	BGEntityType entityType;
 	int weight;
+	// REMOVE FREQUENCY
 	int frequency;
 	
-	private BGCreatureInfo(BGEntityType entityType, int weight, int frequency){
+	private BGCreature(BGEntityType entityType, int weight, int frequency){
 		this.name 		= entityType.getName();
 		this.entityType = entityType;
 		this.weight 	= weight;
@@ -36,9 +42,9 @@ public enum BGCreatureInfo {
 		return frequency;
 	}
 	
-	public static List<BGCreatureInfo> genCreatureDraft(int weight){
-		List<BGCreatureInfo> creatureDraft = new ArrayList<BGCreatureInfo>();
-		for(BGCreatureInfo creatureInfo : BGCreatureInfo.values()){
+	public static List<BGCreature> genCreatureDraft(int weight){
+		List<BGCreature> creatureDraft = new ArrayList<BGCreature>();
+		for(BGCreature creatureInfo : BGCreature.values()){
 			if(creatureInfo.getWeight() <= weight){
 				for(int i = 1; i <= creatureInfo.getFrequency(); i++)
 					creatureDraft.add(creatureInfo);
@@ -46,5 +52,17 @@ public enum BGCreatureInfo {
 		}
 		Collections.shuffle(creatureDraft);
 		return creatureDraft;
+	}
+	public static BGCreature getFromName(String creatureName){
+		for(BGCreature creature : BGCreature.values()){
+			if(creature.getEntityType().name().equalsIgnoreCase(creatureName))
+				return creature;
+		}
+		return null;
+	}
+	public ItemStack getSpawnEgg(String...lore){
+		ItemStack icon = new ItemStack(Material.MONSTER_EGG, 1, (short) entityType.getID());
+		icon = util.setItemNameLore(icon, "&6"+name, lore);
+		return icon;
 	}
 }

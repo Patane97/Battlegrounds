@@ -15,7 +15,7 @@ import com.Patane.Battlegrounds.arena.game.Game;
 import com.Patane.Battlegrounds.arena.game.RoundHandler;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.game.waves.WaveType;
-import com.Patane.Battlegrounds.custom.BGCreatureInfo;
+import com.Patane.Battlegrounds.custom.BGCreature;
 import com.Patane.Battlegrounds.custom.BGEntityType;
 import com.Patane.Battlegrounds.custom.Spawning;
 import com.Patane.Battlegrounds.util.Locating;
@@ -55,16 +55,16 @@ public class Spawner implements Runnable{
 		int maxWeight = roundHandler.getRoundNo()*5;
 		List<BGEntityType> creatures = new ArrayList<BGEntityType>();
 //		CreatureWeights mobWeights = new CreatureWeights();
-		List<BGCreatureInfo> creatureDraft = BGCreatureInfo.genCreatureDraft(maxWeight);
+		List<BGCreature> creatureDraft = BGCreature.genCreatureDraft(maxWeight);
 		if (creatureDraft.size() <= 0) return null;
 //		Messenger.arenaCast(roundHandler.getGame().getArena(), "&6Draft Size: &7" + creatureDraft.size());
-		ListIterator<BGCreatureInfo> draftIterator = creatureDraft.listIterator();
+		ListIterator<BGCreature> draftIterator = creatureDraft.listIterator();
 		while(maxWeight > 0){
 			if(!draftIterator.hasNext()){
 				while (draftIterator.hasPrevious())
 					draftIterator.previous();
 			}
-			BGCreatureInfo creature = draftIterator.next();
+			BGCreature creature = draftIterator.next();
 			maxWeight = maxWeight - creature.getWeight();
 			creatures.add(creature.getEntityType());
 		}

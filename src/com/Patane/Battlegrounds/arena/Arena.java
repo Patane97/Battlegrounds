@@ -90,7 +90,7 @@ public class Arena {
 	 * Mostly used for creating new arenas in-game (before spawns have been saved)
 	 */
 	public Arena(Plugin plugin, String name, World world, AbstractRegion region){
-		this(plugin, name, world, region, null, null, null, null, null, null, null);
+		this(plugin, name, world, region, null, null, null, null, null, null, null, null);
 	}
 	/**
 	 * Mostly used with loading arenas from arenas.yml
@@ -98,7 +98,8 @@ public class Arena {
 	public Arena(Plugin plugin, String name, World world, AbstractRegion ground, 
 			AbstractRegion lobby, ArrayList<Location> gameSpawns, ArrayList<Location> lobbySpawns, 
 			ArrayList<Location> creatureSpawns, ArrayList<Location> spectatorSpawns,
-			ArrayList<String> classes, HashMap<String, Object> customSettings){
+			ArrayList<String> classes, HashMap<String, Object> customSettings,
+			List<Wave> waves){
 		if(Arenas.contains(name)){
 			throw new NullPointerException("Tried to create an arena that already exists! (" + name + ")");
 		}
@@ -110,9 +111,10 @@ public class Arena {
 		this.gameSpawns 		= (gameSpawns 		== null ? new ArrayList<Location>() 	: gameSpawns);
 		this.lobbySpawns 		= (lobbySpawns 		== null ? new ArrayList<Location>() 	: lobbySpawns);
 		this.creatureSpawns		= (creatureSpawns 	== null ? new ArrayList<Location>() 	: creatureSpawns);
-		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>() 	: spectatorSpawns);
-		this.classes 			= (classes 			== null ? new ArrayList<String>() 		: classes);
+		this.spectatorSpawns 	= (spectatorSpawns 	== null ? new ArrayList<Location>()		: spectatorSpawns);
+		this.classes 			= (classes 			== null ? new ArrayList<String>()		: classes);
 		this.customSettings		= (customSettings 	== null ? new HashMap<String, Object>() : customSettings);
+		this.waves				= (waves			== null ? new ArrayList<Wave>()			: waves);
 		syncClasses();
 		this.mode 				= new Standby(plugin, this);
 		this.arenaSettings		= new ArenaSettings(this);
@@ -493,5 +495,8 @@ public class Arena {
 	}
 	public List<Wave> getWaves() {
 		return waves;
+	}
+	public void addWave(Wave newWave) {
+		waves.add(newWave);
 	}
 }

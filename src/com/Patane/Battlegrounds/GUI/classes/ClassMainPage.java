@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.GUI.GUIutil;
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
@@ -28,8 +27,19 @@ public class ClassMainPage extends MainPage{
 	public ClassMainPage(ClassesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
-		allClassesIcon = addMenuIcon(allClassesSlot, GUIutil.stainedPane(1, "&6&lOther Classes"));
-		links.put(allClassesIcon, new AllClassesPage(gui, "&6&lOther classes", 45, this));
+		initilize();
+	}
+	@Override
+	public void initilize(){
+		allClassesIcon = addMenuLink(allClassesSlot, util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 1, "&6&lOther Classes"), 
+				new AllClassesPage(gui, "&6&lOther classes", 45, this));
+		for(String selectedClass : gui.getArena().getClasses()){
+			BGClass bgClass = Classes.grab(selectedClass);
+			if(bgClass == null)
+				break;
+			ClassPage classPage = new ClassPage(gui, this, bgClass);
+			addLink(bgClass.getIcon(), classPage);
+		}
 	}
 	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){

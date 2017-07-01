@@ -21,10 +21,11 @@ public class AllClassesPage extends Page{
 		this.gui = gui;
 	}
 	@Override
+	protected void initilize() {}
+	@Override
 	public void update(){
 		inventory.clear();
 		buildMenuBar();
-		printMenuBar();
 		links.clear();
 		for(BGClass selectedClass : Classes.get()){
 			if(!gui.getArena().hasClass(selectedClass.getName()))

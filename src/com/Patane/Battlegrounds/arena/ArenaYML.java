@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.arena.settings.SettingType;
 import com.Patane.Battlegrounds.collections.Arenas;
@@ -75,8 +76,9 @@ public class ArenaYML extends BasicYML{
 			ArrayList<Location> spectatorSpawns = grabSpawns(arenaName, "Spectator");
 			ArrayList<String> classes = loadClasses(arenaName);
 			HashMap<String, Object> settings = getSettings(arenaName);
+			ArrayList<Wave> waves = null;
 			
-			Arena loadedArena = new Arena(plugin, arenaName, world, ground, lobby, gameSpawns, lobbySpawns, creatureSpawns, spectatorSpawns, classes, settings);
+			Arena loadedArena = new Arena(plugin, arenaName, world, ground, lobby, gameSpawns, lobbySpawns, creatureSpawns, spectatorSpawns, classes, settings, waves);
 			Messenger.debug("info", "Successfully loaded Arena: " + arenaName + ".");
 			return loadedArena;
 		} catch (Exception e){
@@ -181,7 +183,7 @@ public class ArenaYML extends BasicYML{
 		try{
 			setHeader(arenaName);
 			if(header.contains("Spawns." + spawnType)){
-				World world = Bukkit.getWorld(header.getString("world"));
+				World world = Bukkit.getWorld(header.getString("World"));
 				
 				setHeader(arenaName, "Spawns", spawnType);				
 				ArrayList<Location> spawns = new ArrayList<Location>();

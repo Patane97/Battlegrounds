@@ -9,7 +9,6 @@ import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.GUI.classes.ClassMainPage;
 import com.Patane.Battlegrounds.GUI.classes.ClassPage;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.collections.Classes;
 
 public class ClassesGUI extends GUI{
@@ -19,22 +18,12 @@ public class ClassesGUI extends GUI{
 	
 	public ClassesGUI(Plugin plugin, Arena arena, String name, Player player, ClassEditor classEditor) {
 		super(plugin, name, player);
-		setMainPage(new ClassMainPage(this, name, 27));
 		this.arena = arena;
+		setMainPage(new ClassMainPage(this, name, 27));
 		this.classEditor = classEditor;
-		initializeClasses();
 	}
 	public Arena getArena(){
 		return arena;
-	}
-	public void initializeClasses(){
-		for(String selectedClass : arena.getClasses()){
-			BGClass bgClass = Classes.grab(selectedClass);
-			if(bgClass == null)
-				break;
-			ClassPage classPage = new ClassPage(this, mainPage, bgClass);
-			mainPage.addLink(bgClass.getIcon(), classPage);
-		}
 	}
 	@Override
 	public void exit(){

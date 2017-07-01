@@ -11,6 +11,7 @@ import com.Patane.Battlegrounds.arena.editor.region.GroundEditor;
 import com.Patane.Battlegrounds.arena.editor.region.LobbyEditor;
 import com.Patane.Battlegrounds.arena.editor.settings.SettingsEditor;
 import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
+import com.Patane.Battlegrounds.arena.editor.waves.WavesEditor;
 
 public class EditorTypes {
 	private static HashMap<String, Class< ? extends EditorType>> editorTypes;
@@ -30,6 +31,7 @@ public class EditorTypes {
 		register(GroundEditor.class);
 		register(LobbyEditor.class);
 		register(SettingsEditor.class);
+		register(WavesEditor.class);
 	}
 	private static void register(Class< ? extends EditorType> editorType){
 		EditorInfo ETInfo = editorType.getAnnotation(EditorInfo.class);

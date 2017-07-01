@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Chat;
 
-public class GUI {
+public abstract class GUI {
 	protected Plugin plugin;
 	
 	protected MainPage mainPage;
@@ -27,6 +27,10 @@ public class GUI {
 	
 	boolean resettingInv;
 	
+	final static String BACK = "&a&lBack";
+	final static String BAR = " ";
+	final static String SAVE_EXIT = "&a&lSave & Exit";
+	
 	public GUI(Plugin plugin, String name, Player player){	
 		name = Chat.translate(name);
 		this.plugin 		= plugin;
@@ -34,7 +38,6 @@ public class GUI {
 		this.gui 			= plugin.getServer().createInventory(null, 54, name);
 		this.mainPage 		= new MainPage(this, name, 36);
 		this.currentPage 	= mainPage;
-		this.currentPage.printMenuBar();
 		
 		player.openInventory(gui);
 		listener = new GUIListeners(plugin, this);

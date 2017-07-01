@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +16,7 @@ import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.util.util;
 
-public class Page {
+public abstract class Page {
 	protected String title;
 	protected Inventory inventory;
 	protected Page back;
@@ -41,11 +42,11 @@ public class Page {
 		this.inventory 	= gui.getPlugin().getServer().createInventory(null, this.invSize, this.title);
 		this.back 		= (back == null? this : back);
 		this.links = new HashMap<ItemStack, Page>();
-		createBackIcon();
-		createBarIcon();
+		backIcon = (back == null ? util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 14, GUI.SAVE_EXIT) 
+								 : util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 0, GUI.BACK));
+		barIcon = util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 15, GUI.BAR);
 		menuBar = new ItemStack[9];
 		buildMenuBar();
-		printMenuBar();
 	}
 	public Inventory inventory(){
 		return inventory;
@@ -75,23 +76,18 @@ public class Page {
 		inventory.setItem(slot, menuBar[slot]);
 		return icon;
 	}
+	protected ItemStack addMenuLink(int slot, ItemStack icon, Page page){
+		addMenuIcon(slot, icon);
+		links.put(icon, page);
+		return icon;
+	}
 	protected void buildMenuBar() {
 		menuBar[0] = backIcon;
-		for(int i = 1 ; i < menuBar.length ; i++)
+		inventory.setItem(0, menuBar[0]);
+		for(int i = 1 ; i < menuBar.length ; i++){
 			menuBar[i] = barIcon;
-	}
-	protected void printMenuBar() {
-		int i = 0;
-		for(ItemStack menuItem : menuBar){
-			inventory.setItem(i, menuItem);
-			i++;
+			inventory.setItem(i, menuBar[i]);
 		}
-	}
-	protected void createBackIcon() {
-		backIcon = GUIutil.stainedPane(0, GUIutil.BACK);
-	}
-	protected void createBarIcon() {
-		barIcon = GUIutil.stainedPane(15, GUIutil.BAR);
 	}
 	public boolean addLink(int slot, ItemStack icon, Page linkPage){
 		if(alreadyIcon(icon)){
@@ -143,7 +139,6 @@ public class Page {
 			return true;
 		return false;
 	}
-	public void clean() {}
 	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot) {
 		return false;
 	}
@@ -164,7 +159,6 @@ public class Page {
 	public boolean dragItem(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, List<Integer> slots) {
 		return false;
 	}
-	public void update() {}
 	public boolean isLink(ItemStack item){
 		if(links.keySet().contains(item))
 			return true;
@@ -187,4 +181,7 @@ public class Page {
 		inventory.setItem(slot, thatItem);
 		return true;
 	}
+	protected abstract void initilize();
+	public void clean(){};
+	public void update(){};
 }

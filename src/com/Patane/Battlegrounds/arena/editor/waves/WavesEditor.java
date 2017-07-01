@@ -11,7 +11,7 @@ import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 
 @EditorInfo(
-		name = "settings", permission = ""
+		name = "waves", permission = ""
 	)
 public class WavesEditor implements EditorType{
 	Plugin plugin;
@@ -27,7 +27,7 @@ public class WavesEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		new WavesGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Settings", creator, this);
+		new WavesGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Waves", creator, this);
 	}
 	@Override
 	public void save() {

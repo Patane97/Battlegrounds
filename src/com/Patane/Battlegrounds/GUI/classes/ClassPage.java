@@ -28,6 +28,10 @@ public class ClassPage extends Page{
 		this.gui = gui;
 		this.linkedClass = linkedClass;
 		addMenuIcon(iconSlot, linkedClass.getIcon());
+		initilize();
+	}
+	@Override
+	protected void initilize() {
 		loadFromClass();
 	}
 	public BGClass getLinkedClass(){

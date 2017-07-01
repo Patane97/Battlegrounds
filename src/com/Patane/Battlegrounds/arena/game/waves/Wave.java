@@ -2,7 +2,11 @@ package com.Patane.Battlegrounds.arena.game.waves;
 
 import java.util.HashMap;
 
+import org.bukkit.inventory.ItemStack;
+
 import com.Patane.Battlegrounds.collections.Waves;
+import com.Patane.Battlegrounds.custom.BGCreature;
+import com.Patane.Battlegrounds.util.util;
 
 public class Wave {
 	/**
@@ -20,17 +24,20 @@ public class Wave {
 	 * **********************************************************
 	 */
 	String name;
+	ItemStack icon;
 	WaveType type;
 	int increment;
 	int priority;
-	HashMap<Integer, String> creatures;
+	HashMap<BGCreature, Integer> creatures;
 	
-	public Wave(String name, WaveType type, int increment, int priority, HashMap<Integer, String> creatures){
+	public Wave(String name, WaveType type, int increment, int priority, HashMap<BGCreature, Integer> creatures){
 		this.name		= name;
 		this.type 		= type;
 		this.increment 	= increment;
 		this.priority 	= priority;
 		this.creatures 	= creatures;
+		this.icon		= util.setItemNameLore(type.getIcon(), "&6" + name, type.getDesc(increment));
+		
 		Waves.add(this);
 	}
 
@@ -39,6 +46,9 @@ public class Wave {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public ItemStack getIcon() {
+		return icon;
 	}
 	public WaveType getType() {
 		return type;
@@ -58,19 +68,16 @@ public class Wave {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
-	public HashMap<Integer, String> getCreatures(){
+	public HashMap<BGCreature, Integer> getCreatures(){
 		return creatures;
 	}
-	public String putCreature(int probability, String creatureName){
-		return creatures.put(probability, creatureName);
+	public int putCreature(int probability, String creatureName){
+		return putCreature(probability, BGCreature.getFromName(creatureName));
 	}
-	public boolean removeCreature(String creatureName){
-		for(int probability : creatures.keySet()){
-			if(creatures.get(probability).equals(creatureName)){
-				creatures.remove(probability);
-				return true;
-			}
-		}
-		return false;
+	public int putCreature(int probability, BGCreature creatureName){
+		return creatures.put(creatureName, probability);
+	}
+	public int removeCreature(String creatureName){
+		return creatures.remove(creatureName);
 	}
 }

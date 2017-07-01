@@ -10,7 +10,10 @@ import org.bukkit.inventory.ItemStack;
 public class MainPage extends Page{
 	public MainPage(GUI gui, String name, int invSize) {
 		super(gui, name, invSize);
+		
 	}
+	@Override
+	protected void initilize() {}
 	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv)
@@ -21,7 +24,6 @@ public class MainPage extends Page{
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(isMenu(slot)){
-				
 				if(item.equals(backIcon)){
 					gui.getPlayer().closeInventory();
 					gui.exit();
@@ -30,6 +32,10 @@ public class MainPage extends Page{
 			}
 		}
 		return false;
+	}
+	@Override
+	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot){
+		return pickupItem(topInv, click, thisItem, slot);
 	}
 	@Override
 	public boolean dragItem(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack oldItem, List<Integer> slots) {
@@ -42,9 +48,4 @@ public class MainPage extends Page{
 	public void buildMenuBar() {
 		super.buildMenuBar();
 	}
-	@Override
-	protected void createBackIcon() {
-		backIcon = GUIutil.stainedPane((short) 14, GUIutil.SAVE_EXIT);
-	}
-	
 }

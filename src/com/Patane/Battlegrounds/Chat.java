@@ -34,9 +34,9 @@ public enum Chat {
     	return s.matches(".*[a-zA-Z]+.*");
     }
 
-	public static List<String> translate(List<String> finalLore) {
+	public static List<String> translate(List<String> stringList) {
 		List<String> result = new ArrayList<String>();
-		for(String s : finalLore)
+		for(String s : stringList)
 			result.add(translate(s));
 		return result;
 	}
