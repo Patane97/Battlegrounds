@@ -54,24 +54,21 @@ public class WavesMainPage extends MainPage{
 		return item;
 	}
 	@Override
+	protected boolean menuAction(ItemStack item, int slot, ClickType click){
+		super.menuAction(item, slot, click);
+		if(slot == 3 || slot == 4 || slot == 5){
+			Messenger.debug(gui.getPlayer(), "Within Slots ("+slot+")");
+			gui.getPlayer().setItemOnCursor(item);
+		}
+		return true;
+	}
+	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
-			if(isMenu(slot)){
-				Messenger.debug(gui.getPlayer(), "0");
-				if(slot == 3 || slot == 4 || slot == 5){
-					// BUG: ADD A SINGLE, TRYING TO ADD A SECOND SINGLE DOESNT GET PAST ABOVE IF STATEMENT!
-					gui.getPlayer().setItemOnCursor(item);
-					Messenger.debug(gui.getPlayer(), "1");
-					return true;
-				}
-			}
+			if(super.pickupItem(topInv, click, item, slot))
+				return true;
 			if(isLink(item))
 				gui.switchPage(links.get(item));
-			Messenger.debug(gui.getPlayer(), "2");
-			return true;
-		}
-		if(super.pickupItem(topInv, click, item, slot)){
-			Messenger.debug(gui.getPlayer(), "3");
 			return true;
 		}
 		return false;

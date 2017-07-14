@@ -139,16 +139,23 @@ public abstract class Page {
 			return true;
 		return false;
 	}
-	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot) {
-		return false;
-	}
-	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot) {
+	protected boolean menuActions(ItemStack item, int slot, ClickType click){
 		if(isMenu(slot)){
-			if(item.equals(backIcon))
-				gui.switchPage(back);
-			return true;
+			return menuAction(item, slot, click);
 		}
 		return false;
+	}
+	protected boolean menuAction(ItemStack item, int slot, ClickType click){
+		if(slot == 0){
+			gui.switchPage(back);
+		}
+		return true;
+	}
+	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot) {
+		return menuActions(thisItem, slot, click);
+	}
+	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot) {
+		return menuActions(item, slot, click);
 	}
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot) {
 		return false;

@@ -15,6 +15,14 @@ public class MainPage extends Page{
 	@Override
 	protected void initilize() {}
 	@Override
+	protected boolean menuAction(ItemStack item, int slot, ClickType click){
+	if(slot == 0){
+			gui.getPlayer().closeInventory();
+			gui.exit();
+		}
+		return true;
+	}
+	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv)
 			return true;
@@ -22,16 +30,7 @@ public class MainPage extends Page{
 	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
-		if(topInv){
-			if(isMenu(slot)){
-				if(item.equals(backIcon)){
-					gui.getPlayer().closeInventory();
-					gui.exit();
-				}
-				return true;
-			}
-		}
-		return false;
+		return pickupItem(topInv, click, item, slot);
 	}
 	@Override
 	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot){

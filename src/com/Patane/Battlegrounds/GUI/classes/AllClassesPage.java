@@ -52,7 +52,6 @@ public class AllClassesPage extends Page{
 			BGClass.YML().save(newClass);
 			addLink(newClass.getIcon(), gui.getMainPage());
 			Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(name) + "&a to &7all arenas&a.");
-			
 		}
 		return false;
 	}
