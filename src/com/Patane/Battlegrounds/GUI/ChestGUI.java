@@ -13,13 +13,13 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Chat;
 
-public abstract class GUI {
+public abstract class ChestGUI {
 	protected Plugin plugin;
 	
 	protected MainPage mainPage;
 	protected Page currentPage;
 	
-	protected Inventory gui;
+	protected Inventory inventory;
 	
 	protected Player player;
 	
@@ -31,15 +31,15 @@ public abstract class GUI {
 	final static String BAR = " ";
 	final static String SAVE_EXIT = "&a&lSave & Exit";
 	
-	public GUI(Plugin plugin, String name, Player player){	
+	public ChestGUI(Plugin plugin, String name, Player player){	
 		name = Chat.translate(name);
 		this.plugin 		= plugin;
 		this.player 		= player;
-		this.gui 			= plugin.getServer().createInventory(null, 54, name);
+		this.inventory 			= plugin.getServer().createInventory(null, 54, name);
 		this.mainPage 		= new MainPage(this, name, 36);
 		this.currentPage 	= mainPage;
 		
-		player.openInventory(gui);
+		player.openInventory(inventory);
 		listener = new GUIListeners(plugin, this);
 	}
 	public boolean invResetting(){
@@ -55,7 +55,7 @@ public abstract class GUI {
 		return mainPage;
 	}
 	public Inventory inventory() {
-		return gui;
+		return inventory;
 	}
 	public Page getCurrentPage(){
 		return currentPage;
@@ -69,25 +69,27 @@ public abstract class GUI {
 		currentPage.clean();
 		currentPage = page;
 		currentPage.update();
-		gui = currentPage.inventory();
+		inventory = currentPage.inventory();
 		update();
 	}
 	public void update() {
 		resettingInv = true;
 		player.setItemOnCursor(null);
-		player.openInventory(gui);
+		player.openInventory(inventory);
 		resettingInv = false;
 	}
 	public void refresh() {
 		currentPage.clean();
 		currentPage.update();
-		gui = currentPage.inventory();
+		inventory = currentPage.inventory();
 		update();
 	}
 	public void exit() {
 		listener.unregister();
 	}
 	public boolean regularClick(boolean topInv, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot) {
+		if(currentPage.isMenu(slot))
+			return currentPage.menuActions((cursorItem.getType() != Material.AIR ? cursorItem : clickedItem), slot, click);
 		if(clickedItem.getType() != Material.AIR && cursorItem.getType() != Material.AIR)
 			return currentPage.replaceItem(topInv, click, clickedItem, cursorItem, slot);
 		if(clickedItem.getType() != Material.AIR)
@@ -97,9 +99,14 @@ public abstract class GUI {
 		return false;
 	}
 	public boolean shiftClick(boolean topInv, ClickType click, ItemStack clickedItem, int slot) {
+		if(currentPage.isMenu(slot))
+			return currentPage.menuActions(clickedItem, slot, click);
 		return currentPage.moveItem(topInv, click, clickedItem, slot);
 	}
-	public boolean dragClick(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, ArrayList<Integer> arrayList) {
-		return currentPage.dragItem(topInv, drag, newItems, cursor, arrayList);
+	public boolean dragClick(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, ArrayList<Integer> slots) {
+		for(int slot : slots)
+			if(currentPage.isMenu(slot))
+				return true;
+		return currentPage.dragItem(topInv, drag, newItems, cursor, slots);
 	}
 }

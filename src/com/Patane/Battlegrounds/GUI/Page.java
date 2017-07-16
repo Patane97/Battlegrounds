@@ -24,17 +24,18 @@ public abstract class Page {
 	protected ItemStack backIcon;
 	protected ItemStack barIcon;
 	
+	protected HashMap<Integer, GUIAction> menuActions;
 	protected HashMap<ItemStack, Page> links;
 	protected ItemStack[] menuBar;
 	protected int menuSize;
 	protected int invSize;
 	
-	protected GUI gui;
+	protected ChestGUI gui;
 
-	public Page (GUI gui, String name,  int invSize){
+	public Page (ChestGUI gui, String name,  int invSize){
 		this(gui, name, invSize, null);
 	}
-	public Page (GUI gui, String name, int invSize, Page back){
+	public Page (ChestGUI gui, String name, int invSize, Page back){
 		this.title 		= Chat.translate(name);
 		this.gui 		= gui;
 		this.menuSize	= 9;
@@ -42,11 +43,18 @@ public abstract class Page {
 		this.inventory 	= gui.getPlugin().getServer().createInventory(null, this.invSize, this.title);
 		this.back 		= (back == null? this : back);
 		this.links = new HashMap<ItemStack, Page>();
-		backIcon = (back == null ? util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 14, GUI.SAVE_EXIT) 
-								 : util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 0, GUI.BACK));
-		barIcon = util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 15, GUI.BAR);
+		this.menuActions = new HashMap<Integer, GUIAction>();
+		backIcon = (back == null ? util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 14, ChestGUI.SAVE_EXIT) 
+								 : util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 0, ChestGUI.BACK));
+		barIcon = util.createItem(Material.STAINED_GLASS_PANE, 1, (short) 15, ChestGUI.BAR);
 		menuBar = new ItemStack[9];
 		buildMenuBar();
+		menuActions.put(0, new GUIAction(){
+			public boolean execute(ChestGUI gui, Page page){
+				gui.switchPage(back);
+				return true;
+			}
+		});
 	}
 	public Inventory inventory(){
 		return inventory;
@@ -126,11 +134,16 @@ public abstract class Page {
 	}
 	// change this to loop through and check if each item is same to 'item'
 	protected boolean alreadyIcon(ItemStack item){
+		Messenger.debug(gui.getPlayer(), "OG: "+item.getItemMeta().getDisplayName());
 		for(ItemStack selectedItem : links.keySet()){
+			Messenger.debug(gui.getPlayer(), selectedItem.getItemMeta().getDisplayName());
 			if(selectedItem.getType() == item.getType() 
-					&& item.hasItemMeta() 
-					&& selectedItem.getItemMeta().getDisplayName().contains(ChatColor.stripColor(item.getItemMeta().getDisplayName())))
-				return true;
+					&& item.hasItemMeta()
+						&& ChatColor.stripColor(selectedItem.getItemMeta().getDisplayName()).equals(ChatColor.stripColor(item.getItemMeta().getDisplayName())))
+				{
+			Messenger.debug(gui.getPlayer(), "Matched");
+			return true;
+				}
 		}
 		return false;
 	}
@@ -140,14 +153,8 @@ public abstract class Page {
 		return false;
 	}
 	protected boolean menuActions(ItemStack item, int slot, ClickType click){
-		if(isMenu(slot)){
-			return menuAction(item, slot, click);
-		}
-		return false;
-	}
-	protected boolean menuAction(ItemStack item, int slot, ClickType click){
-		if(slot == 0){
-			gui.switchPage(back);
+		if(menuActions.containsKey(slot)){
+			return menuActions.get(slot).execute(gui, this);
 		}
 		return true;
 	}

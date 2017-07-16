@@ -8,20 +8,18 @@ import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.ItemStack;
 
 public class MainPage extends Page{
-	public MainPage(GUI gui, String name, int invSize) {
+	public MainPage(ChestGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
-		
+		menuActions.put(0, new GUIAction(){
+			public boolean execute(ChestGUI gui, Page page){
+				gui.getPlayer().closeInventory();
+				gui.exit();
+				return true;
+			}
+		});
 	}
 	@Override
 	protected void initilize() {}
-	@Override
-	protected boolean menuAction(ItemStack item, int slot, ClickType click){
-	if(slot == 0){
-			gui.getPlayer().closeInventory();
-			gui.exit();
-		}
-		return true;
-	}
 	@Override
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv)

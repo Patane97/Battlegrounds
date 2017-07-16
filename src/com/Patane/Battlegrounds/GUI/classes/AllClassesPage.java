@@ -7,7 +7,7 @@ import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.arena.editor.classes.ClassesChestGUI;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
@@ -15,8 +15,8 @@ import com.Patane.Battlegrounds.util.util;
 import net.md_5.bungee.api.ChatColor;
 
 public class AllClassesPage extends Page{
-	ClassesGUI gui;
-	public AllClassesPage(ClassesGUI gui, String name, int invSize, Page back) {
+	ClassesChestGUI gui;
+	public AllClassesPage(ClassesChestGUI gui, String name, int invSize, Page back) {
 		super(gui, name, invSize, back);
 		this.gui = gui;
 	}

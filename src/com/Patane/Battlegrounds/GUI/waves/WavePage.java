@@ -5,20 +5,20 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.GUI.Page;
-import com.Patane.Battlegrounds.arena.editor.waves.WavesGUI;
+import com.Patane.Battlegrounds.arena.editor.waves.WavesChestGUI;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.custom.BGCreature;
 import com.Patane.Battlegrounds.util.util;
 
 
 public class WavePage extends Page{
-	WavesGUI gui;
+	WavesChestGUI gui;
 	Wave linkedWave;
 	ItemStack allCreaturesIcon;
 	int allCreaturesSlot = 8;
 	
 	int iconSlot = 4;
-	public WavePage(WavesGUI gui, Page back, Wave linkedWave) {
+	public WavePage(WavesChestGUI gui, Page back, Wave linkedWave) {
 		super(gui, Chat.translate("&l" + linkedWave.getName() + " wave"), 45, back);
 		this.gui = gui;
 		this.linkedWave = linkedWave;

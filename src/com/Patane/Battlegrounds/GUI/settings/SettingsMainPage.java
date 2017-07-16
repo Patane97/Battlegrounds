@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.editor.settings.SettingsGUI;
+import com.Patane.Battlegrounds.arena.editor.settings.SettingsChestGUI;
 import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.util.util;
 
@@ -18,11 +18,11 @@ public class SettingsMainPage extends MainPage{
 						   "&7 Shift click to add/remove 5"};
 	String[] FLOAT 		= {"FLOAT","&7 Left/Right click to add/remove 0.5",
 						   "&7 Shift click to add/remove 5"};
-	SettingsGUI gui;
+	SettingsChestGUI gui;
 	
 	HashMap<ItemStack, Setting> settingsLink = new HashMap<ItemStack, Setting>();
 	
-	public SettingsMainPage(SettingsGUI gui, String name, int invSize) {
+	public SettingsMainPage(SettingsChestGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
 		initilizeIcons();

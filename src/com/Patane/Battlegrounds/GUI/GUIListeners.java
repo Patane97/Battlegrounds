@@ -19,10 +19,10 @@ import com.Patane.Battlegrounds.listeners.BGListener;
 
 public class GUIListeners extends BGListener{
 	
-	GUI gui;
+	ChestGUI gui;
 	Player playerGUI;
 	
-	public GUIListeners(Plugin plugin, GUI gui){
+	public GUIListeners(Plugin plugin, ChestGUI gui){
 		super(plugin);
 		this.gui = gui;
 		this.playerGUI = gui.getPlayer();

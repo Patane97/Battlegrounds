@@ -12,7 +12,7 @@ import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.arena.editor.classes.ClassesChestGUI;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
 
@@ -20,10 +20,10 @@ import net.md_5.bungee.api.ChatColor;
 
 
 public class ClassPage extends Page{
-	ClassesGUI gui;
+	ClassesChestGUI gui;
 	BGClass linkedClass;
 	int iconSlot = 4;
-	public ClassPage(ClassesGUI gui, Page back, BGClass linkedClass) {
+	public ClassPage(ClassesChestGUI gui, Page back, BGClass linkedClass) {
 		super(gui, Chat.translate("&l" + linkedClass.getName()), linkedClass.getInventory().getSize(), back);
 		this.gui = gui;
 		this.linkedClass = linkedClass;
