@@ -20,6 +20,7 @@ import com.Patane.Battlegrounds.commands.all.removeCommand;
 import com.Patane.Battlegrounds.commands.all.saveCommand;
 import com.Patane.Battlegrounds.commands.all.spectateCommand;
 import com.Patane.Battlegrounds.commands.all.statusCommand;
+import com.Patane.Battlegrounds.commands.all.testCommand;
 
 public class CommandHandler implements CommandExecutor{
 	
@@ -68,6 +69,7 @@ public class CommandHandler implements CommandExecutor{
 		register(spectateCommand.class);
 		register(statusCommand.class);
 		register(reloadCommand.class);
+		register(testCommand.class);
 	}
 	public void register(Class< ? extends BGCommand> command){
 		CommandInfo cmdInfo = command.getAnnotation(CommandInfo.class);

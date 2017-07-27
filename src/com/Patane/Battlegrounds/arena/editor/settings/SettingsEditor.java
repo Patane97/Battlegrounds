@@ -28,7 +28,7 @@ public class SettingsEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		new SettingsChestGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Settings", creator, this);
+		creator.openInventory((new SettingsGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Settings", creator, this)).inventory());
 	}
 	@Override
 	public void save() {

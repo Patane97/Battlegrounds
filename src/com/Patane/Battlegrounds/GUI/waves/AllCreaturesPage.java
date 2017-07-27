@@ -1,14 +1,14 @@
 package com.Patane.Battlegrounds.GUI.waves;
 
 import com.Patane.Battlegrounds.GUI.Page;
-import com.Patane.Battlegrounds.arena.editor.waves.WavesChestGUI;
+import com.Patane.Battlegrounds.arena.editor.waves.WavesGUI;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.custom.BGCreature;
 
 public class AllCreaturesPage extends Page{
-	WavesChestGUI gui;
+	WavesGUI gui;
 	Wave wave;
-	public AllCreaturesPage(WavesChestGUI gui, String name, int invSize, Page back, Wave wave) {
+	public AllCreaturesPage(WavesGUI gui, String name, int invSize, Page back, Wave wave) {
 		super(gui, name, invSize, back);
 		this.gui = gui;
 		this.wave = wave;

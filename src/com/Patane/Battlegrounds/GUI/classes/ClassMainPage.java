@@ -12,21 +12,21 @@ import org.bukkit.inventory.ItemStack;
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.ChestGUI;
-import com.Patane.Battlegrounds.GUI.GUIAction;
+import com.Patane.Battlegrounds.GUI.ChestGUI.GUIAction;
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesChestGUI;
+import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
 
 public class ClassMainPage extends MainPage{
 	
-	ClassesChestGUI gui;
+	ClassesGUI gui;
 	ItemStack allClassesIcon;
 	int allClassesSlot = 8;
 	
-	public ClassMainPage(ClassesChestGUI gui, String name, int invSize) {
+	public ClassMainPage(ClassesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
 		initilize();

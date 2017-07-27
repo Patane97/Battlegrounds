@@ -8,10 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.ChestGUI;
-import com.Patane.Battlegrounds.GUI.GUIAction;
+import com.Patane.Battlegrounds.GUI.ChestGUI.GUIAction;
+import com.Patane.Battlegrounds.GUI.IconNamer;
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.GUI.Page;
-import com.Patane.Battlegrounds.arena.editor.waves.WavesChestGUI;
+import com.Patane.Battlegrounds.arena.editor.waves.WavesGUI;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.game.waves.WaveType;
 import com.Patane.Battlegrounds.collections.Waves;
@@ -19,7 +20,7 @@ import com.Patane.Battlegrounds.custom.BGCreature;
 import com.Patane.Battlegrounds.util.util;
 
 public class WavesMainPage extends MainPage{
-	WavesChestGUI gui;
+	WavesGUI gui;
 	ItemStack single;
 	int singleSlot = 3;
 	ItemStack recurring;
@@ -28,14 +29,13 @@ public class WavesMainPage extends MainPage{
 	int bossSlot = 5;
 	
 	
-	public WavesMainPage(WavesChestGUI gui, String name, int invSize) {
+	public WavesMainPage(WavesGUI gui, String name, int invSize) {
 		super(gui, name, invSize);
 		this.gui = gui;
 		initilize();
 		menuActions.put(singleSlot, new GUIAction(){
 			public boolean execute(ChestGUI gui, Page page){
 				gui.getPlayer().setItemOnCursor(page.inventory().getItem(singleSlot));
-				single = gui.getPlayer().getItemOnCursor();
 				return true;
 			}
 		});
@@ -69,16 +69,6 @@ public class WavesMainPage extends MainPage{
 		gui.update();
 		return true;
 	}
-	private ItemStack nextItem(int no, ItemStack item){
-		if(alreadyIcon(item)){
-			if(item.getItemMeta().getDisplayName().contains(" (" + no + ")")){
-				Messenger.debug(gui.getPlayer(), "match");
-				return nextItem(no++, util.setItemNameLore(item, item.getItemMeta().getDisplayName().replaceAll(" (" + no + ")", " (" + no++ + ")")));
-			}
-			return nextItem(no++, util.setItemNameLore(item, item.getItemMeta().getDisplayName() + " (" + no++ + ")"));
-		}
-		return item;
-	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
@@ -94,14 +84,19 @@ public class WavesMainPage extends MainPage{
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(item.equals(single)){
-				Messenger.debug(gui.getPlayer(), "2");
-				Wave newWave = Waves.add(new Wave(, WaveType.SINGLE, 1, 0, new HashMap<BGCreature, Integer>()));
+				Wave newWave = Waves.add(new Wave("New Single Wave", WaveType.SINGLE, 1, 0, new HashMap<BGCreature, Integer>()));
 				// save YML
 				gui.getArena().addWave(newWave);
 				WavePage wavePage = new WavePage(gui, gui.getMainPage(), newWave);
 				if(addLink(newWave.getIcon(), wavePage)){
 					Messenger.send(gui.getPlayer(), "&aAdded &7" + ChatColor.stripColor(newWave.getName()) + "&a to &7" + gui.getArena().getName() + "&a.");
 				}
+				new IconNamer(gui.getPlugin(), gui.getPlayer(), "&7Name the wave!", item, (input) -> {
+					Messenger.debug(gui.getPlayer(), "input="+input);
+					newWave.setName(input);
+					gui.getPlayer().openInventory(gui.inventory());
+					return true;
+				});
 				return true;
 			}
 			return true;

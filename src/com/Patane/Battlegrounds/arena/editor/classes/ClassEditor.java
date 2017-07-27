@@ -28,7 +28,7 @@ public class ClassEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		new ClassesChestGUI(plugin, arena, "&8&l&o" + arenaName + " &2&lClasses", creator, this);
+		creator.openInventory((new ClassesGUI(plugin, arena, "&8&l&o" + arenaName + " &2&lClasses", creator, this)).inventory());
 	}
 	@Override
 	public void save() {

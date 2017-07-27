@@ -27,7 +27,7 @@ public class WavesEditor implements EditorType{
 	}
 	@Override
 	public void initilize() {
-		new WavesChestGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Waves", creator, this);
+		creator.openInventory((new WavesGUI(plugin, arena, "&8&l&o" + arenaName + "&2&l Waves", creator, this)).inventory());
 	}
 	@Override
 	public void save() {

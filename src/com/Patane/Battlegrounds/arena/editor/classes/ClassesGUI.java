@@ -11,13 +11,13 @@ import com.Patane.Battlegrounds.GUI.classes.ClassPage;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.collections.Classes;
 
-public class ClassesChestGUI extends ChestGUI{
+public class ClassesGUI extends ChestGUI{
 	Arena arena;
 	
 	ClassEditor classEditor;
 	
-	public ClassesChestGUI(Plugin plugin, Arena arena, String name, Player player, ClassEditor classEditor) {
-		super(plugin, name, player);
+	public ClassesGUI(Plugin plugin, Arena arena, String name, Player player, ClassEditor classEditor) {
+		super(plugin, player, name);
 		this.arena = arena;
 		setMainPage(new ClassMainPage(this, name, 27));
 		this.classEditor = classEditor;

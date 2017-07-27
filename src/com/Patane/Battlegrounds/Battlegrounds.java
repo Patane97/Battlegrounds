@@ -18,8 +18,10 @@ import com.Patane.Battlegrounds.playerData.PlayerDataYML;
 public class Battlegrounds extends JavaPlugin {
 	
 	private static boolean debugMode = true;
+	private static Battlegrounds plugin;
 	
 	public void onEnable() {
+		plugin = this;
 		runEnableTasks();
 		// plugin enable info message with version
 		Messenger.info("Version " + this.getDescription().getVersion() + " Loaded Successfully!");
@@ -54,5 +56,8 @@ public class Battlegrounds extends JavaPlugin {
 	}
 	public static boolean debugMode() {
 		return debugMode;
+	}
+	public static Battlegrounds get(){
+		return plugin;
 	}
 }

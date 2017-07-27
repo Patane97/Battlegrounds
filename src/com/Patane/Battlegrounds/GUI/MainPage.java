@@ -7,6 +7,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.DragType;
 import org.bukkit.inventory.ItemStack;
 
+import com.Patane.Battlegrounds.GUI.ChestGUI.GUIAction;
+
 public class MainPage extends Page{
 	public MainPage(ChestGUI gui, String name, int invSize) {
 		super(gui, name, invSize);

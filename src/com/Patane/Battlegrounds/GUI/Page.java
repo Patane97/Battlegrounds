@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.GUI.ChestGUI.GUIAction;
 import com.Patane.Battlegrounds.util.util;
 
 public abstract class Page {

@@ -13,7 +13,7 @@ public class BGListener implements Listener{
 	}
 	
 	public BGListener(Plugin plugin){
-		this.plugin 	= plugin;
+		this.plugin 	= plugin; // CHANGE TO Battlegrounds.get();
 		register();
 	}
 	public void register(){

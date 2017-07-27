@@ -1,26 +1,44 @@
 package com.Patane.Battlegrounds.GUI;
 
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
+import java.lang.reflect.InvocationTargetException;
+import java.util.function.Function;
+
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class IconNamer {
-	protected Plugin plugin;
+import com.Patane.Battlegrounds.GUI.AnvilGUIFix.AnvilClickEvent;
+
+public class IconNamer extends AnvilGUI{
+//	private final Function<String, Boolean> function;
+	AnvilGUIFix gui;
 	
-	protected Inventory inventory;
-	protected ItemStack icon;
-	
-	GUIListeners listener;
-	
-	// change ChestGUI.java to be an abstract which both this and the current ChestGUI (maybe rename to chestChestGUI) extend.
-	
-	public IconNamer(Plugin plugin, ItemStack icon){
-		this(plugin, icon, "&6Icon Namer (" + icon.getItemMeta().getDisplayName() + ")");
+	public IconNamer(Plugin plugin, Player player, String name, ItemStack item, Function<String, Boolean> function) {
+		super(plugin, player, (name == null ? "&7Renaming "+item.getItemMeta().getDisplayName() : name));
+//		this.function = function;
+		this.gui = new AnvilGUIFix(player, new AnvilGUIFix.AnvilClickEventHandler() {
+			
+			@Override
+			public void onAnvilClick(AnvilClickEvent event) {
+				if(event.getSlot() == AnvilGUIFix.AnvilSlot.OUTPUT){
+					event.setWillClose(true);
+					event.setWillDestroy(true);
+					function.apply(event.getName());
+				} else {
+					event.setWillClose(false);
+					event.setWillDestroy(false);
+				}
+			}
+		});
+		gui.setSlot(AnvilGUIFix.AnvilSlot.INPUT_LEFT, item);
+		try {
+			gui.open();
+		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			e.printStackTrace();
+		}
+//		inventory.setItem(Slot.INPUT_LEFT, item);
+//		
+//		player.openInventory(inventory);
 	}
-	public IconNamer(Plugin plugin, ItemStack icon, String name){
-		this.plugin 	= plugin;
-		this.icon 		= icon;
-		this.inventory 	= plugin.getServer().createInventory(null, InventoryType.ANVIL, name);
-	}
+
 }

@@ -7,13 +7,13 @@ import com.Patane.Battlegrounds.GUI.ChestGUI;
 import com.Patane.Battlegrounds.GUI.settings.SettingsMainPage;
 import com.Patane.Battlegrounds.arena.Arena;
 
-public class SettingsChestGUI extends ChestGUI{
+public class SettingsGUI extends ChestGUI{
 	Arena arena;
 	
 	SettingsEditor settingsEditor;
 	
-	public SettingsChestGUI(Plugin plugin, Arena arena, String name, Player player, SettingsEditor settingsEditor) {
-		super(plugin, name, player);
+	public SettingsGUI(Plugin plugin, Arena arena, String name, Player player, SettingsEditor settingsEditor) {
+		super(plugin, player, name);
 		this.arena = arena;
 		setMainPage(new SettingsMainPage(this, name, 27));
 		this.settingsEditor = settingsEditor;

@@ -54,10 +54,13 @@ public class util {
 	public static ItemStack createItem(Material material, int amount, short data, String name, String...lore){
 		ItemStack item = new ItemStack(material, amount, data);
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setDisplayName(Chat.translate(name));
-		List<String> finalLore = new ArrayList<String>(Arrays.asList(lore));
-		finalLore = Chat.translate(finalLore);
-		itemMeta.setLore(finalLore);
+		if(name != null)
+			itemMeta.setDisplayName(Chat.translate(name));
+		if(lore != null){
+			List<String> finalLore = new ArrayList<String>(Arrays.asList(lore));
+			finalLore = Chat.translate(finalLore);
+			itemMeta.setLore(finalLore);
+		}
 		
 		item.setItemMeta(itemMeta);
 		
@@ -216,6 +219,15 @@ public class util {
 		}
 		return (Integer) null;
 	}
+
+	public static ItemStack transItemColorCodes(ItemStack result) {
+		ItemMeta itemMeta = result.getItemMeta();
+		itemMeta.setDisplayName(Chat.translate(itemMeta.getDisplayName()));
+		itemMeta.setLore(Chat.translate(itemMeta.getLore()));
+		result.setItemMeta(itemMeta);
+		return result;
+	}
+
 
 
 }
