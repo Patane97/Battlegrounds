@@ -3,11 +3,12 @@ package com.Patane.Battlegrounds.GUI.settings;
 import java.util.HashMap;
 
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.editor.settings.SettingsGUI;
+import com.Patane.Battlegrounds.arena.editor.types.SettingsEditor.SettingsGUI;
 import com.Patane.Battlegrounds.arena.settings.Setting;
 import com.Patane.Battlegrounds.util.util;
 
@@ -35,7 +36,7 @@ public class SettingsMainPage extends MainPage{
 			createSettingIcon(setting);
 	}
 	private void createSettingIcon(Setting setting){
-		ItemStack icon = util.hideAttributes(setting.getItem(Arena.YML().getSetting(gui.getArena().getName(), setting)));
+		ItemStack icon = util.hideFlags(setting.getItem(Arena.YML().getSetting(gui.getArena().getName(), setting)), ItemFlag.HIDE_ATTRIBUTES);
 		settingsLink.put(icon, setting);
 		addIcon(icon);
 	}

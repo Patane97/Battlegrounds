@@ -108,4 +108,10 @@ public enum Setting {
 		}
 		return null;
 	}
+	
+	public enum SettingType {
+		BOOLEAN(),
+		INTEGER(),
+		FLOAT();
+	}
 }

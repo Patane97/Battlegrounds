@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.arena.editor.initialize.Initialize;
+import com.Patane.Battlegrounds.arena.editor.types.Initialize;
 //import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.util.util;

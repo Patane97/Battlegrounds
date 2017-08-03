@@ -6,10 +6,10 @@ import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.ArenaYML;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.classes.BGClassYML;
+import com.Patane.Battlegrounds.arena.editor.EditorHandler;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.game.waves.WavesYML;
 import com.Patane.Battlegrounds.collections.Arenas;
-import com.Patane.Battlegrounds.collections.EditorTypes;
 import com.Patane.Battlegrounds.commands.CommandHandler;
 import com.Patane.Battlegrounds.listeners.GlobalListeners;
 import com.Patane.Battlegrounds.playerData.PlayerData;
@@ -37,7 +37,7 @@ public class Battlegrounds extends JavaPlugin {
 		// registering the main command(s) "/bg" and "/battlegrounds" or "/battleground"
         CommandHandler commandHandler = new CommandHandler(this);
 		this.getCommand("bg").setExecutor(commandHandler);
-		EditorTypes.registerAll();
+		EditorHandler.registerAll();
 		loadFiles();
 		cleanArenas();
 	}

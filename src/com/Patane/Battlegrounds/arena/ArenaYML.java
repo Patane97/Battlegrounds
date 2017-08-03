@@ -12,9 +12,10 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.arena.settings.Setting;
-import com.Patane.Battlegrounds.arena.settings.SettingType;
+import com.Patane.Battlegrounds.arena.settings.Setting.SettingType;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.util.YML;
 import com.Patane.Battlegrounds.util.util;
@@ -54,7 +55,7 @@ public class ArenaYML extends BasicYML{
 		saveAllSpawns(arenaName);
 		saveClasses(arenaName);
 		saveSettings(arenaName);
-		Messenger.debug("info", "Successfully saved Arena: " + arenaName + ".");
+		Messenger.debug(ChatType.INFO, "Successfully saved Arena: " + arenaName + ".");
 	}
 	
 	private Arena load(String arenaName){
@@ -79,7 +80,7 @@ public class ArenaYML extends BasicYML{
 			ArrayList<Wave> waves = null;
 			
 			Arena loadedArena = new Arena(plugin, arenaName, world, ground, lobby, gameSpawns, lobbySpawns, creatureSpawns, spectatorSpawns, classes, settings, waves);
-			Messenger.debug("info", "Successfully loaded Arena: " + arenaName + ".");
+			Messenger.debug(ChatType.INFO, "Successfully loaded Arena: " + arenaName + ".");
 			return loadedArena;
 		} catch (Exception e){
 			Messenger.warning("Error loading Arena: " + arenaName + ".");
@@ -112,7 +113,7 @@ public class ArenaYML extends BasicYML{
 				header.set("Cuboid.max", YML.blockVectorFormat(region.getMaximumPoint().toBlockPoint()));
 			}
 			config.save();
-			Messenger.debug("info", "Saved " + arenaName + "'s " + type + " region!");
+			Messenger.debug(ChatType.INFO, "Saved " + arenaName + "'s " + type + " region!");
 			return true;
 		} catch (Exception e){
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTANT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -165,7 +166,7 @@ public class ArenaYML extends BasicYML{
 				header.set(Integer.toString(number), YML.spawnLocationFormat(spawnLocation, true));
 				number ++;
 			}
-			Messenger.debug("info", "Saved " + arenaName + "'s " + spawnType + " spawns!");
+			Messenger.debug(ChatType.INFO, "Saved " + arenaName + "'s " + spawnType + " spawns!");
 			config.save();
 		} catch (Exception e){
 			Messenger.severe("Error whilst saving " + arenaName + "'s " + spawnType + " Spawns.");
@@ -212,7 +213,7 @@ public class ArenaYML extends BasicYML{
 		setHeader(arenaName);
 		Arena arena = Arenas.grab(arenaName);
 		header.set("Classes", arena.getClasses());
-		Messenger.debug("info", "Saved " + arenaName + "'s classes!");
+		Messenger.debug(ChatType.INFO, "Saved " + arenaName + "'s classes!");
 		config.save();
 	}
 	
@@ -262,7 +263,7 @@ public class ArenaYML extends BasicYML{
 			saveIntSetting(arenaName, setting, (int) value);
 		if(setting.getType() == SettingType.FLOAT)
 			saveFloatSetting(arenaName, setting, (float) value);
-		Messenger.debug("info", "Successfully saved Setting: "+setting.getYmlName()+" as '"+value+"'.");
+		Messenger.debug(ChatType.INFO, "Successfully saved Setting: "+setting.getYmlName()+" as '"+value+"'.");
 		return getSetting(arenaName, setting);
 	}
 	public Object getSetting(String arenaName, Setting setting) {

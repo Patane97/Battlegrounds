@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.util.YML;
@@ -70,7 +71,7 @@ public class PlayerDataYML extends BasicYML{
 	public void load(Player player){
 		String stringUUID = player.getUniqueId().toString();
 		if(isSection(stringUUID)){				
-			Messenger.debug("info", "Found " + stringUUID + ".");
+			Messenger.debug(ChatType.INFO, "Found " + stringUUID + ".");
 			Wellbeing.restore(player);
 			GameModes.restore(player);
 			Locations.restore(player);
@@ -126,10 +127,10 @@ public class PlayerDataYML extends BasicYML{
 			setHeader(stringUUID);
 			Location location = YML.getLocation(header.getString("location"));
 			if (location == null)
-				Messenger.debug("warning", "Failed to grab player's location.");
+				Messenger.debug(ChatType.WARNING, "Failed to grab player's location.");
 			return location;
 		}
-		Messenger.debug("warning", "Failed to find player's location in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's location in YML.");
 		return null;
 	}
 	public ItemStack[] getInventory(String stringUUID){
@@ -139,10 +140,10 @@ public class PlayerDataYML extends BasicYML{
 			List<ItemStack> itemList = (List<ItemStack>) header.get("inventory");
 			ItemStack[] inventoryContents = (ItemStack[]) itemList.toArray(new ItemStack[0]);
 			if (inventoryContents == null)
-				Messenger.debug("warning", "Failed to grab player's inventory.");
+				Messenger.debug(ChatType.WARNING, "Failed to grab player's inventory.");
 			return inventoryContents;
 		}
-		Messenger.debug("warning", "Failed to find player's inventory in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's inventory in YML.");
 		return null;
 	}
 	public GameMode getGameMode(String stringUUID){
@@ -150,10 +151,10 @@ public class PlayerDataYML extends BasicYML{
 			setHeader(stringUUID);
 			String gameMode = header.getString("gamemode");
 			if (gameMode == null)
-				Messenger.debug("warning", "Failed to grab player's gamemode.");
+				Messenger.debug(ChatType.WARNING, "Failed to grab player's gamemode.");
 			return GameMode.valueOf(gameMode);
 		}
-		Messenger.debug("warning", "Failed to find player's gamemode in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's gamemode in YML.");
 		return null;
 	}
 	@SuppressWarnings("null")
@@ -164,7 +165,7 @@ public class PlayerDataYML extends BasicYML{
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getDouble("health");
 		}
-		Messenger.debug("warning", "Failed to find player's health in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's health in YML.");
 		return (Double) null;
 	}
 	@SuppressWarnings("null")
@@ -175,7 +176,7 @@ public class PlayerDataYML extends BasicYML{
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("food");
 		}
-		Messenger.debug("warning", "Failed to find player's food-level in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's food-level in YML.");
 		return (Integer) null;
 	}
 	@SuppressWarnings("null")
@@ -186,7 +187,7 @@ public class PlayerDataYML extends BasicYML{
 				getSection(stringUUID).set("wellbeing", null);
 			return (float) header.getDouble("exp");
 		}
-		Messenger.debug("warning", "Failed to find player's exp in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's exp in YML.");
 		return (Float) null;
 	}
 	@SuppressWarnings("null")
@@ -197,7 +198,7 @@ public class PlayerDataYML extends BasicYML{
 				getSection(stringUUID).set("wellbeing", null);
 			return header.getInt("level");
 		}
-		Messenger.debug("warning", "Failed to find player's level in YML.");
+		Messenger.debug(ChatType.WARNING, "Failed to find player's level in YML.");
 		return (Integer) null;
 	}
 	public void deletePlayer(String stringUUID){

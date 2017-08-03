@@ -11,10 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
@@ -45,10 +47,22 @@ public class util {
 		state.update();
 	}
 
-	public static ItemStack hideAttributes(ItemStack item) {
-		ItemMeta iM = item.getItemMeta();
-		iM.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		item.setItemMeta(iM);
+	public static ItemStack hideFlags(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+		meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+		item.setItemMeta(meta);
+		return item;
+	}
+	public static ItemStack hideFlags(ItemStack item, ItemFlag...flags) {
+		ItemMeta meta = item.getItemMeta();
+		for(ItemFlag flag : flags)
+			meta.addItemFlags(flag);
+		item.setItemMeta(meta);
 		return item;
 	}
 	public static ItemStack createItem(Material material, int amount, short data, String name, String...lore){
@@ -66,9 +80,17 @@ public class util {
 		
 		return item;
 	}
+	public static ItemStack createEnchantBook(Enchantment enchantment, int level, boolean ignoreLevelRestriction, String name, String...lore) {
+		ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+		EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+		meta.addStoredEnchant(enchantment, level, ignoreLevelRestriction);
+		book.setItemMeta(meta);
+		return setItemNameLore(book, name, lore);
+	}
 	public static ItemStack setItemNameLore(ItemStack item, String name, String... lore) {
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setDisplayName(Chat.translate(name));
+		if(name != null)
+			itemMeta.setDisplayName(Chat.translate(name));
 		if(lore.length > 0)
 			itemMeta.setLore(Chat.translate(Arrays.asList(lore)));
 		item.setItemMeta(itemMeta);

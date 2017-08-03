@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 
 public class Inventories {
 	private static HashMap<String, ItemStack[]> savedInventories = new HashMap<String, ItemStack[]>();
@@ -36,7 +37,7 @@ public class Inventories {
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
 		if(!PlayerData.YML().isSection(stringUUID, "inventory") || PlayerData.YML().isEmpty(stringUUID, "inventory")){
-			Messenger.debug("info", "Inventory for " + playerName + " is empty. Removing from YML...");
+			Messenger.debug(ChatType.INFO, "Inventory for " + playerName + " is empty. Removing from YML...");
 			PlayerData.YML().clearSection(stringUUID, "inventory");
 			return false;
 		}
@@ -44,7 +45,7 @@ public class Inventories {
 		if (!savedInventories.containsKey(stringUUID)){
 			ItemStack[] inventoryContents = PlayerData.YML().getInventory(stringUUID);
 			if(inventoryContents == null){
-				Messenger.debug("warning", "Failed to find " + playerName + "'s inventory from yml. Inventory Lost.");
+				Messenger.debug(ChatType.WARNING, "Failed to find " + playerName + "'s inventory from yml. Inventory Lost.");
 				return false;
 			}
 			savedInventories.put(stringUUID, inventoryContents);
@@ -52,9 +53,9 @@ public class Inventories {
 		try{
 			playerInventory.setContents(savedInventories.remove(stringUUID));
 			PlayerData.YML().deletePlayer(stringUUID, "inventory");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s inventory.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s inventory.");
 		} catch (Exception e){
-			Messenger.debug("warning", "Failed to restore " + playerName + "'s inventory.");
+			Messenger.debug(ChatType.WARNING, "Failed to restore " + playerName + "'s inventory.");
 			e.printStackTrace();
 			return false;
 		}

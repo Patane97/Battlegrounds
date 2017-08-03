@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.DragType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
@@ -16,7 +17,7 @@ import com.Patane.Battlegrounds.GUI.ChestGUI.GUIAction;
 import com.Patane.Battlegrounds.GUI.MainPage;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.arena.editor.types.ClassEditor.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
 
@@ -120,7 +121,7 @@ public class ClassMainPage extends MainPage{
 	}
 	@Override
 	public boolean addLink(ItemStack icon, Page linkPage){
-		return super.addLink(util.hideAttributes(icon), linkPage);
+		return super.addLink(util.hideFlags(icon, ItemFlag.HIDE_ATTRIBUTES), linkPage);
 	}
 	@Override
 	public void update() {

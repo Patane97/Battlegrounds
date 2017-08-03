@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 
 public class Wellbeing {
 
@@ -46,7 +47,7 @@ public class Wellbeing {
 		String playerName = player.getDisplayName();
 		Boolean fullSuccess = true;
 		if(!PlayerData.YML().isSection(stringUUID, "wellbeing") || PlayerData.YML().isEmpty(stringUUID, "wellbeing")){
-			Messenger.debug("info", "Wellbeing for " + playerName + " is empty. Removing from YML...");
+			Messenger.debug(ChatType.INFO, "Wellbeing for " + playerName + " is empty. Removing from YML...");
 			PlayerData.YML().clearSection(stringUUID, "wellbeing");
 			return false;
 		}
@@ -55,9 +56,9 @@ public class Wellbeing {
 			if(health <= 0) throw new IllegalArgumentException();
 			player.setHealth(health);
 			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.health");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s health.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s health.");
 		} catch (NullPointerException|IllegalArgumentException e ){
-			Messenger.debug("warning", "Failed to restore " + playerName + "'s health. Setting to 20.");
+			Messenger.debug(ChatType.WARNING, "Failed to restore " + playerName + "'s health. Setting to 20.");
 			player.setHealth(20);
 			e.printStackTrace();
 			fullSuccess = false;
@@ -65,9 +66,9 @@ public class Wellbeing {
 		try{
 			player.setFoodLevel(getFood(stringUUID, playerName));
 			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.food");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s food level.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s food level.");
 		} catch (NullPointerException e){
-			Messenger.debug("warning", "Failed to restore " + playerName + "'s food level. Setting to 20.");
+			Messenger.debug(ChatType.WARNING, "Failed to restore " + playerName + "'s food level. Setting to 20.");
 			player.setFoodLevel(20);
 			e.printStackTrace();
 			fullSuccess = false;
@@ -75,9 +76,9 @@ public class Wellbeing {
 		try{
 			player.setExp(getExp(stringUUID, playerName));
 			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.exp");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s exp.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s exp.");
 		} catch (NullPointerException e){
-			Messenger.debug("warning", "Failed to restore " + playerName + "'s exp. Setting to 0.");
+			Messenger.debug(ChatType.WARNING, "Failed to restore " + playerName + "'s exp. Setting to 0.");
 			player.setExp(0);
 			e.printStackTrace();
 			fullSuccess = false;
@@ -85,9 +86,9 @@ public class Wellbeing {
 		try{
 			player.setLevel(getLevel(stringUUID, playerName));
 			PlayerData.YML().deletePlayer(stringUUID, "wellbeing.level");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s level.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s level.");
 		} catch (NullPointerException e){
-			Messenger.debug("warning", "Failed to restore " + playerName + "'s level. Setting to 0.");
+			Messenger.debug(ChatType.WARNING, "Failed to restore " + playerName + "'s level. Setting to 0.");
 			player.setLevel(0);
 			e.printStackTrace();
 			fullSuccess = false;

@@ -51,21 +51,21 @@ public class Messenger {
 		}
 		
 	}
-	public static void debug(String type, String msg) {
+	public static void debug(ChatType type, String msg) {
 		if(!Battlegrounds.debugMode())
 			return;
 		msg = ">> " + msg;
 		switch(type){
-		case "broadcast":
+		case BROADCAST:
 			broadcast(msg);
 			break;
-		case "warning":
+		case WARNING:
 			warning(msg);
 			break;
-		case "severe":
+		case SEVERE:
 			severe(msg);
 			break;
-		default:
+		case INFO:
 			info(msg);
 			break;
 		}
@@ -81,5 +81,8 @@ public class Messenger {
 			msg = ">> &c" + msg;
 			send(sender, msg);
 		}
+	}
+	public static enum ChatType {
+		BROADCAST(), WARNING(), SEVERE(), INFO();
 	}
 }

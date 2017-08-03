@@ -6,9 +6,9 @@ import org.bukkit.inventory.ItemStack;
 import com.Patane.Battlegrounds.util.util;
 
 public enum WaveType {
-	SINGLE(util.createItem(Material.IRON_NUGGET, 1, (short) 0, "&6Unnamed Wave"), "&7At round {INCREMENT}"),
-	RECURRING(util.createItem(Material.MELON_SEEDS, 1, (short) 0, "&6Unnamed Wave"), "&7Every {INCREMENT} rounds"),
-	BOSS(util.createItem(Material.NETHER_STAR, 1, (short) 0, "&6Unnamed Wave"), "&7At round {INCREMENT}");
+	SINGLE(util.createItem(Material.IRON_NUGGET, 1, (short) 0, "&6Unnamed Wave"), "&7Wave at {INCREMENT}"),
+	RECURRING(util.createItem(Material.MELON_SEEDS, 1, (short) 0, "&6Unnamed Wave"), "&7Wave every {INCREMENT}"),
+	BOSS(util.createItem(Material.NETHER_STAR, 1, (short) 0, "&6Unnamed Wave"), "&7Boss at {INCREMENT}");
 	
 	ItemStack icon;
 	String description;

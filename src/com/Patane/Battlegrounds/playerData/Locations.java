@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 
 public class Locations {
 	private static HashMap<String, Location> savedLocations = new HashMap<String, Location>();
@@ -29,15 +30,15 @@ public class Locations {
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
 		if(!PlayerData.YML().isSection(stringUUID, "location") || PlayerData.YML().isEmpty(stringUUID, "location")){
-			Messenger.debug("info", "Location for " + playerName + " is empty. Removing from YML...");
+			Messenger.debug(ChatType.INFO, "Location for " + playerName + " is empty. Removing from YML...");
 			PlayerData.YML().clearSection(stringUUID, "location");
 			return false;
 		}
 		if (!savedLocations.containsKey(stringUUID)){
-			Messenger.debug("info", "Failed to find " + playerName + "'s location in List. Checking yml...");
+			Messenger.debug(ChatType.INFO, "Failed to find " + playerName + "'s location in List. Checking yml...");
 			Location location = PlayerData.YML().getLocation(stringUUID);
 			if(location == null){
-				Messenger.debug("warning", "Failed to find " + playerName + "'s location from yml. Location Lost.");
+				Messenger.debug(ChatType.WARNING, "Failed to find " + playerName + "'s location from yml. Location Lost.");
 				return false;
 			}
 			savedLocations.put(stringUUID, location);
@@ -45,9 +46,9 @@ public class Locations {
 		try{
 			player.teleport(savedLocations.remove(stringUUID));
 			PlayerData.YML().deletePlayer(stringUUID, "location");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s location.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s location.");
 		} catch (Exception e){
-			Messenger.debug("warning", "Failed to set " + playerName + "'s location.");
+			Messenger.debug(ChatType.WARNING, "Failed to set " + playerName + "'s location.");
 			e.printStackTrace();
 			return false;
 		}

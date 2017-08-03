@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_11_R1.DamageSource;
-import net.minecraft.server.v1_11_R1.EntityCreature;
-import net.minecraft.server.v1_11_R1.EntitySkeleton;
-import net.minecraft.server.v1_11_R1.GenericAttributes;
-import net.minecraft.server.v1_11_R1.World;
+import net.minecraft.server.v1_12_R1.DamageSource;
+import net.minecraft.server.v1_12_R1.EntityCreature;
+import net.minecraft.server.v1_12_R1.EntitySkeleton;
+import net.minecraft.server.v1_12_R1.GenericAttributes;
+import net.minecraft.server.v1_12_R1.World;
 
 public class BGSkeleton extends EntitySkeleton{
 

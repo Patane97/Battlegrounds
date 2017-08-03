@@ -10,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.listeners.BGListener;
 
 public abstract class GUI {
@@ -64,7 +63,7 @@ public abstract class GUI {
 		public void onItemClick(InventoryClickEvent event){
 			if(!(event.getInventory().equals(inventory) || event.getView().getTopInventory().equals(inventory)))
 				return;
-			Player thisPlayer = (Player) event.getWhoClicked();
+//			Player thisPlayer = (Player) event.getWhoClicked();
 			Inventory thisInventory = event.getClickedInventory();
 			if(thisInventory == null)
 				return;
@@ -74,7 +73,7 @@ public abstract class GUI {
 			ClickType click = event.getClick();
 			
 			event.setCancelled(regularClick(thisInventory, click, clickedItem, cursorItem, slot));
-			Messenger.debug(thisPlayer, "Regular Click [&cInv: &7"+thisInventory.getTitle()+"&r&5 | &cClickType: &7"+click.name()+"&r&5 | &cClicked: &7"+clickedItem.getType().name()+"&r&5 | &cCursor: &7"+clickedItem.getType().name()+"&r&5 | &cSlot: &7"+slot+"&c]");
+//			Messenger.debug(thisPlayer, "Regular Click [&cInv: &7"+thisInventory.getTitle()+"&r&5 | &cClickType: &7"+click.name()+"&r&5 | &cClicked: &7"+clickedItem.getType().name()+"&r&5 | &cCursor: &7"+clickedItem.getType().name()+"&r&5 | &cSlot: &7"+slot+"&c]");
 		}
 		@EventHandler
 		public void onInventoryClose(InventoryCloseEvent event){

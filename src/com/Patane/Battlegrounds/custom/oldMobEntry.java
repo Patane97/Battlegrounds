@@ -1,6 +1,6 @@
 package com.Patane.Battlegrounds.custom;
 
-import net.minecraft.server.v1_11_R1.Entity;
+import net.minecraft.server.v1_12_R1.Entity;
 
 public class oldMobEntry {
 	private final String name;

@@ -197,6 +197,8 @@ public abstract class Page {
 		return true;
 	}
 	protected abstract void initilize();
-	public void clean(){};
-	public void update(){};
+	public void clean(){}
+	public void update(){
+		gui.update();
+	}
 }

@@ -5,18 +5,18 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_11_R1.DamageSource;
-import net.minecraft.server.v1_11_R1.EntityCreature;
-import net.minecraft.server.v1_11_R1.EntityHuman;
-import net.minecraft.server.v1_11_R1.EntityZombie;
-import net.minecraft.server.v1_11_R1.GenericAttributes;
-import net.minecraft.server.v1_11_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_11_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_11_R1.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.v1_11_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_11_R1.PathfinderGoalRandomStrollLand;
-import net.minecraft.server.v1_11_R1.PathfinderGoalZombieAttack;
-import net.minecraft.server.v1_11_R1.World;
+import net.minecraft.server.v1_12_R1.DamageSource;
+import net.minecraft.server.v1_12_R1.EntityCreature;
+import net.minecraft.server.v1_12_R1.EntityHuman;
+import net.minecraft.server.v1_12_R1.EntityZombie;
+import net.minecraft.server.v1_12_R1.GenericAttributes;
+import net.minecraft.server.v1_12_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_12_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_12_R1.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_12_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_12_R1.PathfinderGoalRandomStrollLand;
+import net.minecraft.server.v1_12_R1.PathfinderGoalZombieAttack;
+import net.minecraft.server.v1_12_R1.World;
 
 public class BGZombieKnight extends EntityZombie{
 

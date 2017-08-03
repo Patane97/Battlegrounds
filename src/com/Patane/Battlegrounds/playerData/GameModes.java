@@ -8,6 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 
 public class GameModes {
 	private static HashMap<String, GameMode> savedGameModes = new HashMap<String, GameMode>();
@@ -29,15 +30,15 @@ public class GameModes {
 		String stringUUID = player.getUniqueId().toString();
 		String playerName = player.getDisplayName();
 		if(!PlayerData.YML().isSection(stringUUID, "gamemode") || PlayerData.YML().isEmpty(stringUUID, "gamemode")){
-			Messenger.debug("info", "Gamemode for " + playerName + " is empty. Removing from YML...");
+			Messenger.debug(ChatType.INFO, "Gamemode for " + playerName + " is empty. Removing from YML...");
 			PlayerData.YML().clearSection(stringUUID, "gamemode");
 			return false;
 		}
 		if (!savedGameModes.containsKey(stringUUID)){
-			Messenger.debug("info", "Failed to find " + playerName + "'s game mode in List. Checking yml...");
+			Messenger.debug(ChatType.INFO, "Failed to find " + playerName + "'s game mode in List. Checking yml...");
 			GameMode gameMode = PlayerData.YML().getGameMode(stringUUID);
 			if(gameMode == null){
-				Messenger.debug("warning", "Failed to find " + playerName + "'s game mode from yml. Game mode Lost.");
+				Messenger.debug(ChatType.WARNING, "Failed to find " + playerName + "'s game mode from yml. Game mode Lost.");
 				return false;
 			}
 			savedGameModes.put(stringUUID, gameMode);
@@ -45,9 +46,9 @@ public class GameModes {
 		try{
 			player.setGameMode(savedGameModes.remove(stringUUID));
 			PlayerData.YML().deletePlayer(stringUUID, "gamemode");
-			Messenger.debug("info", "Successfully restored " + playerName + "'s game mode.");
+			Messenger.debug(ChatType.INFO, "Successfully restored " + playerName + "'s game mode.");
 		} catch (Exception e){
-			Messenger.debug("warning", "Failed to set " + playerName + "'s game mode.");
+			Messenger.debug(ChatType.WARNING, "Failed to set " + playerName + "'s game mode.");
 			e.printStackTrace();
 			return false;
 		}

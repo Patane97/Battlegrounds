@@ -2,6 +2,7 @@ package com.Patane.Battlegrounds.arena.classes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -29,7 +30,7 @@ public class BGClass {
 	
 	public BGClass(Plugin plugin, String name, ItemStack icon){
 		this.name = ChatColor.stripColor(name);
-		this.icon = util.hideAttributes(icon);
+		setIcon(icon);
 		inventory = plugin.getServer().createInventory(null, 45, name);
 		Classes.add(this);
 	}
@@ -50,7 +51,7 @@ public class BGClass {
 		return icon;
 	}
 	public void setIcon(ItemStack icon) {
-		this.icon = util.hideAttributes(icon);
+		this.icon = util.hideFlags(icon, ItemFlag.HIDE_ATTRIBUTES);
 	}
 	public void setContents(ItemStack[] items){
 		try{

@@ -3,6 +3,7 @@ package com.Patane.Battlegrounds;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.util.Config;
 import com.Patane.Battlegrounds.util.util;
 
@@ -28,7 +29,7 @@ public abstract class BasicYML {
 	// DEFINE EACH OF THESE. You know what it does but will others? :)
 	
 	protected ConfigurationSection createRootSection() {
-		Messenger.debug("broadcast", "Root");
+		Messenger.debug(ChatType.BROADCAST, "Root");
 		return config.createSection(root);
 	}
 	protected ConfigurationSection createSection(String...strings) {

@@ -6,13 +6,15 @@ import java.util.Map;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.DragType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.arena.editor.types.ClassEditor.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
 
@@ -44,7 +46,7 @@ public class ClassPage extends Page{
 			String thatItemName = ChatColor.stripColor(thatItem.getItemMeta().getDisplayName());
 			if(!linkedClass.getName().equalsIgnoreCase(thatItemName) && gui.checkClassExisting(thatItemName))
 				return true;
-			thatItem = util.hideAttributes(thatItem);
+			thatItem = util.hideFlags(thatItem, ItemFlag.HIDE_ATTRIBUTES);
 			BGClass temp = linkedClass;
 			linkedClass.setIcon(thatItem);
 			linkedClass.setName(thatItemName);
@@ -90,14 +92,14 @@ public class ClassPage extends Page{
 		return placeItem(topInv, ClickType.RIGHT, oldItem, slots.get(0));
 	}
 	public void saveToClass(){
-		Messenger.debug("info", "Saving inventory to Class: " + linkedClass.getName() + ".");
+		Messenger.debug(ChatType.INFO, "Saving inventory to Class: " + linkedClass.getName() + ".");
 		ItemStack[] inv = inventory.getContents();
 		ItemStack[] convertedInv = new ItemStack[45];
 		convertedInv = Arrays.copyOfRange(inv, menuSize, inv.length);
 		linkedClass.setContents(convertedInv);
 	}
 	public void loadFromClass(){
-		Messenger.debug("info", "Loading inventory from Class: " + linkedClass.getName() + ".");
+		Messenger.debug(ChatType.INFO, "Loading inventory from Class: " + linkedClass.getName() + ".");
 		int count = menuSize;
 		for(ItemStack selectedItem : linkedClass.getInventory().getContents()){
 			inventory.setItem(count, selectedItem);

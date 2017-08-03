@@ -6,10 +6,10 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
+import com.Patane.Battlegrounds.arena.editor.EditorHandler;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.arena.game.Game;
 import com.Patane.Battlegrounds.collections.Arenas;
-import com.Patane.Battlegrounds.collections.EditorTypes;
 import com.Patane.Battlegrounds.commands.BGCommand;
 import com.Patane.Battlegrounds.commands.CommandInfo;
 
@@ -48,7 +48,7 @@ public class editCommand implements BGCommand{
 			Messenger.send(sender, editor.getCreator().getDisplayName() + " &cis already editing this arena!");
 			return false;
 		}
-		Class<? extends EditorType> editorClass = EditorTypes.getEditorType(editType);
+		Class<? extends EditorType> editorClass = EditorHandler.getEditorType(editType);
 		if(editorClass == null){
 			Messenger.send(sender, "&cPlease type a valid editor type (eg. /bg edit " + arena.getName() + " build)");
 			return false;

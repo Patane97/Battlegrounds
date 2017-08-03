@@ -1,7 +1,7 @@
 package com.Patane.Battlegrounds.GUI.waves;
 
 import com.Patane.Battlegrounds.GUI.Page;
-import com.Patane.Battlegrounds.arena.editor.waves.WavesGUI;
+import com.Patane.Battlegrounds.arena.editor.types.WavesEditor.WavesGUI;
 import com.Patane.Battlegrounds.arena.game.waves.Wave;
 import com.Patane.Battlegrounds.custom.BGCreature;
 

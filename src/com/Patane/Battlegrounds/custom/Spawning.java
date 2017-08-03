@@ -3,14 +3,14 @@ package com.Patane.Battlegrounds.custom;
 import java.lang.reflect.Method;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Creature;
 
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.game.Game;
 
-import net.minecraft.server.v1_11_R1.Entity;
-import net.minecraft.server.v1_11_R1.World;
+import net.minecraft.server.v1_12_R1.Entity;
+import net.minecraft.server.v1_12_R1.World;
 
 public class Spawning {
 	/**

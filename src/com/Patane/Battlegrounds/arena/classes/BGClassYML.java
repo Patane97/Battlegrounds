@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.BasicYML;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.YML;
 import com.Patane.Battlegrounds.util.util;
@@ -58,7 +59,7 @@ public class BGClassYML extends BasicYML{
 			for(Entry<Integer, ItemStack> entry : YML.playerInventoryContentsFormat(contents).entrySet())
 				header.set("Contents." + entry.getKey(), entry.getValue());
 			config.save();
-			Messenger.debug("info", "Successfully saved Class: " + bgClass.getName() + ".");
+			Messenger.debug(ChatType.INFO, "Successfully saved Class: " + bgClass.getName() + ".");
 			return true;
 		} catch (NullPointerException e){
 			Messenger.warning("Error saving BGClass: " + bgClass.getName() + ".");
@@ -105,7 +106,7 @@ public class BGClassYML extends BasicYML{
 				className = icon.getItemMeta().getDisplayName();
 
 			BGClass newClass = new BGClass(plugin, className, icon, classInventory);
-			Messenger.debug("info", "Successfully loaded Class: " + className + ".");
+			Messenger.debug(ChatType.INFO, "Successfully loaded Class: " + className + ".");
 			return newClass;
 		} catch (Exception e){
 			Messenger.warning("Error loading BGClass: " + className + ".");

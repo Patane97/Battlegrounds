@@ -1,13 +1,14 @@
 package com.Patane.Battlegrounds.GUI.classes;
 
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import com.Patane.Battlegrounds.Chat;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.Page;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
-import com.Patane.Battlegrounds.arena.editor.classes.ClassesGUI;
+import com.Patane.Battlegrounds.arena.editor.types.ClassEditor.ClassesGUI;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
 import com.Patane.Battlegrounds.util.util;
@@ -97,6 +98,6 @@ public class AllClassesPage extends Page{
 	}
 	@Override
 	public boolean addLink(ItemStack icon, Page linkPage){
-		return super.addLink(util.hideAttributes(icon), linkPage);
+		return super.addLink(util.hideFlags(icon, ItemFlag.HIDE_ATTRIBUTES), linkPage);
 	}
 }
