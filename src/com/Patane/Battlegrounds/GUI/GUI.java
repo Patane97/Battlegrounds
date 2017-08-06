@@ -10,8 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.listeners.BGListener;
 
 public abstract class GUI {
@@ -21,12 +19,15 @@ public abstract class GUI {
 	protected Player player;
 	protected Listener listener;
 	boolean resettingInv;
-	
+
 	public GUI(Plugin plugin, Player player, Inventory inventory){
 		this.plugin = plugin;
 		this.player = player;
 		this.inventory = inventory;
-		setListener(new Listener(plugin));
+		createListener();
+	}
+	protected void createListener() {
+		this.listener = new Listener(plugin);
 	}
 	public boolean invResetting(){
 		return resettingInv;
@@ -40,16 +41,8 @@ public abstract class GUI {
 	public Inventory inventory() {
 		return inventory;
 	}
-	public void setListener(Listener listener) {
-		try{
-			this.listener.unregister();
-			Messenger.debug(ChatType.WARNING, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>UNREGISTERING");
-		} catch (NullPointerException e) {}
-		this.listener = listener;
-	}
 	public void exit() {
 		listener.unregister();
-		Messenger.debug(ChatType.WARNING, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>UNREGISTERING");
 	}	
 	
 	public abstract boolean regularClick(Inventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot);
@@ -57,7 +50,6 @@ public abstract class GUI {
 	protected class Listener extends BGListener {
 		public Listener(Plugin plugin) {
 			super(plugin);
-			Messenger.debug(ChatType.WARNING, "REGISTERING<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		}
 		@EventHandler
 		public void onItemClick(InventoryClickEvent event){

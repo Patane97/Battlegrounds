@@ -67,6 +67,7 @@ public class WavesMainPage extends MainPage{
 	public boolean placeItem(boolean topInv, ClickType click, ItemStack item, int slot){
 		if(topInv){
 			if(currentWaveType != null){
+				gui.getPlayer().setItemOnCursor(null);
 				Wave newWave = new Wave(item.getItemMeta().getDisplayName(), currentWaveType, currentIncrement, 0, new HashMap<BGCreature, Integer>());
 				currentIncrement = 1;
 				currentWaveType = null;

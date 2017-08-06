@@ -7,7 +7,6 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.types.Initialize;
-//import com.Patane.Battlegrounds.arena.editor.spawn.SpawnEditor;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.util.util;
 import com.sk89q.worldedit.regions.AbstractRegion;
@@ -28,7 +27,6 @@ public class Editor extends Standby{
 		this.arenaName 	= arenaName;
 		this.creator 	= creator;
 		this.colorCode	= "&e";
-		//this.listener 	= new EditorListeners(plugin, arena);
 		createArena();
 	}
 	/**
@@ -41,6 +39,7 @@ public class Editor extends Standby{
 		super(plugin, arena, null);
 		this.arenaName 	= arena.getName();
 		this.creator 	= creator;
+		this.listener	= new EditorListeners(plugin, arena, this);
 		this.colorCode	= "&e";
 	}
 	@Override
@@ -79,9 +78,8 @@ public class Editor extends Standby{
 	}
 	@Override
 	public void sessionOver() {
-		editorType.save();
 		try{
-		editorType.save();
+			editorType.save();
 		} catch (NullPointerException e) {}
 		super.sessionOver();
 	}

@@ -81,13 +81,12 @@ public class Arena {
 	// 'value' is used for different things in different modes.
 	// Lobby: value = ready/not ready
 	// Game: value = active/eliminated
-	// UPDATE THIS!! (CHANGE String name TO UUID).. big task :(
 	private HashMap<String, Boolean> players = new HashMap<String, Boolean>();
 	private ArrayList<String> spectators = new ArrayList<String>();
 	
 	private List<Wave> waves;
 	
-	public Arena(){}
+//	public Arena(){}
 	/**
 	 * Mostly used for creating new arenas in-game (before spawns have been saved)
 	 */
@@ -124,6 +123,7 @@ public class Arena {
 		for(String ymlName : customSettings.keySet()){
 			Messenger.broadcast("Found in customSettings: <"+ymlName+", "+customSettings.get(ymlName)+">");
 		}
+		this.arenaListener = new ArenaListener(plugin, this);
 	}
 	
 	public String getName(){
@@ -137,6 +137,9 @@ public class Arena {
 	}
 	public AbstractRegion getLobby(){
 		return lobby;
+	}
+	public ArenaListener getListener() {
+		return arenaListener;
 	}
 	public void setSettings(ArenaSettings settings){
 		this.arenaSettings = settings;

@@ -5,6 +5,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
+
 public class BGListener implements Listener{
 	protected Plugin plugin;
 	
@@ -18,10 +21,12 @@ public class BGListener implements Listener{
 	}
 	public void register(){
 		try{
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+			Messenger.debug(ChatType.INFO, "+++ REGISTERING ["+this.toString()+"]");
+			plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		} catch (IllegalPluginAccessException e){}
 	}
 	public void unregister() {
+		Messenger.debug(ChatType.INFO, "--- UNREGISTERING ["+this.toString()+"]");
 		HandlerList.unregisterAll(this);
 	}
 }

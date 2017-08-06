@@ -29,9 +29,11 @@ public class ItemNamer extends AnvilGUI{
 		returnLore = item.getItemMeta().getLore();
 		this.item = item;
 		this.function = function;
-		listener.unregister();
 		inventory.setItem(Slot.INPUT_LEFT, item);
-		setListener(new ItemNamerListener(plugin));
+	}
+	@Override
+	protected void createListener() {
+		this.listener = new ItemNamerListener(plugin);
 	}
 
 	@Override
@@ -45,7 +47,6 @@ public class ItemNamer extends AnvilGUI{
 	public boolean regularClick(AnvilInventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot) {
 		if(slot == Slot.INPUT_LEFT){
 			doFunction(null);
-			exit();
 		}
 		if(slot == Slot.OUTPUT && inventory.getItem(Slot.OUTPUT) != null){
 			if(inventory.getRenameText().isEmpty())
@@ -59,7 +60,6 @@ public class ItemNamer extends AnvilGUI{
 				inventory.setItem(1, right);
 				return true;
 			}
-			exit();
 		}
 		return false;
 	}

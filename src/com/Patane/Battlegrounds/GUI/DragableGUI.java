@@ -14,11 +14,14 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 
 public abstract class DragableGUI extends GUI{	
+	
 	public DragableGUI(Plugin plugin, Player player, Inventory inventory) {
 		super(plugin, player, inventory);
-		setListener(new DragableListener(plugin));
 	}
-
+	@Override
+	protected void createListener() {
+		this.listener = new DragableListener(plugin);
+	}
 	public abstract boolean dragClick(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, ArrayList<Integer> slots);
 	
 	protected class DragableListener extends Listener {
@@ -32,7 +35,7 @@ public abstract class DragableGUI extends GUI{
 			if(!event.getInventory().equals(inventory))
 				return;
 			boolean topInv = false;
-			// Need to determine if any slots are in top inventory since we cant get "clickedInventory".
+			// Determining if any slots are in top inventory since we cant get "clickedInventory".
 			if(thisTopInventory != null){
 				for(int slot : event.getRawSlots()){
 					if(slot < thisTopInventory.getSize()){

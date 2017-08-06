@@ -23,7 +23,7 @@ public class Standby implements ArenaMode{
 	
 	public Standby(){}
 	public Standby(Plugin plugin, Arena arena){
-		this(plugin, arena, new ArenaListener(plugin, arena));
+		this(plugin, arena, arena.getListener());
 	}
 	public Standby(Plugin plugin, Arena arena, ArenaListener listener){
 		this.plugin		= plugin;

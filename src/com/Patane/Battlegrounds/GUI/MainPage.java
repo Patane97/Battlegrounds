@@ -15,7 +15,6 @@ public class MainPage extends Page{
 		menuActions.put(0, new GUIAction(){
 			public boolean execute(ChestGUI gui, Page page){
 				gui.getPlayer().closeInventory();
-				gui.exit();
 				return true;
 			}
 		});

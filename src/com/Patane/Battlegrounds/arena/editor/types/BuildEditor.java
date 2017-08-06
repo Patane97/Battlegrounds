@@ -92,8 +92,8 @@ public class BuildEditor implements EditorType{
 				Block block = event.getBlockPlaced();
 				Player player = event.getPlayer();
 				UUID playerUUID = player.getUniqueId();
-				if(!playerUUID.equals(creatorUUID)){
-					event.setCancelled(true);
+				if(playerUUID.equals(creatorUUID)){
+					event.setCancelled(false);
 					return;
 				}
 				if (spawnAt(block.getLocation())){

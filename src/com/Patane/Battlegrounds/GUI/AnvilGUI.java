@@ -25,7 +25,10 @@ public abstract class AnvilGUI extends GUI{
 	public AnvilGUI(Plugin plugin, Player player, String name) {
 		super(plugin, player, null);
 		inventory = (AnvilInventory) Anvil.openFakeInventory(player);
-		setListener(new AnvilListener(plugin));
+	}
+	@Override
+	protected void createListener() {
+		this.listener = new AnvilListener(plugin);
 	}
 	/**
 	 * 

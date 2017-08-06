@@ -16,10 +16,9 @@ public class Lobby extends Standby{
 	
 	public Lobby(Plugin plugin, Arena arena){
 		super(plugin, arena, null);
-		
-		this.listener			= new LobbyListeners(plugin, arena, this);
 		this.defaultLocations 	= arena.getLobbySpawns();
 		this.creator			= Bukkit.getPlayerExact(ChatColor.stripColor(arena.getPlayers().get(0)));
+		this.listener			= new LobbyListeners(plugin, arena, this);
 		addPlayer(creator);
 	}
 	@Override

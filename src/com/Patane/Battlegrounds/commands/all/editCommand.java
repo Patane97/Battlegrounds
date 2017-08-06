@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorHandler;
@@ -57,7 +56,6 @@ public class editCommand implements BGCommand{
 		Editor editor = (Editor) arena.setMode(new Editor(plugin, arena, sender));
 		try {
 			EditorType editorType = editorClass.getConstructor(Plugin.class, Arena.class, Player.class, Editor.class).newInstance(plugin, arena, sender, editor);
-			Messenger.debug(ChatType.WARNING, "EDIT COMMAND PASSED");
 			editor.newEditorType(editorType);
 		} catch (Exception e) {	e.printStackTrace();}
 		return true;

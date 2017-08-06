@@ -47,7 +47,7 @@ public class ChestGUI extends DragableGUI{
 	public void update() {
 		resettingInv = true;
 		player.setItemOnCursor(null);
-		player.openInventory(inventory);
+//		player.openInventory(inventory);
 		resettingInv = false;
 	}
 	public void refresh() {
