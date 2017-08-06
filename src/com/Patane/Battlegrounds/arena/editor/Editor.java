@@ -79,6 +79,7 @@ public class Editor extends Standby{
 	}
 	@Override
 	public void sessionOver() {
+		editorType.save();
 		try{
 		editorType.save();
 		} catch (NullPointerException e) {}

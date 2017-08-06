@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.GUI.ChestGUI;
 import com.Patane.Battlegrounds.GUI.waves.WavesMainPage;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
@@ -33,9 +34,10 @@ public class WavesEditor implements EditorType{
 	}
 	@Override
 	public void save() {
-//		arena.setSettings(new ArenaSettings(arena));
 //		Arena.YML().saveSettings(arenaName);
 		Messenger.send(creator, "&aSaved &7" + arena.getName() + "&a waves.");
+		Messenger.debug(ChatType.WARNING, "+++ SAVED +++");
+		Thread.dumpStack();
 	}
 
 	@Override

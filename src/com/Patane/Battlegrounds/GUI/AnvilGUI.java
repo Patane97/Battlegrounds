@@ -23,10 +23,9 @@ public abstract class AnvilGUI extends GUI{
 	AnvilInventory inventory;
 	
 	public AnvilGUI(Plugin plugin, Player player, String name) {
-//		super(plugin, player, plugin.getServer().createInventory(null, InventoryType.ANVIL, Chat.translate(name)));
 		super(plugin, player, null);
 		inventory = (AnvilInventory) Anvil.openFakeInventory(player);
-//		this.listener = new AnvilListener(plugin);
+		setListener(new AnvilListener(plugin));
 	}
 	/**
 	 * 
@@ -37,7 +36,6 @@ public abstract class AnvilGUI extends GUI{
 	public abstract ItemStack prepareAnvil(AnvilInventory inventory, ItemStack result);
 	
 	public abstract boolean regularClick(AnvilInventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot);
-	
 	@Override
 	public boolean regularClick(Inventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot) {
 		return false;

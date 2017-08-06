@@ -36,7 +36,7 @@ public class Wave {
 		this.increment 	= increment;
 		this.priority 	= priority;
 		this.creatures 	= creatures;
-		this.icon		= util.setItemNameLore(type.getIcon(), "&6" + name, type.getDesc(increment));
+		this.icon		= util.setItemNameLore(type.getIcon().clone(), "&6" + name, type.getDesc(increment));
 		
 		Waves.add(this);
 	}
@@ -49,6 +49,11 @@ public class Wave {
 	}
 	public ItemStack getIcon() {
 		return icon;
+	}
+	public ItemStack getIncIcon() {
+		ItemStack tempIcon = icon.clone();
+		tempIcon.setAmount(increment);
+		return tempIcon;
 	}
 	public WaveType getType() {
 		return type;

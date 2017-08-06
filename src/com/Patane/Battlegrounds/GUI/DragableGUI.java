@@ -13,12 +13,10 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 
-public abstract class DragableGUI extends GUI{
-	DragableListener listener;
-	
+public abstract class DragableGUI extends GUI{	
 	public DragableGUI(Plugin plugin, Player player, Inventory inventory) {
 		super(plugin, player, inventory);
-		this.listener = new DragableListener(plugin);
+		setListener(new DragableListener(plugin));
 	}
 
 	public abstract boolean dragClick(boolean topInv, DragType drag, Map<Integer, ItemStack> newItems, ItemStack cursor, ArrayList<Integer> slots);

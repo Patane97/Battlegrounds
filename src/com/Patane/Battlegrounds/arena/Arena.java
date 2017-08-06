@@ -2,6 +2,8 @@ package com.Patane.Battlegrounds.arena;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -498,5 +500,11 @@ public class Arena {
 	}
 	public void addWave(Wave newWave) {
 		waves.add(newWave);
+		Collections.sort(waves, new Comparator<Wave>(){
+			@Override
+			public int compare (Wave o1, Wave o2){
+				return o1.getIncrement() - o2.getIncrement();
+			}
+		});
 	}
 }

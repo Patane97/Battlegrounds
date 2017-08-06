@@ -82,7 +82,7 @@ public class SpawnEditor implements EditorType{
 	public ItemStack createSpawnerItemStack(String name, DyeColor color, ArrayList<Location> spawns){
 		Wool wool = new Wool();
 		wool.setColor(color);
-		ItemStack item = wool.toItemStack();
+		ItemStack item = wool.toItemStack(1);
 		item.setAmount(spawns.size() < 1 ? 1 : spawns.size());
 		ItemMeta itemMeta = item.getItemMeta();
 		itemMeta.setDisplayName(name);

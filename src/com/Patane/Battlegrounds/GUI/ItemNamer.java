@@ -1,19 +1,21 @@
 package com.Patane.Battlegrounds.GUI;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Chat;
-import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.game.waves.WaveType;
 import com.Patane.Battlegrounds.util.util;
 
@@ -26,13 +28,10 @@ public class ItemNamer extends AnvilGUI{
 		super(plugin, player, name);
 		returnLore = item.getItemMeta().getLore();
 		this.item = item;
-		//maybe add below to end of items lore (at bottom of lore)
-//		"&3Inrement Value ["+value+"]", "&7Left/Right click to add/remove 1"
 		this.function = function;
-//		player.setItemOnCursor(item);
+		listener.unregister();
 		inventory.setItem(Slot.INPUT_LEFT, item);
-		// FIX ERROR WITH PREPAREANVILEVENT AND MOVE BELOW LINE INTO ANVILGUI
-		this.listener = new AnvilListener(plugin);
+		setListener(new ItemNamerListener(plugin));
 	}
 
 	@Override
@@ -44,24 +43,54 @@ public class ItemNamer extends AnvilGUI{
 	}
 	@Override
 	public boolean regularClick(AnvilInventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot) {
-		String text = inventory.getRenameText();
-		if(slot == Slot.OUTPUT && inventory.getItem(Slot.OUTPUT) != null && !text.isEmpty()){
-			if(!function.apply(clickedItem))
+		if(slot == Slot.INPUT_LEFT){
+			doFunction(null);
+			exit();
+		}
+		if(slot == Slot.OUTPUT && inventory.getItem(Slot.OUTPUT) != null){
+			if(inventory.getRenameText().isEmpty())
 				return true;
+			ItemStack left = inventory.getItem(0);
+			ItemStack right = inventory.getItem(1);
+			inventory.setItem(0, new ItemStack(Material.AIR));
+			inventory.setItem(1, new ItemStack(Material.AIR));
+			if(!doFunction(clickedItem)){
+				inventory.setItem(0, left);
+				inventory.setItem(1, right);
+				return true;
+			}
 			exit();
 		}
 		return false;
 	}
-
-	public static class IntegerMod extends ItemNamer{
+	protected boolean doFunction(ItemStack item){
+		return function.apply(item);
+	}
+	protected class ItemNamerListener extends AnvilListener {
+		public ItemNamerListener(Plugin plugin) {
+			super(plugin);
+		}
+		@Override
+		@EventHandler
+		public void onInventoryClose(InventoryCloseEvent event){
+			if(event.getInventory().equals(inventory)){
+				inventory.setItem(0, new ItemStack(Material.AIR));
+				inventory.setItem(1, new ItemStack(Material.AIR));
+				exit();
+			}
+		}
+	}
+	public static class WaveMod extends ItemNamer{
 		int value;
 		Integer max;
 		Integer min;
 		WaveType waveType;
 		String bookName;
+		BiFunction<ItemStack, Integer, Boolean> function;
 		
-		public IntegerMod(Plugin plugin, Player player, String name, ItemStack item, Function<ItemStack, Boolean> function, int value, Integer max, Integer min, WaveType waveType) {
-			super(plugin, player, name, util.setItemNameLore(item, name, "&7Click on the Output Item to Confirm!"), function);
+		public WaveMod(Plugin plugin, Player player, String name, ItemStack item, BiFunction<ItemStack, Integer, Boolean> function, int value, Integer max, Integer min, WaveType waveType) {
+			super(plugin, player, name, util.setItemNameLore(item, name, "&7Click Here to Cancel.", "&7Click Output to Confirm."), null);
+			this.function = function;
 			this.value = value;
 			this.max = max;
 			this.min = min;
@@ -77,24 +106,24 @@ public class ItemNamer extends AnvilGUI{
 		public boolean regularClick(AnvilInventory inventory, ClickType click, ItemStack clickedItem, ItemStack cursorItem, int slot) {
 			if(super.regularClick(inventory, click, clickedItem, cursorItem, slot))
 				return true;
-			if(this.inventory.equals(inventory)){
-				if(slot == Slot.INPUT_RIGHT){
-					if(click == ClickType.LEFT) value ++;
-					else if(click == ClickType.RIGHT) value --;
-					else if(click == ClickType.SHIFT_LEFT) value += 5;
-					else if(click == ClickType.SHIFT_RIGHT) value -= 5;
-					if(min != null && value < min) value = min;
-					if(max != null && value > max) value = max;
-					Messenger.debug(player, ""+value);
-					returnLore.clear();
-					returnLore.add(waveType.getDesc(value));
-					inventory.setItem(Slot.INPUT_RIGHT, util.setItemNameLore(clickedItem, bookName()));
-					
-					return true;
-				}
+			if(slot == Slot.INPUT_RIGHT){
+				if(click == ClickType.LEFT) value ++;
+				else if(click == ClickType.RIGHT) value --;
+				else if(click == ClickType.SHIFT_LEFT) value += 5;
+				else if(click == ClickType.SHIFT_RIGHT) value -= 5;
+				if(min != null && value < min) value = min;
+				if(max != null && value > max) value = max;
+				returnLore.clear();
+				returnLore.add(waveType.getDesc(value));
+				inventory.setItem(Slot.INPUT_RIGHT, util.setItemNameLore(clickedItem, bookName()));
+				
 				return true;
 			}
 			return false;
+		}
+		@Override
+		protected boolean doFunction(ItemStack item){
+			return function.apply(item, value);
 		}
 		public String bookName(){
 			return bookName = "&3Increment ("+value+")";

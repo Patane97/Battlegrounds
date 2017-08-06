@@ -26,7 +26,7 @@ public abstract class Page {
 	protected ItemStack barIcon;
 	
 	protected HashMap<Integer, GUIAction> menuActions;
-	protected HashMap<ItemStack, Page> links;
+	protected Map<ItemStack, Page> links;
 	protected ItemStack[] menuBar;
 	protected int menuSize;
 	protected int invSize;
@@ -200,5 +200,11 @@ public abstract class Page {
 	public void clean(){}
 	public void update(){
 		gui.update();
+	}
+	protected void removeAllLinks(){
+		for(ItemStack icon : links.keySet()){
+			gui.inventory().remove(icon);
+			links.remove(icon);
+		}
 	}
 }

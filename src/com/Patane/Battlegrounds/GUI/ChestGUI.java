@@ -38,9 +38,9 @@ public class ChestGUI extends DragableGUI{
 		this.mainPage = mainPage;
 	}
 	public void switchPage(Page page) {
-		currentPage.clean();
+//		currentPage.clean();
 		currentPage = page;
-		currentPage.update();
+//		currentPage.update();
 		inventory = currentPage.inventory();
 		update();
 	}
