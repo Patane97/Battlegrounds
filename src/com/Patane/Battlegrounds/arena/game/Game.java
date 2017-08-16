@@ -1,13 +1,32 @@
 package com.Patane.Battlegrounds.arena.game;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Battlegrounds;
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
 import com.Patane.Battlegrounds.arena.standby.Standby;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EditSessionFactory;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.util.io.Closer;
+import com.sk89q.worldedit.world.registry.WorldData;
 
 public class Game extends Standby{
 	
@@ -23,6 +42,36 @@ public class Game extends Standby{
 		this.colorCode	= "&e";
 		this.defaultLocations = arena.getGameSpawns();
 		
+		File f = new File(Battlegrounds.get().getDataFolder(), "/ArenaData/"+arena.getName()+"/grounds");
+		Closer closer = Closer.create();
+        try {
+            FileInputStream fis = closer.register(new FileInputStream(f));
+            BufferedInputStream bis = closer.register(new BufferedInputStream(fis));
+            ClipboardReader reader = ClipboardFormat.SCHEMATIC.getReader(bis);
+            
+            WorldData worldData = BukkitUtil.getLocalWorld(arena.getWorld()).getWorldData();
+            Clipboard clipboard = reader.read(worldData);
+            ClipboardHolder holder = new ClipboardHolder(clipboard, worldData);
+            EditSessionFactory test1 = WorldEdit.getInstance().getEditSessionFactory();
+            @SuppressWarnings("deprecation")
+			EditSession test = test1.getEditSession(BukkitUtil.getLocalWorld(arena.getWorld()), 999999999);
+            Operation operation = holder.createPaste(test, worldData)
+                    .to(arena.getGround().getMinimumPoint())
+                    .build();
+            Operations.completeLegacy(operation);
+            Messenger.broadcast("PASTED");
+//            log.info(player.getName() + " loaded " + f.getCanonicalPath());
+//            player.print(filename + " loaded. Paste it with //paste");
+        } catch (IOException | MaxChangedBlocksException e) {
+        	e.printStackTrace();
+//            player.printError("Schematic could not read or it does not exist: " + e.getMessage());
+//            log.log(Level.WARNING, "Failed to load a saved clipboard", e);
+        } finally {
+            try {
+                closer.close();
+            } catch (IOException ignored) {
+            }
+        }
 		for(String playerName : arena.getPlayers())
 			addPlayer(Bukkit.getPlayerExact(ChatColor.stripColor(playerName)));
 		
@@ -118,6 +167,7 @@ public class Game extends Standby{
 	@Override
 	public void sessionOver() {
 		Messenger.arenaCast(arena, "&aAll players &2have been eliminated!");
+		
 		// running through players
 		for(String selectedPlayer : arena.getPlayers()){
 			arena.removePlayerFromList(selectedPlayer);
@@ -129,6 +179,6 @@ public class Game extends Standby{
 			Messenger.broadcast("&2The game in &a" + arena.getName() + "&2 just finished! They made it to round &a" + roundHandler.getRoundNo() + "&2!"
 							+ "\n&7 Type /bg join " + arena.getName() + " to start a new game at that arena!");
 		}
-		super.sessionOver(new Standby(plugin, arena));
+		sessionOver(new Standby(plugin, arena));
 	}
 }

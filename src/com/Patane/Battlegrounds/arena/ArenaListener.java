@@ -1,4 +1,4 @@
-package com.Patane.Battlegrounds.listeners;
+package com.Patane.Battlegrounds.arena;
 
 import java.util.Iterator;
 
@@ -17,66 +17,88 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
-import com.Patane.Battlegrounds.Messenger;
-import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.util.RelativePoint;
+import com.Patane.Battlegrounds.arena.Arena.RelativePoint;
+import com.Patane.Battlegrounds.listeners.BGListener;
 
-public class ArenaListener extends BGListener{
+public abstract class ArenaListener extends BGListener{
 	protected Arena arena;
 	
 	public ArenaListener (Plugin plugin, Arena arena){
 		super(plugin);
 		this.arena 	= arena;
 	}
-	
+//	
+//	@EventHandler(priority = EventPriority.HIGHEST)
+//	public void onBlockBreak(BlockBreakEvent event){
+//		if(arena.isWithin(event.getBlock()) != RelativePoint.OUTSIDE){
+//			event.setCancelled(true);
+//			Messenger.send(event.getPlayer(), "&cYou can not break blocks in Arena &7" + arena.getName());
+//		}
+//	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event){
 		if(arena.isWithin(event.getBlock()) != RelativePoint.OUTSIDE){
-			event.setCancelled(true);
-			Messenger.send(event.getPlayer(), "&cYou can not break blocks in Arena &7" + arena.getName());
+			event.setCancelled(ifBlockBreak(event));
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event){
 		if(arena.isWithin(event.getBlock()) != RelativePoint.OUTSIDE){
-			event.setCancelled(true);
-			Messenger.send(event.getPlayer(), "&cYou can not place blocks in Arena &7" + arena.getName());
+			event.setCancelled(ifBlockPlace(event));
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onHangingBreak(HangingBreakByEntityEvent event){
 		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
-			event.setCancelled(true);
+			event.setCancelled(ifHangingBreak(event));
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onHangingPlace(HangingPlaceEvent event){
 		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
-			event.setCancelled(true);
+			event.setCancelled(ifHangingPlace(event));
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
     public void onItemFrameHit(EntityDamageEvent event) {
 		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){
 			if (event.getEntity() instanceof ItemFrame) {
-				event.setCancelled(true);
+				event.setCancelled(ifItemFrameHit(event));
 	        }
 		}
     }
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onExplosion(EntityExplodeEvent event){
-		RelativePoint point = arena.isWithin(event.getLocation());
-		if (point == RelativePoint.OUTSIDE) {
+		// Dealing with ifExplosion logic to cancel event or not
+		if(arena.isWithin(event.getLocation()) != RelativePoint.OUTSIDE){
+			if(ifExplosion(event))
+				event.blockList().clear();
+			// Dealing with explosions made within Grounds & Lobby
+			else {
+				Iterator<Block> blockIterator = event.blockList().iterator();
+				while(blockIterator.hasNext())
+					if(arena.isWithin(blockIterator.next()) != RelativePoint.GROUNDS_INNER)
+							blockIterator.remove();
+			}
+		}
+		// Dealing with explosions made outside Grounds & Lobby
+		else {
 			Iterator<Block> blockIterator = event.blockList().iterator();
 			while(blockIterator.hasNext())
-				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE){
+				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE)
 						blockIterator.remove();
-						Messenger.info("removing block from explosion");
-				}
-		} else {
-			event.blockList().clear();
-		}
+		} 
 	}
+	/**
+	 * @return True if event is to be cancelled, False otherwise.
+	 */
+	protected abstract boolean ifBlockBreak(BlockBreakEvent event);
+	protected abstract boolean ifBlockPlace(BlockPlaceEvent event);
+	protected abstract boolean ifHangingBreak(HangingBreakByEntityEvent event);
+	protected abstract boolean ifHangingPlace(HangingPlaceEvent event);
+	protected abstract boolean ifItemFrameHit(EntityDamageEvent event);
+	protected abstract boolean ifExplosion(EntityExplodeEvent event);
+	
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event){
 		if(arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE){

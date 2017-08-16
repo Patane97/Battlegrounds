@@ -21,12 +21,12 @@ import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.Messenger;
 import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.Arena.RelativePoint;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.playerData.Inventories;
-import com.Patane.Battlegrounds.util.RelativePoint;
 import com.Patane.Battlegrounds.util.util;
 
 @EditorInfo(

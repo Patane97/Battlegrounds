@@ -113,7 +113,7 @@ public class util {
 		Selection selection = worldEditPlugin.getSelection(creator);
 		if (selection == null) {
 			Messenger.send(creator, "&cPlease make a worldedit selection.");
-			return null;
+			return null; 
 		}
 		World world = selection.getWorld();
 		AbstractRegion region = null;

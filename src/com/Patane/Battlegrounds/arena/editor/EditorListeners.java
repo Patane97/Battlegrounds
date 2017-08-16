@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.listeners.ArenaListener;
+import com.Patane.Battlegrounds.arena.standby.StandbyListener;
 
-public class EditorListeners extends ArenaListener{
+public class EditorListeners extends StandbyListener{
 	protected Editor editor;
 	protected Player creator;
 	protected UUID creatorUUID;

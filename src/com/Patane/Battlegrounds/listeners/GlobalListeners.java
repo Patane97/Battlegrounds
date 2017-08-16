@@ -23,6 +23,7 @@ public class GlobalListeners implements Listener{
 		Player player = event.getPlayer();
 		Arenas.removePlayer(player);
 	}
+	
 	// DEBUG FOR CUSTOM MOBS
 //	@EventHandler
 //	public void spawnCustom(PlayerInteractEvent event){

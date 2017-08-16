@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.listeners.ArenaListener;
+import com.Patane.Battlegrounds.arena.ArenaListener;
 import com.Patane.Battlegrounds.playerData.PlayerData;
 import com.Patane.Battlegrounds.util.Randoms;
 public class Standby implements ArenaMode{
@@ -23,7 +23,7 @@ public class Standby implements ArenaMode{
 	
 	public Standby(){}
 	public Standby(Plugin plugin, Arena arena){
-		this(plugin, arena, arena.getListener());
+		this(plugin, arena, new StandbyListener(plugin, arena));
 	}
 	public Standby(Plugin plugin, Arena arena, ArenaListener listener){
 		this.plugin		= plugin;
@@ -44,7 +44,7 @@ public class Standby implements ArenaMode{
 	 * @return true if player successfully gets teleported
 	 */
 	public boolean randomTeleport(Player player, ArrayList<Location> locations){
-		if(locations.size() > 0){
+		if(!locations.isEmpty()){
 			Location location = locations.get(Randoms.integer(0, locations.size()-1));
 			player.teleport(location);
 			return true;
@@ -106,7 +106,6 @@ public class Standby implements ArenaMode{
 
 	@Override
 	public void sessionOver(ArenaMode newMode) {
-		unregister();
 		arena.setMode(newMode);
 	}
 	@Override

@@ -135,14 +135,11 @@ public abstract class Page {
 	}
 	// change this to loop through and check if each item is same to 'item'
 	protected boolean alreadyIcon(ItemStack item){
-		Messenger.debug(gui.getPlayer(), "OG: "+item.getItemMeta().getDisplayName());
 		for(ItemStack selectedItem : links.keySet()){
-			Messenger.debug(gui.getPlayer(), selectedItem.getItemMeta().getDisplayName());
 			if(selectedItem.getType() == item.getType() 
 					&& item.hasItemMeta()
 						&& ChatColor.stripColor(selectedItem.getItemMeta().getDisplayName()).equals(ChatColor.stripColor(item.getItemMeta().getDisplayName())))
 				{
-			Messenger.debug(gui.getPlayer(), "Matched");
 			return true;
 				}
 		}

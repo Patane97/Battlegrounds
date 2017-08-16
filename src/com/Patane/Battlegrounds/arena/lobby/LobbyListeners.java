@@ -14,10 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.standby.StandbyListener;
 import com.Patane.Battlegrounds.collections.Classes;
-import com.Patane.Battlegrounds.listeners.ArenaListener;
 
-public class LobbyListeners extends ArenaListener{
+public class LobbyListeners extends StandbyListener{
 	Lobby lobby;
 	public LobbyListeners(Plugin plugin, Arena arena, Lobby lobby){
 		super(plugin, arena);

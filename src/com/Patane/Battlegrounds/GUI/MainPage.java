@@ -29,7 +29,9 @@ public class MainPage extends Page{
 	}
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
-		return pickupItem(topInv, click, item, slot);
+		if(topInv)
+			return true;
+		return false;
 	}
 	@Override
 	public boolean replaceItem(boolean topInv, ClickType click, ItemStack thisItem, ItemStack thatItem, int slot){

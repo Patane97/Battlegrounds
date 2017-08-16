@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import com.Patane.Battlegrounds.arena.Arena;
 
 public class Messenger {
-	private static final Logger logger = Logger.getLogger("Minecraft");
+	private static final Logger logger = Battlegrounds.get().getLogger();
 	
 	public static boolean send(CommandSender sender, String msg) {
         // If the input sender is null or the string is empty, return.
@@ -21,15 +21,6 @@ public class Messenger {
         sender.sendMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
         return true;
     }
-//	public static boolean sendRaw(CommandSender sender, String msg) {
-//		if (sender == null || msg.equals("")) {
-//            return false;
-//        }
-//
-//        // Otherwise, send the message with the plugin prefix.
-//        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-//        return true;
-//	}
 	public static void broadcast(String msg){
 		Bukkit.broadcastMessage(Chat.PLUGIN_PREFIX_SMALL + ChatColor.translateAlternateColorCodes('&', msg));
 	}

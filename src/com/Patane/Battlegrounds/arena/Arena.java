@@ -28,9 +28,7 @@ import com.Patane.Battlegrounds.arena.standby.ArenaMode;
 import com.Patane.Battlegrounds.arena.standby.Standby;
 import com.Patane.Battlegrounds.collections.Arenas;
 import com.Patane.Battlegrounds.collections.Classes;
-import com.Patane.Battlegrounds.listeners.ArenaListener;
 import com.Patane.Battlegrounds.playerData.PlayerData;
-import com.Patane.Battlegrounds.util.RelativePoint;
 import com.Patane.Battlegrounds.util.util;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.AbstractRegion;
@@ -64,8 +62,6 @@ public class Arena {
 	protected ArrayList<Location> spectatorSpawns;
 	
 	protected ArrayList<String> classes;
-	
-	protected ArenaListener arenaListener;
 	
 	protected ArenaSettings arenaSettings;
 
@@ -123,7 +119,6 @@ public class Arena {
 		for(String ymlName : customSettings.keySet()){
 			Messenger.broadcast("Found in customSettings: <"+ymlName+", "+customSettings.get(ymlName)+">");
 		}
-		this.arenaListener = new ArenaListener(plugin, this);
 	}
 	
 	public String getName(){
@@ -137,9 +132,6 @@ public class Arena {
 	}
 	public AbstractRegion getLobby(){
 		return lobby;
-	}
-	public ArenaListener getListener() {
-		return arenaListener;
 	}
 	public void setSettings(ArenaSettings settings){
 		this.arenaSettings = settings;
@@ -509,5 +501,12 @@ public class Arena {
 				return o1.getIncrement() - o2.getIncrement();
 			}
 		});
+	}
+	public enum RelativePoint {
+		OUTSIDE(),
+		GROUNDS_INNER(),
+		GROUNDS_BORDER(),
+		LOBBY_INNER(),
+		LOBBY_BORDER();
 	}
 }

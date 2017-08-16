@@ -1,11 +1,7 @@
 package com.Patane.Battlegrounds.arena.game;
 
-import java.util.Iterator;
-
-import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,10 +22,10 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
 import com.Patane.Battlegrounds.arena.Arena;
-import com.Patane.Battlegrounds.listeners.ArenaListener;
-import com.Patane.Battlegrounds.util.RelativePoint;
+import com.Patane.Battlegrounds.arena.Arena.RelativePoint;
+import com.Patane.Battlegrounds.arena.standby.StandbyListener;
 
-public class GameListeners extends ArenaListener {
+public class GameListeners extends StandbyListener {
 	Game game;
 
 	public GameListeners(Plugin plugin, Arena arena, Game game) {
@@ -37,102 +33,97 @@ public class GameListeners extends ArenaListener {
 		this.game = game;
 	}
 
-	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockBreak(BlockBreakEvent event) {
-		RelativePoint point = arena.isWithin(event.getBlock());
-		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
-				event.setCancelled(false);
-				return;
-			}
-			event.setCancelled(true);
-		}
-	}
+//	@Override
+//	@EventHandler(priority = EventPriority.HIGHEST)
+//	public void onBlockBreak(BlockBreakEvent event) {
+//		RelativePoint point = arena.isWithin(event.getBlock());
+//		if (point != RelativePoint.OUTSIDE) {
+//			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
+//				event.setCancelled(false);
+//				return;
+//			}
+//			event.setCancelled(true);
+//		}
+//	}
 
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockPlace(BlockPlaceEvent event) {
-		RelativePoint point = arena.isWithin(event.getBlock());
-		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
-				event.setCancelled(false);
-				return;
-			}
-			event.setCancelled(true);
+	protected boolean ifBlockBreak(BlockBreakEvent event) {
+		if (arena.getSettings().DESTRUCTABLE && arena.isWithin(event.getBlock()) == RelativePoint.GROUNDS_INNER)
+			return false;
+		if (arena.hasPlayer(event.getPlayer()) && arena.isWithin(event.getBlock()) == RelativePoint.GROUNDS_BORDER){
+			return true;
 		}
+		return super.ifBlockBreak(event);
 	}
-
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onHangingBreak(HangingBreakByEntityEvent event) {
-		RelativePoint point = arena.isWithin(event.getEntity());
-		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
-				event.setCancelled(false);
-				return;
-			}
-			event.setCancelled(true);
+	protected boolean ifBlockPlace(BlockPlaceEvent event) {
+		if (arena.getSettings().DESTRUCTABLE && arena.isWithin(event.getBlock()) == RelativePoint.GROUNDS_INNER)
+			return false;
+		if (arena.hasPlayer(event.getPlayer()) && arena.isWithin(event.getBlock()) == RelativePoint.GROUNDS_BORDER){
+			return true;
 		}
+		return super.ifBlockPlace(event);
 	}
-
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onHangingPlace(HangingPlaceEvent event) {
-		RelativePoint point = arena.isWithin(event.getEntity());
-		if (point != RelativePoint.OUTSIDE) {
-			if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
-				event.setCancelled(false);
-				return;
-			}
-			event.setCancelled(true);
+	protected boolean ifHangingBreak(HangingBreakByEntityEvent event) {
+		if (arena.getSettings().DESTRUCTABLE && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_INNER)
+			return false;
+		if (arena.hasPlayer((Player) event.getRemover()) && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_BORDER){
+			return true;
 		}
+		return super.ifHangingBreak(event);
 	}
-
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onItemFrameHit(EntityDamageEvent event) {
-		if (arena.isWithin(event.getEntity()) != RelativePoint.OUTSIDE) {
-			if (event.getEntity() instanceof ItemFrame) {
-				event.setCancelled(true);
-			}
+	protected boolean ifHangingPlace(HangingPlaceEvent event) {
+		if (arena.getSettings().DESTRUCTABLE && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_INNER)
+			return false;
+		if (arena.hasPlayer(event.getPlayer()) && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_BORDER){
+			return true;
 		}
-		RelativePoint point = arena.isWithin(event.getEntity());
-		if (point != RelativePoint.OUTSIDE) {
-			if (event.getEntity() instanceof ItemFrame) {
-				if (arena.getSettings().DESTRUCTABLE && point == RelativePoint.GROUNDS_INNER) {
-					event.setCancelled(false);
-					return;
-				}
-				event.setCancelled(true);
-			}
-		}
+		return super.ifHangingPlace(event);
 	}
-
 	@Override
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onExplosion(EntityExplodeEvent event) {
-		RelativePoint point = arena.isWithin(event.getLocation());
-		if (point != RelativePoint.GROUNDS_INNER && point != RelativePoint.LOBBY_INNER) {
-			Iterator<Block> blockIterator = event.blockList().iterator();
-			while(blockIterator.hasNext())
-				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE)
-						blockIterator.remove();
-		}
-		else if (point == RelativePoint.GROUNDS_INNER) {
-			if (arena.getSettings().DESTRUCTABLE) {
-				Iterator<Block> blockIterator = event.blockList().iterator();
-				while(blockIterator.hasNext())
-					if(arena.isWithin(blockIterator.next()) != RelativePoint.GROUNDS_INNER)
-							blockIterator.remove();
+	protected boolean ifItemFrameHit(EntityDamageEvent event) {
+		if (arena.getSettings().DESTRUCTABLE && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_INNER)
+			return false;
+		if(event instanceof EntityDamageByEntityEvent ){
+			EntityDamageByEntityEvent tempEvent = (EntityDamageByEntityEvent) event;
+			if (arena.hasPlayer((Player) tempEvent.getEntity()) && arena.isWithin(event.getEntity()) == RelativePoint.GROUNDS_BORDER){
+				return true;
 			}
-			else
-				event.blockList().clear();
 		}
-		else if (point == RelativePoint.LOBBY_INNER){
-			event.blockList().clear();
-		}
+		return super.ifItemFrameHit(event);
 	}
+	@Override
+	protected boolean ifExplosion(EntityExplodeEvent event) {
+		if (arena.getSettings().DESTRUCTABLE)
+			return false;
+		return super.ifExplosion(event);
+	}
+//	@Override
+//	@EventHandler(priority = EventPriority.HIGHEST)
+//	public void onExplosion(EntityExplodeEvent event) {
+//		RelativePoint point = arena.isWithin(event.getLocation());
+//		if (point != RelativePoint.GROUNDS_INNER && point != RelativePoint.LOBBY_INNER) {
+//			Iterator<Block> blockIterator = event.blockList().iterator();
+//			while(blockIterator.hasNext())
+//				if(arena.isWithin(blockIterator.next()) != RelativePoint.OUTSIDE)
+//						blockIterator.remove();
+//		}
+//		else if (point == RelativePoint.GROUNDS_INNER) {
+//			if (arena.getSettings().DESTRUCTABLE) {
+//				Iterator<Block> blockIterator = event.blockList().iterator();
+//				while(blockIterator.hasNext())
+//					if(arena.isWithin(blockIterator.next()) != RelativePoint.GROUNDS_INNER)
+//							blockIterator.remove();
+//			}
+//			else
+//				event.blockList().clear();
+//		}
+//		else if (point == RelativePoint.LOBBY_INNER){
+//			event.blockList().clear();
+//		}
+//	}
 
 	@EventHandler
 	public void onMonsterCombust(EntityCombustEvent event) {

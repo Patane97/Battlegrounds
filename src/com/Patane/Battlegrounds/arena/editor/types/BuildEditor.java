@@ -1,5 +1,9 @@
 package com.Patane.Battlegrounds.arena.editor.types;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,15 +24,31 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.material.Sign;
 import org.bukkit.plugin.Plugin;
 
+import com.Patane.Battlegrounds.Battlegrounds;
 import com.Patane.Battlegrounds.Messenger;
+import com.Patane.Battlegrounds.Messenger.ChatType;
 import com.Patane.Battlegrounds.arena.Arena;
+import com.Patane.Battlegrounds.arena.Arena.RelativePoint;
 import com.Patane.Battlegrounds.arena.classes.BGClass;
 import com.Patane.Battlegrounds.arena.editor.Editor;
 import com.Patane.Battlegrounds.arena.editor.EditorInfo;
 import com.Patane.Battlegrounds.arena.editor.EditorListeners;
 import com.Patane.Battlegrounds.arena.editor.EditorType;
 import com.Patane.Battlegrounds.collections.Classes;
-import com.Patane.Battlegrounds.util.RelativePoint;
+import com.sk89q.worldedit.EmptyClipboardException;
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.WorldEditAPI;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.util.io.Closer;
+import com.sk89q.worldedit.world.registry.WorldData;
 
 @EditorInfo(
 		name = "build", permission = ""
@@ -53,6 +73,35 @@ public class BuildEditor implements EditorType{
 	}
 	@Override
 	public void save() {
+		///////////////////// PUT INTO METHOD //////////////////////////
+		File f = new File(Battlegrounds.get().getDataFolder(), "/ArenaData/"+arena.getName()+"/grounds.schematic");
+		Clipboard clipboard = new BlockArrayClipboard(arena.getGround());
+		Messenger.debug(ChatType.BROADCAST, clipboard.getDimensions().toString());
+		Closer closer = Closer.create();
+        try {
+            // Create parent directories
+            File parent = f.getParentFile();
+            if (parent != null && !parent.exists()) {
+                if (!parent.mkdirs()) {
+                    return;
+                }
+            }  		
+            
+            FileOutputStream fos = closer.register(new FileOutputStream(f));
+            BufferedOutputStream bos = closer.register(new BufferedOutputStream(fos));
+            ClipboardWriter writer = closer.register(ClipboardFormat.SCHEMATIC.getWriter(bos));
+            writer.write(clipboard, arena.getGround().getWorld().getWorldData());
+        } catch (IOException e) {
+        	e.printStackTrace();
+//            player.printError("Schematic could not written: " + e.getMessage());
+//            log.log(Level.WARNING, "Failed to write a saved clipboard", e);
+        } finally {
+            try {
+                closer.close();
+            } catch (IOException ignored) {
+            	ignored.printStackTrace();
+            }
+        }
 		Messenger.send(creator, "&aSaved &7All Blocks &awithin Arena &7" + arenaName + "&a.");
 	}
 

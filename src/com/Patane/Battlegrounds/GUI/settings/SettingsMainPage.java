@@ -84,8 +84,6 @@ public class SettingsMainPage extends MainPage{
 
 	@Override
 	public boolean pickupItem(boolean topInv, ClickType click, ItemStack item, int slot){
-		if(super.pickupItem(topInv, click, item, slot))
-			return true;
 		if(topInv){
 			if(settingsLink.containsKey(item)){
 				Setting setting = settingsLink.get(item);
@@ -96,6 +94,7 @@ public class SettingsMainPage extends MainPage{
 					case FLOAT: updateSettingItem(setting, changeFloat(setting, click), slot); break;
 				}
 			}
+			return true;
 		}
 		return false;
 	}

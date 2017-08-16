@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.Patane.Battlegrounds.listeners.ArenaListener;
+import com.Patane.Battlegrounds.arena.ArenaListener;
 
 public interface ArenaMode{
 	public String getColor();
